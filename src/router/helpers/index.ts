@@ -1,4 +1,4 @@
-import ProtectedRoute from './ProtectedRoute';
+import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 
-export { ProtectedRoute, PublicRoute };
+export { PrivateRoute, PublicRoute };

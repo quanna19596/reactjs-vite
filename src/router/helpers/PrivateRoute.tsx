@@ -4,15 +4,15 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { getAccessToken } from '@/utils';
 import { Fallback } from '@/components';
 
-const ProtectedRoute: React.FC<{
+const PrivateRoute: React.FC<{
   component: React.FC;
-  fallbackComponent: React.FC;
+  fallbackPermissionDeniedComponent: React.FC;
   errorComponent?: React.FC;
   guards?: { fallbackHandler: () => void; conditional: boolean }[];
-}> = ({ component: Component, fallbackComponent: FallbackComponent, errorComponent }) => {
+}> = ({ component: Component, fallbackPermissionDeniedComponent: FallbackPermissionDeniedComponent, errorComponent }) => {
   const isLoggedIn = getAccessToken();
 
-  const checkedAuthComponent = isLoggedIn ? <Component /> : <FallbackComponent />;
+  const checkedAuthComponent = isLoggedIn ? <Component /> : <FallbackPermissionDeniedComponent />;
 
   return (
     <Suspense fallback={<Fallback />}>
@@ -21,4 +21,4 @@ const ProtectedRoute: React.FC<{
   );
 };
 
-export default ProtectedRoute;
+export default PrivateRoute;

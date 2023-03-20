@@ -19,6 +19,7 @@ const retryLoadComponent = (fn: () => Promise<unknown>, retriesLeft = 5, interva
 
 export const AppError = lazy(() => retryLoadComponent(() => import('@/pages/public/AppError')));
 export const AppNotFound = lazy(() => retryLoadComponent(() => import('@/pages/public/AppNotFound')));
+export const AppPermissionDenied = lazy(() => retryLoadComponent(() => import('@/pages/public/AppPermissionDenied')));
 
 export const SignIn = lazy(() => retryLoadComponent(() => import('@/pages/public/SignIn')));
 export const SignUp = lazy(() => retryLoadComponent(() => import('@/pages/public/SignUp')));

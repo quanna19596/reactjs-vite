@@ -1,6 +1,7 @@
 import AppError from './AppError';
+import AppNotFound from './AppNotFound';
+import AppPermissionDenied from './AppPermissionDenied';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
-import AppNotFound from './AppNotFound';
 
-export { AppError, AppNotFound, SignIn, SignUp };
+export { AppError, AppNotFound, AppPermissionDenied, SignIn, SignUp };

@@ -9,56 +9,94 @@ import {
   LandingLayoutError,
   LandingLayoutNotFound
 } from '@/layouts';
-import { ELayoutPath, EPagePath, ERouteType } from './enums';
-import { SignIn, SignUp, Products, Users } from './lazy-importter';
-import { TRoute } from './types';
+import { ELayoutPath, EPagePath, ERouteType, ESpecialPath } from './enums';
+import { SignIn, SignUp, Products, Users, AppError, AppNotFound, AppPermissionDenied } from './lazy-importter';
+import { TRouteConfig } from './types';
 
-export const routes: TRoute[] = [
-  {
-    type: ERouteType.LAYOUT,
-    path: ELayoutPath.LANDING,
-    component: LandingLayout,
-    errorComponent: LandingLayoutError,
-    defaultComponent: LandingLayoutDefault,
-    notFoundComponent: LandingLayoutNotFound,
-    privacy: {
-      isPrivate: false
-    },
-    children: [
-      {
-        type: ERouteType.PAGE,
-        path: EPagePath.SIGN_IN,
-        component: SignIn
-      },
-      {
-        type: ERouteType.PAGE,
-        path: EPagePath.SIGN_UP,
-        component: SignUp
-      }
-    ]
+export const routerConfig: TRouteConfig = {
+  common: {
+    appError: AppError,
+    appNotFound: AppNotFound,
+    appPermissionDenied: AppPermissionDenied
   },
-  {
-    type: ERouteType.LAYOUT,
-    path: ELayoutPath.DASHBOARD,
-    component: DashboardLayout,
-    errorComponent: DashboardLayoutError,
-    defaultComponent: DashboardLayoutDefault,
-    notFoundComponent: DashboardLayoutNotFound,
-    privacy: {
-      isPrivate: true,
-      fallbackComponent: DashboardLayoutPermissionDenied
-    },
-    children: [
-      {
-        type: ERouteType.PAGE,
-        path: EPagePath.PRODUCTS,
-        component: Products
+  routes: [
+    {
+      path: ELayoutPath.LANDING,
+      element: {
+        component: LandingLayout
       },
-      {
-        type: ERouteType.PAGE,
-        path: EPagePath.USERS,
-        component: Users
-      }
-    ]
-  }
-];
+      children: [
+        {
+          element: {
+            index: true,
+            component: LandingLayoutDefault,
+            errorComponent: LandingLayoutError
+          }
+        },
+        {
+          path: EPagePath.SIGN_IN,
+          element: {
+            component: SignIn,
+            errorComponent: LandingLayoutError
+          }
+        },
+        {
+          path: EPagePath.SIGN_UP,
+          element: {
+            component: SignUp,
+            errorComponent: LandingLayoutError
+          }
+        },
+        {
+          path: ESpecialPath.REST,
+          element: {
+            component: LandingLayoutNotFound,
+            errorComponent: LandingLayoutError
+          }
+        }
+      ]
+    },
+    {
+      path: ELayoutPath.DASHBOARD,
+      element: {
+        component: DashboardLayout,
+        isPrivate: true,
+        fallbackPermissionDenied: AppPermissionDenied
+      },
+      children: [
+        {
+          element: {
+            index: true,
+            component: DashboardLayoutDefault,
+            errorComponent: DashboardLayoutError
+          }
+        },
+        {
+          path: EPagePath.PRODUCTS,
+          element: {
+            component: Products,
+            isPrivate: true,
+            fallbackPermissionDenied: DashboardLayoutPermissionDenied,
+            errorComponent: DashboardLayoutError
+          }
+        },
+        {
+          path: EPagePath.USERS,
+          element: {
+            component: Users,
+            isPrivate: true,
+            fallbackPermissionDenied: DashboardLayoutPermissionDenied,
+            errorComponent: DashboardLayoutError
+          }
+        },
+        {
+          path: ESpecialPath.REST,
+          element: {
+            component: DashboardLayoutNotFound,
+            errorComponent: DashboardLayoutError
+          }
+        }
+      ]
+    }
+  ]
+};
