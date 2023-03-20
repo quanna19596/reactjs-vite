@@ -1,0 +1,91 @@
+{
+  "name": "codebase-reactjs-ts-vite",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "vite --mode development",
+    "start:staging": "vite --mode staging",
+    "start:prod": "vite --mode production",
+    "build:development": "GENERATE_SOURCEMAP=false tsc && vite build --mode development",
+    "build-window:development": "set \"GENERATE_SOURCEMAP=false\" && tsc && vite build --mode development",
+    "build:staging": "GENERATE_SOURCEMAP=false tsc && vite build --mode staging",
+    "build-window:staging": "set \"GENERATE_SOURCEMAP=false\" && tsc && vite build --mode staging",
+    "build:production": "GENERATE_SOURCEMAP=false tsc && vite build --mode production",
+    "build-window:production": "set \"GENERATE_SOURCEMAP=false\" && tsc && vite build --mode production",
+    "preview": "vite preview",
+    "rm-nodemodules": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
+    "rm-packagelocks": "find . -name 'package-lock.json' -type f -prune -exec rm -rf '{}' +",
+    "rm-yarnlocks": "find . -name 'yarn.lock' -type f -prune -exec rm -rf '{}' +",
+    "clean": "yarn run rm-nodemodules && yarn run rm-packagelocks && yarn run rm-yarnlocks",
+    "lint": "eslint --ext ts,tsx src/",
+    "lint:fix": "eslint --fix --ext ts,tsx src/",
+    "lint:staged": "lint-staged",
+    "prettier": "prettier --check \"src/**/(*.tsx|*.ts|*.css|*.scss)\"",
+    "format": "prettier --write \"src/**/(*.tsx|*.ts|*.css|*.scss)\"",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public",
+    "create-service": "node ./node_modules/react-save-efforts/create-service.js",
+    "create-component": "node ./node_modules/react-save-efforts/create-component.js",
+    "remove-service": "node ./node_modules/react-save-efforts/remove-service.js",
+    "remove-component": "node ./node_modules/react-save-efforts/remove-component.js"
+  },
+  "dependencies": {
+    "axios": "^1.3.4",
+    "classnames": "^2.3.2",
+    "deox": "^3.3.1",
+    "formik": "^2.2.9",
+    "moment": "^2.29.4",
+    "qs": "^6.11.1",
+    "react": "^18.2.0",
+    "react-cookies": "^0.1.1",
+    "react-dom": "^18.2.0",
+    "react-error-boundary": "^3.1.4",
+    "react-redux": "^8.0.5",
+    "react-router-dom": "^6.9.0",
+    "react-save-efforts": "^1.0.3",
+    "redux": "^4.2.1",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-saga": "^1.2.2",
+    "yup": "^1.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.0",
+    "@types/react": "^18.0.27",
+    "@types/react-cookies": "^0.1.0",
+    "@types/react-dom": "^18.0.10",
+    "@types/react-redux": "^7.1.25",
+    "@typescript-eslint/eslint-plugin": "^5.54.1",
+    "@typescript-eslint/parser": "^5.54.1",
+    "@vitejs/plugin-react-swc": "^3.0.0",
+    "eslint": "^8.35.0",
+    "eslint-config-prettier": "^8.7.0",
+    "eslint-import-resolver-typescript": "^3.5.3",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.0",
+    "prettier": "^2.8.4",
+    "sass": "^1.59.2",
+    "typescript": "^4.9.3",
+    "vite": "^4.1.0",
+    "vite-plugin-eslint": "^1.8.1"
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx}": [
+      "yarn lint",
+      "yarn format"
+    ],
+    "**/*.{tsx,ts}": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}
