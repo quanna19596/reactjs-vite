@@ -1,10 +1,9 @@
 import axios, { AxiosResponse, AxiosError, AxiosInstance } from 'axios';
-import { navigate } from '@reach/router';
 
 import { EStatusCode } from '@/enums';
-import { LayoutPaths, Paths } from '@/pages/routers';
 import { clearTokens, getAccessToken, getRefreshToken, storeAccessToken, storeRefreshToken } from '@/utils';
 import { TTokenSubscribers, ICustomAxiosRequestConfig } from './types';
+import { history } from '@/router';
 
 // import { EAuthEndPoint } from './eco/auth/endpoints';
 

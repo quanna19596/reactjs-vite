@@ -1,4 +1,4 @@
 import DashboardLayout from './DashboardLayout';
 
-export * from './DashboardLayout.types';
+export type { TDashboardLayoutProps } from './DashboardLayout.types';
 export default DashboardLayout;

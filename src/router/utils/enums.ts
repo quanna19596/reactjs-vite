@@ -1,8 +1,3 @@
-export enum ERouteType {
-  LAYOUT = 'LAYOUT',
-  PAGE = 'PAGE'
-}
-
 export enum ELayoutPath {
   LANDING = '',
   DASHBOARD = 'dashboard'

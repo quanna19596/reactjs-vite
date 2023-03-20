@@ -1,4 +1,4 @@
 import LandingLayoutNotFound from './LandingLayoutNotFound';
 
-export * from './LandingLayoutNotFound.types';
+export type { TLandingLayoutNotFoundProps } from './LandingLayoutNotFound.types';
 export default LandingLayoutNotFound;

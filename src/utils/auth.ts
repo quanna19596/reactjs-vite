@@ -1,5 +1,5 @@
 import { EStorage } from '@/enums';
-import { getCookie, removeCookie, setCookie } from './browser-handling';
+import { getCookie, removeCookie, setCookie } from '@/utils';
 
 export const getRefreshToken = (): string => getCookie(EStorage.COOKIE_REFRESH_TOKEN);
 

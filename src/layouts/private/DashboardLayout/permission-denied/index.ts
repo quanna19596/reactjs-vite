@@ -1,4 +1,4 @@
 import DashboardLayoutPermissionDenied from './DashboardLayoutPermissionDenied';
 
-export * from './DashboardLayoutPermissionDenied.types';
+export type { TDashboardLayoutPermissionDeniedProps } from './DashboardLayoutPermissionDenied.types';
 export default DashboardLayoutPermissionDenied;

@@ -1,4 +1,4 @@
 import SignUp from './SignUp';
 
-export * from './SignUp.types';
+export type { TSignUpProps } from './SignUp.types';
 export default SignUp;

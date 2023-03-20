@@ -1,4 +1,4 @@
-import { ERouteType, ELayoutPath, EPagePath, ESpecialPath } from './enums';
+import { ELayoutPath, EPagePath, ESpecialPath } from '@/router';
 
 export type TRouteCommon = {
   appError: React.FC;

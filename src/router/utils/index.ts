@@ -1,4 +1,4 @@
 export * from './lazy-importter';
-export * from './paths';
 export * from './enums';
-export * from './routes';
+export * from './history';
+export type { TRoute, TRouteCommon, TRouteConfig, TRouteElement } from './types';

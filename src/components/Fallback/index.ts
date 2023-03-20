@@ -1,4 +1,4 @@
 import Fallback from './Fallback';
 
-export * from './Fallback.types';
+export type { TFallbackProps } from './Fallback.types';
 export default Fallback;
