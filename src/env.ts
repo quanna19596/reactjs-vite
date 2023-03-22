@@ -4,8 +4,7 @@ const env = {
   rootUrl: import.meta.env.VITE_ROOT_URL ?? '',
   api: {
     baseUrl: {
-      aService: import.meta.env.VITE_SERVICE_A_BASE_URL ?? '',
-      bService: import.meta.env.VITE_SERVICE_B_BASE_URL ?? ''
+      petStoreService: import.meta.env.VITE_PETSTORE_SERVICE ?? ''
     }
   },
   cookie: {

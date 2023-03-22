@@ -1,6 +1,7 @@
 import cookie from 'react-cookies';
 
 import env from '@/env';
+import { ELayoutPath, EPagePath, TRoute, routerConfig } from '@/router';
 
 export const urlSafe = (url: string): string => {
   return url
@@ -8,6 +9,32 @@ export const urlSafe = (url: string): string => {
     .replace(/\s\s+/g, ' ')
     .replace(/ /g, '-')
     .toLowerCase();
+};
+
+export const getFullPath = (path: ELayoutPath | EPagePath): string => {
+  let fullPath = '';
+
+  const recursion = (elArr: TRoute[]): void => {
+    for (let i = 0; i < elArr.length; i++) {
+      const fullSplitted = fullPath.split('/');
+      const foundFullPath = fullSplitted[fullSplitted.length - 1] === path;
+      if (foundFullPath) break;
+      const route = elArr[i];
+      if (route.path === path) {
+        fullPath = !fullPath ? `/${path}` : `${fullPath}${route.path}`;
+        break;
+      } else if (!route.children || route.element.index) {
+        continue;
+      } else {
+        fullPath += `${route.path}/`;
+        recursion(route.children);
+      }
+    }
+  };
+
+  recursion(routerConfig.routes);
+
+  return fullPath;
 };
 
 export const lockPageScroll = (): void => {

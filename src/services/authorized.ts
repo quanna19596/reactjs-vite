@@ -1,26 +1,28 @@
 import axios, { AxiosResponse, AxiosError, AxiosInstance } from 'axios';
 
 import { EStatusCode } from '@/enums';
-import { clearTokens, getAccessToken, getRefreshToken, storeAccessToken, storeRefreshToken } from '@/utils';
-import { TTokenSubscribers, ICustomAxiosRequestConfig } from './types';
-import { history } from '@/router';
+import { clearTokens, getAccessToken, getFullPath, getRefreshToken, storeAccessToken, storeRefreshToken } from '@/utils';
+import { TTokenSubscribers, ICustomAxiosRequestConfig } from '@/services';
+import { EPagePath, history } from '@/router';
 
 // import { EAuthEndPoint } from './eco/auth/endpoints';
 
 let isRefreshingAccessToken = false;
 let tokenSubscribers: TTokenSubscribers[] = [];
 
-const AuthorizedInstance = (baseURL: string): AxiosInstance => {
+export const AuthorizedInstance = (baseURL: string): AxiosInstance => {
   const instance = axios.create({
     baseURL
   });
 
+  const goToLogin = (): void => history.push(getFullPath(EPagePath.SIGN_IN));
+
+  const getBearerToken = (token: string): string => `Bearer ${token}`;
+
   const refreshTokens = async (): Promise<string> => {
     const existingRefreshToken: string = getRefreshToken();
 
-    if (!existingRefreshToken) {
-      navigate(`${LayoutPaths.Auth}${Paths.Login}`);
-    }
+    if (!existingRefreshToken) goToLogin();
 
     // const { jwtAccessToken, refreshToken } = await AuthInstance.refreshToken({
     //   refreshToken: existingRefreshToken ?? '',
@@ -36,12 +38,12 @@ const AuthorizedInstance = (baseURL: string): AxiosInstance => {
   };
 
   const onRequest = async (request: ICustomAxiosRequestConfig): Promise<ICustomAxiosRequestConfig> => {
-    const authBearer: string | unknown = getAccessToken();
+    const accessToken: string | unknown = getAccessToken();
+    const hasAccessToken = accessToken && typeof accessToken === 'string';
+
     request.headers = request.headers ?? {};
 
-    if (authBearer) {
-      request.headers.Authorization = `Bearer ${authBearer}`;
-    }
+    if (hasAccessToken) request.headers.Authorization = getBearerToken(accessToken);
 
     return { ...request, headers: request.headers };
   };
@@ -62,7 +64,7 @@ const AuthorizedInstance = (baseURL: string): AxiosInstance => {
     if (requestUnauthorized && refreshTokenFailed) {
       onTokenRefreshed(new Error('Failed to refresh access token'));
       clearTokens();
-      navigate(`${LayoutPaths.Auth}${Paths.Login}`);
+      goToLogin();
       return Promise.reject(axiosError);
     }
 
@@ -76,7 +78,7 @@ const AuthorizedInstance = (baseURL: string): AxiosInstance => {
           .catch(() => {
             onTokenRefreshed(new Error('Failed to refresh access token'));
             clearTokens();
-            navigate(`${LayoutPaths.Auth}${Paths.Login}`);
+            goToLogin();
             return Promise.reject(axiosError);
           })
           .finally(() => {
@@ -89,7 +91,7 @@ const AuthorizedInstance = (baseURL: string): AxiosInstance => {
         tokenSubscribers.push((error: Error | null, newAccessToken?: string) => {
           if (error) return reject(error);
 
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          if (newAccessToken) originalRequest.headers.Authorization = getBearerToken(newAccessToken);
 
           return resolve(axios(originalRequest));
         });
@@ -106,5 +108,3 @@ const AuthorizedInstance = (baseURL: string): AxiosInstance => {
 
   return instance;
 };
-
-export default AuthorizedInstance;
