@@ -47,7 +47,9 @@ module.exports = {
 
     'no-shadow': 'off',
     'no-static-element-interactions': 'off',
+    'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
 
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-empty-interface': 'off',

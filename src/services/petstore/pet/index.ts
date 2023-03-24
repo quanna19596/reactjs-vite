@@ -1,1 +1,1 @@
-export * from './find-pet-by-id';
+export * from './findPetById';

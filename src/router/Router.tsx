@@ -1,5 +1,5 @@
 import { ErrorBoundary } from 'react-error-boundary';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import { ESpecialPath, HistoryRouter, PrivateRoute, PublicRoute, routerConfig, TRoute, TRouteElement, history } from '@/router';
 

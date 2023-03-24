@@ -1,14 +1,16 @@
-import { Provider } from 'react-redux';
+import { useEffect } from 'react';
 
 import Router from '@/router';
-import { store } from '@/redux';
+import { petActions, useAppDispatch } from '@/redux';
 
 const App: React.FC = () => {
-  return (
-    <Provider store={store}>
-      <Router />
-    </Provider>
-  );
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(petActions.findPetByIdRequest({ petId: 123 }));
+  });
+
+  return <Router />;
 };
 
 export default App;

@@ -1,26 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import asyncStatusReducers from '@/redux/async-status-handling';
+import initialState from './initial-state';
+import stateReducers from './state-reducers';
+
 const petSlice = createSlice({
-  name: 'posts',
-  initialState: [],
+  name: 'pet',
+  initialState,
   reducers: {
-    findPetById(state, action) {},
-    updatePost(state, action) {},
-    deletePost(state, action) {}
-  }
+    findPetByIdSuccess: (state, action) => {},
+    ...stateReducers
+  },
+  extraReducers: asyncStatusReducers
 });
 
-console.log(postsSlice);
-/*
-{
-    name: 'posts',
-    actions : {
-        createPost,
-        updatePost,
-        deletePost,
-    },
-    reducer
-}
-*/
-
-const { createPost } = postsSlice.actions;
+export const petActions = petSlice.actions;
+export const petReducer = petSlice.reducer;
