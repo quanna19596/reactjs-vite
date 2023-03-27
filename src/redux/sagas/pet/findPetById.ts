@@ -1,17 +1,18 @@
 import { call, put } from 'redux-saga/effects';
 
-import { findPetById } from '@/services';
-import { petActions } from '@/redux/slices';
+import { findPetById, TFindPetByIdParameters } from '@/services';
+import { petActions, TRequestHandlerCallbacks } from '@/redux';
+import { PayloadAction } from '@reduxjs/toolkit';
 
-// FUNCTION
-
-export function* findPetByIdSaga(action: Action): Generator {
+export function* findPetByIdSaga(action: PayloadAction<TFindPetByIdParameters & TRequestHandlerCallbacks>): Generator {
+  const { successCb, failedCb, ...params } = action.payload;
   try {
-    const response = yield call(findPetById, { petId: 123 });
-    // yield put(getMinesAction.success(getMinesResponse));
-    // successCallback?.(getMinesResponse);
+    const response = yield call(findPetById, params);
+    yield put(petActions.findPetByIdSuccess(response));
+    successCb?.(response);
   } catch (err) {
-    yield put(petActions.findPetByIdFailed({ status: 400, message: '' }));
-    // failedCallback?.(err);
+    const error = { status: 400, message: 'Error' };
+    yield put(petActions.findPetByIdFailed(error));
+    failedCb?.(error);
   }
 }
