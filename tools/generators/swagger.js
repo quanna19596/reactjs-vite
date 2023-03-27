@@ -8,7 +8,12 @@ const appendFile = (path, content) => fs.appendFileSync(path, content);
 const readFile = (path) => fs.readFileSync(path, 'utf8').toString();
 
 const convertObjStrToObj = (objStr) => {
-  
+  const objStrLines = objStr.split('\n');
+  const obj = {};
+  objStrLines.forEach((line) => {
+    const valueIsObj = line.includes('{');
+    
+  });
 };
 
 const getJSON = async () => {
