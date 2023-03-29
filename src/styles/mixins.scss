@@ -1,0 +1,35 @@
+@mixin min-width-412 {
+  @media screen and (min-width: $xsm) {
+    @content;
+  }
+}
+
+@mixin min-width-576 {
+  @media screen and (min-width: $sm) {
+    @content;
+  }
+}
+
+@mixin min-width-768 {
+  @media screen and (min-width: $md) {
+    @content;
+  }
+}
+
+@mixin min-width-992 {
+  @media screen and (min-width: $lg) {
+    @content;
+  }
+}
+
+@mixin min-width-1200 {
+  @media screen and (min-width: $xl) {
+    @content;
+  }
+}
+
+@mixin min-width-1400 {
+  @media screen and (min-width: $xxl) {
+    @content;
+  }
+}

@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
-
 module.exports = {
   parserOptions: {
     ecmaVersion: 'latest'
@@ -15,7 +14,8 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'plugin:@typescript-eslint/recommended',
     'eslint-config-prettier',
-    'prettier'
+    'prettier',
+    'plugin:storybook/recommended'
   ],
   plugins: ['prettier'],
   settings: {
@@ -47,9 +47,19 @@ module.exports = {
 
     'no-shadow': 'off',
     'no-static-element-interactions': 'off',
-    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    'no-unused-vars': [
+      'warn',
+      {
+        argsIgnorePattern: '^_'
+      }
+    ],
 
-    '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      {
+        argsIgnorePattern: '^_'
+      }
+    ],
     '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
@@ -57,11 +67,25 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/explicit-function-return-type': ['error'],
-    '@typescript-eslint/no-unused-expressions': ['error', { allowShortCircuit: true, allowTernary: true }],
+    '@typescript-eslint/no-unused-expressions': [
+      'error',
+      {
+        allowShortCircuit: true,
+        allowTernary: true
+      }
+    ],
     '@typescript-eslint/naming-convention': [
       'error',
-      { selector: 'interface', format: ['PascalCase'], prefix: ['I'] },
-      { selector: 'typeAlias', format: ['PascalCase'], prefix: ['T'] }
+      {
+        selector: 'interface',
+        format: ['PascalCase'],
+        prefix: ['I']
+      },
+      {
+        selector: 'typeAlias',
+        format: ['PascalCase'],
+        prefix: ['T']
+      }
     ],
 
     'react/react-in-jsx-scope': 'off',

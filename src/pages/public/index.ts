@@ -1,7 +1,5 @@
-import AppError from './AppError';
-import AppNotFound from './AppNotFound';
-import AppPermissionDenied from './AppPermissionDenied';
-import SignIn from './SignIn';
-import SignUp from './SignUp';
+import SignIn, { TSignInProps } from './SignIn';
+import SignUp, { TSignUpProps } from './SignUp';
 
-export { AppError, AppNotFound, AppPermissionDenied, SignIn, SignUp };
+export { SignIn, SignUp };
+export type { TSignInProps, TSignUpProps };
