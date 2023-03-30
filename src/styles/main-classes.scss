@@ -1,33 +1,40 @@
-// Layouts/Private
+// [BEGIN] Layouts/Private
 $DashboardLayoutDefault: '.DashboardLayoutDefault';
 $DashboardLayoutError: '.DashboardLayoutError';
 $DashboardLayout: '.DashboardLayout';
 $DashboardLayoutNotFound: '.DashboardLayoutNotFound';
 $DashboardLayoutPermissionDenied: '.DashboardLayoutPermissionDenied';
+// [END] Layouts/Private
 
-// Layouts/Public
+// [BEGIN] Layouts/Public
 $LandingLayoutDefault: '.LandingLayoutDefault';
 $LandingLayoutError: '.LandingLayoutError';
 $LandingLayout: '.LandingLayout';
 $LandingLayoutNotFound: '.LandingLayoutNotFound';
 $LandingLayoutPermissionDenied: '.LandingLayoutPermissionDenied';
+// [END] Layouts/Private
 
-// Pages/Common
+// [BEGIN] Pages/Common
 $AppError: '.AppError';
 $AppNotFound: '.AppNotFound';
 $AppPermissionDenied: '.AppPermissionDenied';
+// [END] Pages/Common
 
-// Pages/Private
+// [BEGIN] Pages/Private
 $Products: '.Products';
 $Users: '.Users';
+// [END] Pages/Private
 
-// Pages/Public
+// [BEGIN] Pages/Public
 $SignIn: '.SignIn';
 $SignUp: '.SignUp';
+// [END] Pages/Public
 
-// Components
+// [BEGIN] Components
 $Button: '.Button';
-$Fallback: '.Fallback';
+$Fallback: '.Fallback';
+// [END] Components
 
-// Containers
+// [BEGIN] Containers
 $AGroupOfComponents: '.AGroupOfComponents';
+// [END] Containers
