@@ -25,7 +25,10 @@
     "format": "prettier --write \"src/**/(*.tsx|*.ts|*.css|*.scss)\"",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "create-component": "yarn plop create-component",
+    "remove-component": "yarn plop remove-component",
+    "create-layout": "yarn plop create-layout"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",
