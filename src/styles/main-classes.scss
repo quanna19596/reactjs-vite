@@ -1,34 +1,25 @@
-// [BEGIN] Layouts/Private
+// [BEGIN] Layouts
 $DashboardLayoutDefault: '.DashboardLayoutDefault';
 $DashboardLayoutError: '.DashboardLayoutError';
 $DashboardLayout: '.DashboardLayout';
 $DashboardLayoutNotFound: '.DashboardLayoutNotFound';
 $DashboardLayoutPermissionDenied: '.DashboardLayoutPermissionDenied';
-// [END] Layouts/Private
-
-// [BEGIN] Layouts/Public
 $LandingLayoutDefault: '.LandingLayoutDefault';
 $LandingLayoutError: '.LandingLayoutError';
 $LandingLayout: '.LandingLayout';
 $LandingLayoutNotFound: '.LandingLayoutNotFound';
 $LandingLayoutPermissionDenied: '.LandingLayoutPermissionDenied';
-// [END] Layouts/Private
+// [END] Layouts
 
-// [BEGIN] Pages/Common
+// [BEGIN] Pages
 $AppError: '.AppError';
 $AppNotFound: '.AppNotFound';
 $AppPermissionDenied: '.AppPermissionDenied';
-// [END] Pages/Common
-
-// [BEGIN] Pages/Private
 $Products: '.Products';
 $Users: '.Users';
-// [END] Pages/Private
-
-// [BEGIN] Pages/Public
 $SignIn: '.SignIn';
 $SignUp: '.SignUp';
-// [END] Pages/Public
+// [END] Pages
 
 // [BEGIN] Components
 $Button: '.Button';

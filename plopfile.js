@@ -59,25 +59,29 @@ const plopConfig = (plop) => {
           type: 'modify',
           path: STYLE_MAIN_CLASSES_PATH,
           pattern: /(\/\/ \[END\] Components)/g,
-          template: "${{pascalCase componentName}}: '.{{pascalCase componentName}}';" + BREAK_LINE + "$1"
+          template: "${{pascalCase componentName}}: '.{{pascalCase componentName}}';" + BREAK_LINE + '$1'
         },
         {
           type: 'modify',
           path: indexFileInComponentTypeDirPath,
           pattern: new RegExp(BREAK_LINE + BREAK_LINE, 'g'),
-          template: BREAK_LINE + "import {{pascalCase componentName}}, { T{{pascalCase componentName}}Props } from './{{pascalCase componentName}}';$1"
+          template:
+            BREAK_LINE +
+            "import {{pascalCase componentName}}, { T{{pascalCase componentName}}Props } from './{{pascalCase componentName}}';" +
+            BREAK_LINE +
+            BREAK_LINE
         },
         {
           type: 'modify',
           path: indexFileInComponentTypeDirPath,
-          pattern: / };([\S\s])/g,
-          template: ', {{pascalCase componentName}} };'
+          pattern: new RegExp('export ([\\S\\s]*) };' + BREAK_LINE + 'export type', 'g'),
+          template: 'export $1, {{pascalCase componentName}} };' + BREAK_LINE + 'export type'
         },
         {
           type: 'modify',
           path: indexFileInComponentTypeDirPath,
-          pattern: /s };([\S\s])/g,
-          template: 's, T{{pascalCase componentName}}Props };$1'
+          pattern: /export type ([\S\s]*) };/g,
+          template: 'export type $1, T{{pascalCase componentName}}Props };'
         },
         {
           type: 'add',
@@ -182,38 +186,122 @@ const plopConfig = (plop) => {
         type: 'input',
         name: 'layoutName',
         message: 'Layout name?'
+      },
+      {
+        type: 'input',
+        name: 'layoutBasePath',
+        message: 'Layout base path?'
       }
     ],
     actions: (data) => {
-      const { layoutType, layoutName } = data;
+      const { layoutType, layoutName, layoutBasePath } = data;
       data.layoutName = `${layoutName}Layout`;
-      const layoutDirPath = `${LAYOUTS_PATH}/${layoutType}/{{pascalCase layoutName}}`;
-      const layoutPaths = {
-        default: `${layoutDirPath}/default`,
-        error: `${layoutDirPath}/error`,
-        main: `${layoutDirPath}/main`,
-        notFound: `${layoutDirPath}/not-found`,
-        permissionDenied: `${layoutDirPath}/permission-denied`
+      const layoutDirPath = plop.renderString(`${LAYOUTS_PATH}/${layoutType}/{{pascalCase layoutName}}`, { layoutName: data.layoutName });
+      const layoutParts = {
+        default: {
+          path: `${layoutDirPath}/default`,
+          componentName: `${data.layoutName}Default`,
+          templateInMainClassesFile: plop.renderString("${{pascalCase componentName}}: '.{{pascalCase componentName}}';", {
+            componentName: `${data.layoutName}Default`
+          })
+        },
+        error: {
+          path: `${layoutDirPath}/error`,
+          componentName: `${data.layoutName}Error`,
+          templateInMainClassesFile: plop.renderString("${{pascalCase componentName}}: '.{{pascalCase componentName}}';", {
+            componentName: `${data.layoutName}Error`
+          })
+        },
+        main: {
+          path: `${layoutDirPath}/main`,
+          componentName: data.layoutName,
+          templateInMainClassesFile: plop.renderString("${{pascalCase componentName}}: '.{{pascalCase componentName}}';", {
+            componentName: data.layoutName
+          })
+        },
+        notFound: {
+          path: `${layoutDirPath}/not-found`,
+          componentName: `${data.layoutName}NotFound`,
+          templateInMainClassesFile: plop.renderString("${{pascalCase componentName}}: '.{{pascalCase componentName}}';", {
+            componentName: `${data.layoutName}NotFound`
+          })
+        },
+        permissionDenied: {
+          path: `${layoutDirPath}/permission-denied`,
+          componentName: `${data.layoutName}PermissionDenied`,
+          templateInMainClassesFile: plop.renderString("${{pascalCase componentName}}: '.{{pascalCase componentName}}';", {
+            componentName: `${data.layoutName}PermissionDenied`
+          })
+        }
       };
-      // console.log(layoutPaths.default);
-      console.log(plop.renderString('{{pascalCase layoutName}}Default', { layoutName }));
+
       return [
         {
           type: 'addMany',
-          destination: layoutPaths.default,
+          destination: layoutParts.default.path,
           base: TEMPLATE_COMPONENT_PATH,
           templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
-          verbose: () => {
-            console.log(plop.renderString('{{pascalCase layoutName}}Default', { layoutName }));
-            data.componentName = plop.renderString('{{pascalCase layoutName}}Default', { layoutName });
-          }
-        }
-        // {
-        //   type: 'addMany',
-        //   destination: layoutPaths.error,
-        //   base: TEMPLATE_COMPONENT_PATH,
-        //   templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`
-        // }
+          data: { componentName: layoutParts.default.componentName }
+        },
+        {
+          type: 'addMany',
+          destination: layoutParts.error.path,
+          base: TEMPLATE_COMPONENT_PATH,
+          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+          data: { componentName: layoutParts.error.componentName }
+        },
+        {
+          type: 'addMany',
+          destination: layoutParts.main.path,
+          base: TEMPLATE_COMPONENT_PATH,
+          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+          data: { componentName: layoutParts.main.componentName }
+        },
+        {
+          type: 'addMany',
+          destination: layoutParts.notFound.path,
+          base: TEMPLATE_COMPONENT_PATH,
+          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+          data: { componentName: layoutParts.notFound.componentName }
+        },
+        {
+          type: 'addMany',
+          destination: layoutParts.permissionDenied.path,
+          base: TEMPLATE_COMPONENT_PATH,
+          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+          data: { componentName: layoutParts.permissionDenied.componentName }
+        },
+        {
+          type: 'add',
+          path: `${layoutDirPath}/index.ts`,
+          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout-index.hbs`,
+          data: { componentName: data.layoutName }
+        },
+        {
+          type: 'modify',
+          path: `${LAYOUTS_PATH}/${layoutType}/index.ts`,
+          pattern: new RegExp('(' + BREAK_LINE + ')', 'g'),
+          template: `${BREAK_LINE}export * from './{{pascalCase componentName}}';$1`,
+          data: { componentName: data.layoutName }
+        },
+        {
+          type: 'modify',
+          path: STYLE_MAIN_CLASSES_PATH,
+          pattern: /(\/\/ \[END\] Layouts)/g,
+          template:
+            layoutParts.default.templateInMainClassesFile +
+            BREAK_LINE +
+            layoutParts.error.templateInMainClassesFile +
+            BREAK_LINE +
+            layoutParts.main.templateInMainClassesFile +
+            BREAK_LINE +
+            layoutParts.notFound.templateInMainClassesFile +
+            BREAK_LINE +
+            layoutParts.permissionDenied.templateInMainClassesFile +
+            BREAK_LINE +
+            '$1'
+        },
+        // TODO: Add layout to router config
       ];
     }
   });

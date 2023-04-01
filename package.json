@@ -28,7 +28,8 @@
     "prepare": "husky install",
     "create-component": "yarn plop create-component",
     "remove-component": "yarn plop remove-component",
-    "create-layout": "yarn plop create-layout"
+    "create-layout": "yarn plop create-layout",
+    "remove-layout": "yarn plop remove-layout"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",
