@@ -9,6 +9,7 @@ const BASE_PATH = { SRC: './src', STORYBOOK: './stories', PLOP_TEMPLATE: './plop
 const TEMPLATE_COMPONENT_PATH = `${BASE_PATH.PLOP_TEMPLATE}/component`;
 const STYLE_MAIN_CLASSES_PATH = `${BASE_PATH.SRC}/styles/main-classes.scss`;
 const LAYOUTS_PATH = `${BASE_PATH.SRC}/layouts`;
+const BREAK_LINE = process.platform.startsWith('win') ? '\r\n' : '\n';
 
 const plopConfig = (plop) => {
   plop.setHelper('sufCurly', (t) => `${t}}`);
@@ -48,42 +49,41 @@ const plopConfig = (plop) => {
       const indexFileInComponentTypeDirPath = `${BASE_PATH.SRC}/${componentType}/index.ts`;
 
       return [
-        {
-          type: 'addMany',
-          destination: componentDirPath,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`
-        },
+        // {
+        //   type: 'addMany',
+        //   destination: componentDirPath,
+        //   base: TEMPLATE_COMPONENT_PATH,
+        //   templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`
+        // },
         {
           type: 'modify',
           path: STYLE_MAIN_CLASSES_PATH,
           pattern: /(\/\/ \[END\] Components)/g,
-          template: "${{pascalCase componentName}}: '.{{pascalCase componentName}}';\r\n$1"
+          template: "${{pascalCase componentName}}: '.{{pascalCase componentName}}';" + BREAK_LINE + "$1"
         },
-        {
-          type: 'modify',
-          path: indexFileInComponentTypeDirPath,
-          pattern: /(\r\n\r\n)/,
-          template:
-            "\r\nimport {{pascalCase componentName}}, { T{{pascalCase componentName}}Props } from './{{pascalCase componentName}}';$1"
-        },
-        {
-          type: 'modify',
-          path: indexFileInComponentTypeDirPath,
-          pattern: / };([\S\s])/,
-          template: ', {{pascalCase componentName}} };'
-        },
-        {
-          type: 'modify',
-          path: indexFileInComponentTypeDirPath,
-          pattern: /s };([\S\s])/,
-          template: 's, T{{pascalCase componentName}}Props };$1'
-        },
-        {
-          type: 'add',
-          path: storyFilePath,
-          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/storybook.hbs`
-        }
+        // {
+        //   type: 'modify',
+        //   path: indexFileInComponentTypeDirPath,
+        //   pattern: new RegExp(BREAK_LINE + BREAK_LINE, 'g'),
+        //   template: BREAK_LINE + "import {{pascalCase componentName}}, { T{{pascalCase componentName}}Props } from './{{pascalCase componentName}}';$1"
+        // },
+        // {
+        //   type: 'modify',
+        //   path: indexFileInComponentTypeDirPath,
+        //   pattern: / };([\S\s])/g,
+        //   template: ', {{pascalCase componentName}} };'
+        // },
+        // {
+        //   type: 'modify',
+        //   path: indexFileInComponentTypeDirPath,
+        //   pattern: /s };([\S\s])/g,
+        //   template: 's, T{{pascalCase componentName}}Props };$1'
+        // },
+        // {
+        //   type: 'add',
+        //   path: storyFilePath,
+        //   templateFile: `${BASE_PATH.PLOP_TEMPLATE}/storybook.hbs`
+        // }
       ];
     }
   });
@@ -113,58 +113,58 @@ const plopConfig = (plop) => {
       const indexFileImportLineTemplate = `import ${correctComponentName}, { T${correctComponentName}Props } from './${correctComponentName}';`;
 
       return [
-        {
-          type: 'removeMany',
-          paths: [componentDirPath, storyFilePath]
-        },
+        // {
+        //   type: 'removeMany',
+        //   paths: [componentDirPath, storyFilePath]
+        // },
         {
           type: 'modify',
           path: STYLE_MAIN_CLASSES_PATH,
-          pattern: new RegExp(`\r\n\\${templateRenderedStyle}`, 'g'),
+          pattern: new RegExp(BREAK_LINE + `\\${templateRenderedStyle}`, 'g'),
           template: ''
         },
-        {
-          type: 'modify',
-          path: indexFileInComponentTypeDirPath,
-          pattern: new RegExp(`(\r\n${indexFileImportLineTemplate})`, 'g'),
-          template: ''
-        },
-        {
-          type: 'modify',
-          path: indexFileInComponentTypeDirPath,
-          pattern: new RegExp(`\\, ${correctComponentName} };`, 'g'),
-          template: ' };'
-        },
-        {
-          type: 'modify',
-          path: indexFileInComponentTypeDirPath,
-          pattern: new RegExp(`, ${correctComponentName}\\,`, 'g'),
-          template: ','
-        },
-        {
-          type: 'modify',
-          path: indexFileInComponentTypeDirPath,
-          pattern: new RegExp(`{ ${correctComponentName}\\,`, 'g'),
-          template: '{'
-        },
-        {
-          type: 'modify',
-          path: indexFileInComponentTypeDirPath,
-          pattern: new RegExp(`\\, T${correctComponentName}Props };`, 'g'),
-          template: ' };'
-        },
-        {
-          type: 'modify',
-          path: indexFileInComponentTypeDirPath,
-          pattern: new RegExp(`, T${correctComponentName}Props\\,`, 'g'),
-          template: ','
-        },
-        {
-          type: 'modify',
-          path: indexFileInComponentTypeDirPath,
-          pattern: new RegExp(`{ T${correctComponentName}Props\\,`, 'g'),
-          template: '{'
-        }
+        // {
+        //   type: 'modify',
+        //   path: indexFileInComponentTypeDirPath,
+        //   pattern: new RegExp(`(${BREAK_LINE}${indexFileImportLineTemplate})`, 'g'),
+        //   template: ''
+        // },
+        // {
+        //   type: 'modify',
+        //   path: indexFileInComponentTypeDirPath,
+        //   pattern: new RegExp(`\\, ${correctComponentName} };`, 'g'),
+        //   template: ' };'
+        // },
+        // {
+        //   type: 'modify',
+        //   path: indexFileInComponentTypeDirPath,
+        //   pattern: new RegExp(`, ${correctComponentName}\\,`, 'g'),
+        //   template: ','
+        // },
+        // {
+        //   type: 'modify',
+        //   path: indexFileInComponentTypeDirPath,
+        //   pattern: new RegExp(`{ ${correctComponentName}\\,`, 'g'),
+        //   template: '{'
+        // },
+        // {
+        //   type: 'modify',
+        //   path: indexFileInComponentTypeDirPath,
+        //   pattern: new RegExp(`\\, T${correctComponentName}Props };`, 'g'),
+        //   template: ' };'
+        // },
+        // {
+        //   type: 'modify',
+        //   path: indexFileInComponentTypeDirPath,
+        //   pattern: new RegExp(`, T${correctComponentName}Props\\,`, 'g'),
+        //   template: ','
+        // },
+        // {
+        //   type: 'modify',
+        //   path: indexFileInComponentTypeDirPath,
+        //   pattern: new RegExp(`{ T${correctComponentName}Props\\,`, 'g'),
+        //   template: '{'
+        // }
       ];
     }
   });
