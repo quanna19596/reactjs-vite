@@ -9,19 +9,8 @@ import {
   LandingLayoutError,
   LandingLayoutNotFound
 } from '@/layouts';
-import {
-  TRouteConfig,
-  ELayoutPath,
-  EPagePath,
-  ESpecialPath,
-  AppError,
-  AppNotFound,
-  AppPermissionDenied,
-  Products,
-  SignIn,
-  SignUp,
-  Users
-} from '@/router';
+import { TRouteConfig, AppError, AppNotFound, AppPermissionDenied, Products, SignIn, SignUp, Users } from '@/router';
+import { ELayoutPath, EPagePath, ESpecialPath } from './enums';
 
 export const routerConfig: TRouteConfig = {
   common: {

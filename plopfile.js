@@ -1,4 +1,5 @@
 import rimraf from 'rimraf';
+import fs from 'fs';
 
 const COMPONENT_TYPE = { COMPONENTS: 'components', CONTAINERS: 'containers' };
 const LAYOUT_TYPE = { PUBLIC: 'public', PRIVATE: 'private' };
@@ -9,6 +10,8 @@ const BASE_PATH = { SRC: './src', STORYBOOK: './stories', PLOP_TEMPLATE: './plop
 const TEMPLATE_COMPONENT_PATH = `${BASE_PATH.PLOP_TEMPLATE}/component`;
 const STYLE_MAIN_CLASSES_PATH = `${BASE_PATH.SRC}/styles/main-classes.scss`;
 const LAYOUTS_PATH = `${BASE_PATH.SRC}/layouts`;
+const ROUTER_PATH = `${BASE_PATH.SRC}/router`;
+
 const BREAK_LINE = process.platform.startsWith('win') ? '\r\n' : '\n';
 
 const plopConfig = (plop) => {
@@ -64,24 +67,22 @@ const plopConfig = (plop) => {
         {
           type: 'modify',
           path: indexFileInComponentTypeDirPath,
-          pattern: new RegExp(BREAK_LINE + BREAK_LINE, 'g'),
+          pattern: new RegExp('(' + BREAK_LINE + BREAK_LINE + ')', 'g'),
           template:
             BREAK_LINE +
-            "import {{pascalCase componentName}}, { T{{pascalCase componentName}}Props } from './{{pascalCase componentName}}';" +
-            BREAK_LINE +
-            BREAK_LINE
+            "import {{pascalCase componentName}}, { T{{pascalCase componentName}}Props } from './{{pascalCase componentName}}';$1"
         },
         {
           type: 'modify',
           path: indexFileInComponentTypeDirPath,
-          pattern: new RegExp('export ([\\S\\s]*) };' + BREAK_LINE + 'export type', 'g'),
-          template: 'export $1, {{pascalCase componentName}} };' + BREAK_LINE + 'export type'
+          pattern: new RegExp('(export )([\\S\\s]*)( };' + BREAK_LINE + 'export type)', 'g'),
+          template: '$1$2, {{pascalCase componentName}}$3'
         },
         {
           type: 'modify',
           path: indexFileInComponentTypeDirPath,
-          pattern: /export type ([\S\s]*) };/g,
-          template: 'export type $1, T{{pascalCase componentName}}Props };'
+          pattern: /(export type )([\S\s]*)( };)/g,
+          template: '$1$2, T{{pascalCase componentName}}Props$3'
         },
         {
           type: 'add',
@@ -184,18 +185,34 @@ const plopConfig = (plop) => {
       },
       {
         type: 'input',
-        name: 'layoutName',
+        name: 'rawLayoutName',
         message: 'Layout name?'
       },
       {
         type: 'input',
-        name: 'layoutBasePath',
-        message: 'Layout base path?'
+        name: 'rawLayoutBasePath',
+        message: 'Layout base path?',
+        when: ({ rawLayoutName }) => !!rawLayoutName
       }
     ],
     actions: (data) => {
-      const { layoutType, layoutName, layoutBasePath } = data;
-      data.layoutName = `${layoutName}Layout`;
+      const { layoutType, rawLayoutName, rawLayoutBasePath } = data;
+
+      if (!rawLayoutName) throw new Error('Layout name should not empty!');
+
+      data.layoutBasePath = rawLayoutBasePath.replace('/', '');
+
+      const alreadyExistPaths = JSON.stringify(fs.readFileSync('./src/router/enums.ts', 'utf8').toString())
+        .split('export enum EPagePath')[0]
+        .match(/'(.*?)'/g)
+        .map((w) => w.replace(/'(.*?)'/g, '$1'));
+
+      const layoutBasePathIsAlreadyExist = alreadyExistPaths.includes(data.layoutBasePath);
+
+      if (!rawLayoutBasePath) throw new Error('Layout base path should not empty!');
+      if (layoutBasePathIsAlreadyExist) throw new Error('Layout base path is already exist!');
+
+      data.layoutName = `${rawLayoutName}Layout`;
       const layoutDirPath = plop.renderString(`${LAYOUTS_PATH}/${layoutType}/{{pascalCase layoutName}}`, { layoutName: data.layoutName });
       const layoutParts = {
         default: {
@@ -236,72 +253,87 @@ const plopConfig = (plop) => {
       };
 
       return [
-        {
-          type: 'addMany',
-          destination: layoutParts.default.path,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
-          data: { componentName: layoutParts.default.componentName }
-        },
-        {
-          type: 'addMany',
-          destination: layoutParts.error.path,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
-          data: { componentName: layoutParts.error.componentName }
-        },
-        {
-          type: 'addMany',
-          destination: layoutParts.main.path,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
-          data: { componentName: layoutParts.main.componentName }
-        },
-        {
-          type: 'addMany',
-          destination: layoutParts.notFound.path,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
-          data: { componentName: layoutParts.notFound.componentName }
-        },
-        {
-          type: 'addMany',
-          destination: layoutParts.permissionDenied.path,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
-          data: { componentName: layoutParts.permissionDenied.componentName }
-        },
-        {
-          type: 'add',
-          path: `${layoutDirPath}/index.ts`,
-          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout-index.hbs`,
-          data: { componentName: data.layoutName }
-        },
+        // {
+        //   type: 'addMany',
+        //   destination: layoutParts.default.path,
+        //   base: TEMPLATE_COMPONENT_PATH,
+        //   templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+        //   data: { componentName: layoutParts.default.componentName }
+        // },
+        // {
+        //   type: 'addMany',
+        //   destination: layoutParts.error.path,
+        //   base: TEMPLATE_COMPONENT_PATH,
+        //   templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+        //   data: { componentName: layoutParts.error.componentName }
+        // },
+        // {
+        //   type: 'addMany',
+        //   destination: layoutParts.main.path,
+        //   base: TEMPLATE_COMPONENT_PATH,
+        //   templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+        //   data: { componentName: layoutParts.main.componentName }
+        // },
+        // {
+        //   type: 'addMany',
+        //   destination: layoutParts.notFound.path,
+        //   base: TEMPLATE_COMPONENT_PATH,
+        //   templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+        //   data: { componentName: layoutParts.notFound.componentName }
+        // },
+        // {
+        //   type: 'addMany',
+        //   destination: layoutParts.permissionDenied.path,
+        //   base: TEMPLATE_COMPONENT_PATH,
+        //   templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+        //   data: { componentName: layoutParts.permissionDenied.componentName }
+        // },
+        // {
+        //   type: 'add',
+        //   path: `${layoutDirPath}/index.ts`,
+        //   templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/index.hbs`,
+        //   data: { componentName: data.layoutName }
+        // },
+        // {
+        //   type: 'modify',
+        //   path: `${LAYOUTS_PATH}/${layoutType}/index.ts`,
+        //   pattern: new RegExp('(' + BREAK_LINE + ')', 'g'),
+        //   template: `${BREAK_LINE}export * from './{{pascalCase componentName}}';$1`,
+        //   data: { componentName: data.layoutName }
+        // },
+        // {
+        //   type: 'modify',
+        //   path: STYLE_MAIN_CLASSES_PATH,
+        //   pattern: /(\/\/ \[END\] Layouts)/g,
+        //   template:
+        //     layoutParts.default.templateInMainClassesFile +
+        //     BREAK_LINE +
+        //     layoutParts.error.templateInMainClassesFile +
+        //     BREAK_LINE +
+        //     layoutParts.main.templateInMainClassesFile +
+        //     BREAK_LINE +
+        //     layoutParts.notFound.templateInMainClassesFile +
+        //     BREAK_LINE +
+        //     layoutParts.permissionDenied.templateInMainClassesFile +
+        //     BREAK_LINE +
+        //     '$1'
+        // },
+        // {
+        //   type: 'modify',
+        //   path: `${ROUTER_PATH}/enums.ts`,
+        //   pattern: new RegExp(
+        //     '(export enum ELayoutPath )([\\S\\s]*)(' + BREAK_LINE + '}' + BREAK_LINE + BREAK_LINE + 'export enum EPagePath)',
+        //     'g'
+        //   ),
+        //   template: '$1$2,' + BREAK_LINE + "  {{constantCase rawLayoutName}} = '{{lowerCase layoutBasePath}}'" + '$3'
+        // },
         {
           type: 'modify',
-          path: `${LAYOUTS_PATH}/${layoutType}/index.ts`,
-          pattern: new RegExp('(' + BREAK_LINE + ')', 'g'),
-          template: `${BREAK_LINE}export * from './{{pascalCase componentName}}';$1`,
-          data: { componentName: data.layoutName }
-        },
-        {
-          type: 'modify',
-          path: STYLE_MAIN_CLASSES_PATH,
-          pattern: /(\/\/ \[END\] Layouts)/g,
-          template:
-            layoutParts.default.templateInMainClassesFile +
-            BREAK_LINE +
-            layoutParts.error.templateInMainClassesFile +
-            BREAK_LINE +
-            layoutParts.main.templateInMainClassesFile +
-            BREAK_LINE +
-            layoutParts.notFound.templateInMainClassesFile +
-            BREAK_LINE +
-            layoutParts.permissionDenied.templateInMainClassesFile +
-            BREAK_LINE +
-            '$1'
-        },
-        // TODO: Add layout to router config
+          path: `${ROUTER_PATH}/config.ts`,
+          pattern: '',
+          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/router-config.hbs`,
+          data: { rawLayoutName, layoutName: data.layoutName, isPrivate: layoutType === LAYOUT_TYPE.PRIVATE }
+        }
       ];
     }
   });
