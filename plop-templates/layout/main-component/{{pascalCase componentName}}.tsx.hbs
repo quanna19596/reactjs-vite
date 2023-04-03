@@ -1,0 +1,15 @@
+import { Outlet } from 'react-router-dom';
+
+import { T{{pascalCase componentName}}Props } from './{{pascalCase componentName}}.types';
+import './{{pascalCase componentName}}.scss';
+
+const {{pascalCase componentName}}: React.FC<T{{pascalCase componentName}}Props> = () => {
+  return (
+    <div className='{{pascalCase componentName}}'>
+      {{pascalCase componentName}}
+      <Outlet />
+    </div>
+  );
+};
+
+export default {{pascalCase componentName}};
