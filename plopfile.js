@@ -14,7 +14,8 @@ const PLOP_ACTION_TYPE = {
 const PLOP_COMMAND = {
   CREATE_COMPONENT: 'create-component',
   REMOVE_COMPONENT: 'remove-component',
-  CREATE_LAYOUT: 'create-layout'
+  CREATE_LAYOUT: 'create-layout',
+  REMOVE_LAYOUT: 'remove-layout'
 };
 
 const PLOP_HELPER_TYPE = {
@@ -41,6 +42,10 @@ const ROUTER_PATH = `${BASE_PATH.SRC}/router`;
 const BREAK_LINE = process.platform.startsWith('win') ? '\r\n' : '\n';
 
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
+const readFileAsJSON = (path) => JSON.stringify(fs.readFileSync(path, 'utf8').toString());
+
+const getAllDirsInDirectory = (path) => fs.readdirSync(path).filter((dir) => !dir.includes('.'));
 
 const plopConfig = (plop) => {
   plop.setHelper(PLOP_HELPER_TYPE.SUFFIX_CURLY, (t) => `${t}}`);
@@ -136,19 +141,23 @@ const plopConfig = (plop) => {
         message: 'Component type?'
       },
       {
-        type: PLOP_PROMPT_TYPE.INPUT,
+        type: PLOP_PROMPT_TYPE.LIST,
         name: 'componentName',
+        choices: ({ componentType }) => {
+          const componentTypePath = `${BASE_PATH.SRC}/${componentType}`;
+          const components = getAllDirsInDirectory(componentTypePath).filter((dir) => !dir.includes('.'));
+          return components;
+        },
         message: 'Component name?'
       }
     ],
     actions: ({ componentType, componentName }) => {
-      const componentDirPath = `${BASE_PATH.SRC}/${componentType}/{{pascalCase componentName}}`;
-      const storyFilePath = `${BASE_PATH.STORYBOOK}/${componentType}/{{pascalCase componentName}}.stories.tsx`;
+      const componentDirPath = `${BASE_PATH.SRC}/${componentType}/${componentName}`;
+      const storyFilePath = `${BASE_PATH.STORYBOOK}/${componentType}/${componentName}.stories.tsx`;
       const indexFileInComponentTypeDirPath = `${BASE_PATH.SRC}/${componentType}/index.ts`;
 
-      const correctComponentName = plop.renderString('{{pascalCase componentName}}', { componentName });
-      const templateRenderedStyle = `$${correctComponentName}: '.${correctComponentName}';`;
-      const indexFileImportLineTemplate = `import ${correctComponentName}, { T${correctComponentName}Props } from './${correctComponentName}';`;
+      const templateRenderedStyle = `$${componentName}: '.${componentName}';`;
+      const indexFileImportLineTemplate = `import ${componentName}, { T${componentName}Props } from './${componentName}';`;
 
       return [
         {
@@ -170,37 +179,37 @@ const plopConfig = (plop) => {
         {
           type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
-          pattern: new RegExp(`\\, ${correctComponentName} };`, 'g'),
+          pattern: new RegExp(`\\, ${componentName} };`, 'g'),
           template: ' };'
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
-          pattern: new RegExp(`, ${correctComponentName}\\,`, 'g'),
+          pattern: new RegExp(`, ${componentName}\\,`, 'g'),
           template: ','
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
-          pattern: new RegExp(`{ ${correctComponentName}\\,`, 'g'),
+          pattern: new RegExp(`{ ${componentName}\\,`, 'g'),
           template: '{'
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
-          pattern: new RegExp(`\\, T${correctComponentName}Props };`, 'g'),
+          pattern: new RegExp(`\\, T${componentName}Props };`, 'g'),
           template: ' };'
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
-          pattern: new RegExp(`, T${correctComponentName}Props\\,`, 'g'),
+          pattern: new RegExp(`, T${componentName}Props\\,`, 'g'),
           template: ','
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
-          pattern: new RegExp(`{ T${correctComponentName}Props\\,`, 'g'),
+          pattern: new RegExp(`{ T${componentName}Props\\,`, 'g'),
           template: '{'
         },
         { type: PLOP_ACTION_TYPE.PRETTIER }
@@ -236,7 +245,7 @@ const plopConfig = (plop) => {
 
       data.layoutBasePath = rawLayoutBasePath.replace('/', '');
 
-      const alreadyExistPaths = JSON.stringify(fs.readFileSync('./src/router/enums.ts', 'utf8').toString())
+      const alreadyExistPaths = readFileAsJSON('./src/router/enums.ts')
         .split('export enum EPagePath')[0]
         .match(/'(.*?)'/g)
         .map((w) => w.replace(/'(.*?)'/g, '$1'));
@@ -287,107 +296,107 @@ const plopConfig = (plop) => {
       };
 
       return [
-        {
-          type: PLOP_ACTION_TYPE.ADD_MANY,
-          destination: layoutParts.default.path,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
-          data: { componentName: layoutParts.default.componentName }
-        },
-        {
-          type: PLOP_ACTION_TYPE.ADD_MANY,
-          destination: layoutParts.error.path,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
-          data: { componentName: layoutParts.error.componentName }
-        },
-        {
-          type: PLOP_ACTION_TYPE.ADD_MANY,
-          destination: layoutParts.main.path,
-          base: TEMPLATE_LAYOUT_MAIN_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_LAYOUT_MAIN_COMPONENT_PATH}/*`,
-          data: { componentName: layoutParts.main.componentName }
-        },
-        {
-          type: PLOP_ACTION_TYPE.ADD_MANY,
-          destination: layoutParts.notFound.path,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
-          data: { componentName: layoutParts.notFound.componentName }
-        },
-        {
-          type: PLOP_ACTION_TYPE.ADD_MANY,
-          destination: layoutParts.permissionDenied.path,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
-          data: { componentName: layoutParts.permissionDenied.componentName },
-          skip: () => {
-            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
-          }
-        },
-        {
-          type: PLOP_ACTION_TYPE.ADD,
-          path: `${layoutDirPath}/index.ts`,
-          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/index.hbs`,
-          data: { componentName: data.layoutName },
-          skip: () => {
-            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
-          }
-        },
-        {
-          type: PLOP_ACTION_TYPE.ADD,
-          path: `${layoutDirPath}/index.ts`,
-          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/index.hbs`,
-          data: { componentName: data.layoutName },
-          skip: () => {
-            if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
-          }
-        },
-        {
-          type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${LAYOUTS_PATH}/${layoutType}/index.ts`,
-          pattern: new RegExp('(' + BREAK_LINE + ')', 'g'),
-          template: `${BREAK_LINE}export * from './{{pascalCase componentName}}';$1`,
-          data: { componentName: data.layoutName }
-        },
-        {
-          type: PLOP_ACTION_TYPE.MODIFY,
-          path: STYLE_MAIN_CLASSES_PATH,
-          pattern: /(\/\/ \[END\] Layouts)/g,
-          template:
-            layoutParts.default.templateInMainClassesFile +
-            BREAK_LINE +
-            layoutParts.error.templateInMainClassesFile +
-            BREAK_LINE +
-            layoutParts.main.templateInMainClassesFile +
-            BREAK_LINE +
-            layoutParts.notFound.templateInMainClassesFile +
-            BREAK_LINE +
-            layoutParts.permissionDenied.templateInMainClassesFile +
-            BREAK_LINE +
-            '$1',
-          skip: () => {
-            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
-          }
-        },
-        {
-          type: PLOP_ACTION_TYPE.MODIFY,
-          path: STYLE_MAIN_CLASSES_PATH,
-          pattern: /(\/\/ \[END\] Layouts)/g,
-          template:
-            layoutParts.default.templateInMainClassesFile +
-            BREAK_LINE +
-            layoutParts.error.templateInMainClassesFile +
-            BREAK_LINE +
-            layoutParts.main.templateInMainClassesFile +
-            BREAK_LINE +
-            layoutParts.notFound.templateInMainClassesFile +
-            BREAK_LINE +
-            '$1',
-          skip: () => {
-            if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
-          }
-        },
+        // {
+        //   type: PLOP_ACTION_TYPE.ADD_MANY,
+        //   destination: layoutParts.default.path,
+        //   base: TEMPLATE_COMPONENT_PATH,
+        //   templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+        //   data: { componentName: layoutParts.default.componentName }
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.ADD_MANY,
+        //   destination: layoutParts.error.path,
+        //   base: TEMPLATE_COMPONENT_PATH,
+        //   templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+        //   data: { componentName: layoutParts.error.componentName }
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.ADD_MANY,
+        //   destination: layoutParts.main.path,
+        //   base: TEMPLATE_LAYOUT_MAIN_COMPONENT_PATH,
+        //   templateFiles: `${TEMPLATE_LAYOUT_MAIN_COMPONENT_PATH}/*`,
+        //   data: { componentName: layoutParts.main.componentName }
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.ADD_MANY,
+        //   destination: layoutParts.notFound.path,
+        //   base: TEMPLATE_COMPONENT_PATH,
+        //   templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+        //   data: { componentName: layoutParts.notFound.componentName }
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.ADD_MANY,
+        //   destination: layoutParts.permissionDenied.path,
+        //   base: TEMPLATE_COMPONENT_PATH,
+        //   templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+        //   data: { componentName: layoutParts.permissionDenied.componentName },
+        //   skip: () => {
+        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+        //   }
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.ADD,
+        //   path: `${layoutDirPath}/index.ts`,
+        //   templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/index.hbs`,
+        //   data: { componentName: data.layoutName },
+        //   skip: () => {
+        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+        //   }
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.ADD,
+        //   path: `${layoutDirPath}/index.ts`,
+        //   templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/index.hbs`,
+        //   data: { componentName: data.layoutName },
+        //   skip: () => {
+        //     if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+        //   }
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.MODIFY,
+        //   path: `${LAYOUTS_PATH}/${layoutType}/index.ts`,
+        //   pattern: new RegExp('(' + BREAK_LINE + ')', 'g'),
+        //   template: `${BREAK_LINE}export * from './{{pascalCase componentName}}';$1`,
+        //   data: { componentName: data.layoutName }
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.MODIFY,
+        //   path: STYLE_MAIN_CLASSES_PATH,
+        //   pattern: /(\/\/ \[END\] Layouts)/g,
+        //   template:
+        //     layoutParts.default.templateInMainClassesFile +
+        //     BREAK_LINE +
+        //     layoutParts.error.templateInMainClassesFile +
+        //     BREAK_LINE +
+        //     layoutParts.main.templateInMainClassesFile +
+        //     BREAK_LINE +
+        //     layoutParts.notFound.templateInMainClassesFile +
+        //     BREAK_LINE +
+        //     layoutParts.permissionDenied.templateInMainClassesFile +
+        //     BREAK_LINE +
+        //     '$1',
+        //   skip: () => {
+        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+        //   }
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.MODIFY,
+        //   path: STYLE_MAIN_CLASSES_PATH,
+        //   pattern: /(\/\/ \[END\] Layouts)/g,
+        //   template:
+        //     layoutParts.default.templateInMainClassesFile +
+        //     BREAK_LINE +
+        //     layoutParts.error.templateInMainClassesFile +
+        //     BREAK_LINE +
+        //     layoutParts.main.templateInMainClassesFile +
+        //     BREAK_LINE +
+        //     layoutParts.notFound.templateInMainClassesFile +
+        //     BREAK_LINE +
+        //     '$1',
+        //   skip: () => {
+        //     if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+        //   }
+        // },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
           path: `${ROUTER_PATH}/enums.ts`,
@@ -416,47 +425,176 @@ const plopConfig = (plop) => {
             if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
           }
         },
-        {
-          type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/config.ts`,
-          pattern: new RegExp('(import [\\S\\s]*)(' + BREAK_LINE + "} from '@/layouts';)", 'g'),
-          template:
-            `$1,` +
-            BREAK_LINE +
-            `  ${capitalize(layoutParts.main.componentName)},` +
-            BREAK_LINE +
-            `  ${capitalize(layoutParts.default.componentName)},` +
-            BREAK_LINE +
-            `  ${capitalize(layoutParts.error.componentName)},` +
-            BREAK_LINE +
-            `  ${capitalize(layoutParts.notFound.componentName)},` +
-            BREAK_LINE +
-            `  ${capitalize(layoutParts.permissionDenied.componentName)}` +
-            '$2',
-          skip: () => {
-            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
-          }
+        // {
+        //   type: PLOP_ACTION_TYPE.MODIFY,
+        //   path: `${ROUTER_PATH}/config.ts`,
+        //   pattern: new RegExp('(import [\\S\\s]*)(' + BREAK_LINE + "} from '@/layouts';)", 'g'),
+        //   template:
+        //     `$1,` +
+        //     BREAK_LINE +
+        //     `  ${capitalize(layoutParts.main.componentName)},` +
+        //     BREAK_LINE +
+        //     `  ${capitalize(layoutParts.default.componentName)},` +
+        //     BREAK_LINE +
+        //     `  ${capitalize(layoutParts.error.componentName)},` +
+        //     BREAK_LINE +
+        //     `  ${capitalize(layoutParts.notFound.componentName)},` +
+        //     BREAK_LINE +
+        //     `  ${capitalize(layoutParts.permissionDenied.componentName)}` +
+        //     '$2',
+        //   skip: () => {
+        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+        //   }
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.MODIFY,
+        //   path: `${ROUTER_PATH}/config.ts`,
+        //   pattern: new RegExp('(routes[\\S\\s]*)(' + BREAK_LINE + ')(  ])', 'g'),
+        //   templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/router-config.hbs`,
+        //   data: { rawLayoutName, layoutName: data.layoutName },
+        //   skip: () => {
+        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+        //   }
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.MODIFY,
+        //   path: `${ROUTER_PATH}/config.ts`,
+        //   pattern: new RegExp('(routes[\\S\\s]*)(' + BREAK_LINE + ')(  ])', 'g'),
+        //   templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/router-config.hbs`,
+        //   data: { rawLayoutName, layoutName: data.layoutName },
+        //   skip: () => {
+        //     if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+        //   }
+        // },
+        { type: PLOP_ACTION_TYPE.PRETTIER }
+      ];
+    }
+  });
+
+  plop.setGenerator(PLOP_COMMAND.REMOVE_LAYOUT, {
+    description: 'Remove Layout',
+    prompts: [
+      {
+        type: PLOP_PROMPT_TYPE.LIST,
+        name: 'layoutType',
+        choices: Object.values(LAYOUT_TYPE),
+        message: 'Layout type?'
+      },
+      {
+        type: PLOP_PROMPT_TYPE.LIST,
+        name: 'layoutName',
+        choices: ({ layoutType }) => {
+          const layoutTypePath = `${LAYOUTS_PATH}/${layoutType}`;
+          const layouts = getAllDirsInDirectory(layoutTypePath).filter((dir) => !dir.includes('.'));
+          // return layouts;
+          return ['HelloLayout'];
         },
-        {
-          type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/config.ts`,
-          pattern: new RegExp('(routes[\\S\\s]*)(' + BREAK_LINE + ')(  ])', 'g'),
-          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/router-config.hbs`,
-          data: { rawLayoutName, layoutName: data.layoutName },
-          skip: () => {
-            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
-          }
-        },
-        {
-          type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/config.ts`,
-          pattern: new RegExp('(routes[\\S\\s]*)(' + BREAK_LINE + ')(  ])', 'g'),
-          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/router-config.hbs`,
-          data: { rawLayoutName, layoutName: data.layoutName },
-          skip: () => {
-            if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
-          }
-        },
+        message: 'Layout name?'
+      }
+    ],
+    actions: (data) => {
+      const { layoutType, layoutName } = data;
+      const layoutDirPath = `${LAYOUTS_PATH}/${layoutType}/${layoutName}`;
+
+      return [
+        // {
+        //   type: PLOP_ACTION_TYPE.REMOVE,
+        //   path: layoutDirPath
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.MODIFY,
+        //   path: `${LAYOUTS_PATH}/${layoutType}/index.ts`,
+        //   pattern: new RegExp(BREAK_LINE + "export \\* from './" + layoutName + "';", 'g'),
+        //   template: ''
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.MODIFY,
+        //   path: STYLE_MAIN_CLASSES_PATH,
+        //   pattern: new RegExp(BREAK_LINE + '\\$' + layoutName + 'Default[\\S\\s]*' + layoutName + "PermissionDenied';" ,'g'),
+        //   template: '',
+        //   skip: () => {
+        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+        //   }
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.MODIFY,
+        //   path: STYLE_MAIN_CLASSES_PATH,
+        //   pattern: new RegExp(BREAK_LINE + '\\$' + layoutName + 'Default[\\S\\s]*' + layoutName + "NotFound';" ,'g'),
+        //   template: '',
+        //   skip: () => {
+        //     if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+        //   }
+        // },
+        // TODO: ...
+        // {
+        //   type: PLOP_ACTION_TYPE.MODIFY,
+        //   path: `${ROUTER_PATH}/enums.ts`,
+        //   pattern: new RegExp(
+        //     '(export enum ELayoutPath )([\\S\\s]*)(' + BREAK_LINE + '}' + BREAK_LINE + BREAK_LINE + 'export enum EPagePath)',
+        //     'g'
+        //   ),
+        //   template: '$1$2,' + BREAK_LINE + "  {{constantCase rawLayoutName}} = '{{lowerCase layoutBasePath}}'" + '$3'
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.MODIFY,
+        //   path: `${ROUTER_PATH}/config.ts`,
+        //   pattern: new RegExp('(import [\\S\\s]*)(' + BREAK_LINE + "} from '@/layouts';)", 'g'),
+        //   template:
+        //     `$1,` +
+        //     BREAK_LINE +
+        //     `  ${capitalize(layoutParts.main.componentName)},` +
+        //     BREAK_LINE +
+        //     `  ${capitalize(layoutParts.default.componentName)},` +
+        //     BREAK_LINE +
+        //     `  ${capitalize(layoutParts.error.componentName)},` +
+        //     BREAK_LINE +
+        //     `  ${capitalize(layoutParts.notFound.componentName)}` +
+        //     '$2',
+        //   skip: () => {
+        //     if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+        //   }
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.MODIFY,
+        //   path: `${ROUTER_PATH}/config.ts`,
+        //   pattern: new RegExp('(import [\\S\\s]*)(' + BREAK_LINE + "} from '@/layouts';)", 'g'),
+        //   template:
+        //     `$1,` +
+        //     BREAK_LINE +
+        //     `  ${capitalize(layoutParts.main.componentName)},` +
+        //     BREAK_LINE +
+        //     `  ${capitalize(layoutParts.default.componentName)},` +
+        //     BREAK_LINE +
+        //     `  ${capitalize(layoutParts.error.componentName)},` +
+        //     BREAK_LINE +
+        //     `  ${capitalize(layoutParts.notFound.componentName)},` +
+        //     BREAK_LINE +
+        //     `  ${capitalize(layoutParts.permissionDenied.componentName)}` +
+        //     '$2',
+        //   skip: () => {
+        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+        //   }
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.MODIFY,
+        //   path: `${ROUTER_PATH}/config.ts`,
+        //   pattern: new RegExp('(routes[\\S\\s]*)(' + BREAK_LINE + ')(  ])', 'g'),
+        //   templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/router-config.hbs`,
+        //   data: { rawLayoutName, layoutName: data.layoutName },
+        //   skip: () => {
+        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+        //   }
+        // },
+        // {
+        //   type: PLOP_ACTION_TYPE.MODIFY,
+        //   path: `${ROUTER_PATH}/config.ts`,
+        //   pattern: new RegExp('(routes[\\S\\s]*)(' + BREAK_LINE + ')(  ])', 'g'),
+        //   templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/router-config.hbs`,
+        //   data: { rawLayoutName, layoutName: data.layoutName },
+        //   skip: () => {
+        //     if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+        //   }
+        // },
         { type: PLOP_ACTION_TYPE.PRETTIER }
       ];
     }
