@@ -486,8 +486,7 @@ const plopConfig = (plop) => {
         choices: ({ layoutType }) => {
           const layoutTypePath = `${LAYOUTS_PATH}/${layoutType}`;
           const layouts = getAllDirsInDirectory(layoutTypePath).filter((dir) => !dir.includes('.'));
-          // return layouts;
-          return ['HelloLayout'];
+          return layouts;
         },
         message: 'Layout name?'
       }
