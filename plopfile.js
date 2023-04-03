@@ -1,5 +1,30 @@
 import rimraf from 'rimraf';
 import fs from 'fs';
+import { exec } from 'child_process';
+
+const PLOP_ACTION_TYPE = {
+  ADD: 'add',
+  ADD_MANY: 'addMany',
+  MODIFY: 'modify',
+  REMOVE: 'remove',
+  REMOVE_MANY: 'removeMany',
+  PRETTIER: 'prettier'
+};
+
+const PLOP_COMMAND = {
+  CREATE_COMPONENT: 'create-component',
+  REMOVE_COMPONENT: 'remove-component',
+  CREATE_LAYOUT: 'create-layout'
+};
+
+const PLOP_HELPER_TYPE = {
+  SUFFIX_CURLY: 'sufCurly'
+};
+
+const PLOP_PROMPT_TYPE = {
+  INPUT: 'input',
+  LIST: 'list'
+};
 
 const COMPONENT_TYPE = { COMPONENTS: 'components', CONTAINERS: 'containers' };
 const LAYOUT_TYPE = { PUBLIC: 'public', PRIVATE: 'private' };
@@ -18,15 +43,19 @@ const BREAK_LINE = process.platform.startsWith('win') ? '\r\n' : '\n';
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
 const plopConfig = (plop) => {
-  plop.setHelper('sufCurly', (t) => `${t}}`);
+  plop.setHelper(PLOP_HELPER_TYPE.SUFFIX_CURLY, (t) => `${t}}`);
 
-  plop.setActionType('remove', (answers, config, plop) => {
+  plop.setActionType(PLOP_ACTION_TYPE.PRETTIER, () => {
+    exec('yarn format');
+  });
+
+  plop.setActionType(PLOP_ACTION_TYPE.REMOVE, (answers, config, plop) => {
     const { path } = config;
     const correctPath = plop.renderString(path, answers);
     rimraf.sync(correctPath);
   });
 
-  plop.setActionType('removeMany', (answers, config, plop) => {
+  plop.setActionType(PLOP_ACTION_TYPE.REMOVE_MANY, (answers, config, plop) => {
     const { paths } = config;
     paths.forEach((path) => {
       const correctPath = plop.renderString(path, answers);
@@ -34,17 +63,17 @@ const plopConfig = (plop) => {
     });
   });
 
-  plop.setGenerator('create-component', {
+  plop.setGenerator(PLOP_COMMAND.CREATE_COMPONENT, {
     description: 'Create Component',
     prompts: [
       {
-        type: 'list',
+        type: PLOP_PROMPT_TYPE.LIST,
         name: 'componentType',
         choices: Object.values(COMPONENT_TYPE),
         message: 'Component type?'
       },
       {
-        type: 'input',
+        type: PLOP_PROMPT_TYPE.INPUT,
         name: 'componentName',
         message: 'Component name?'
       }
@@ -56,19 +85,19 @@ const plopConfig = (plop) => {
 
       return [
         {
-          type: 'addMany',
+          type: PLOP_ACTION_TYPE.ADD_MANY,
           destination: componentDirPath,
           base: TEMPLATE_COMPONENT_PATH,
           templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: STYLE_MAIN_CLASSES_PATH,
           pattern: /(\/\/ \[END\] Components)/g,
           template: "${{pascalCase componentName}}: '.{{pascalCase componentName}}';" + BREAK_LINE + '$1'
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
           pattern: new RegExp('(' + BREAK_LINE + BREAK_LINE + ')', 'g'),
           template:
@@ -76,37 +105,38 @@ const plopConfig = (plop) => {
             "import {{pascalCase componentName}}, { T{{pascalCase componentName}}Props } from './{{pascalCase componentName}}';$1"
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
           pattern: new RegExp('(export )([\\S\\s]*)( };' + BREAK_LINE + 'export type)', 'g'),
           template: '$1$2, {{pascalCase componentName}}$3'
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
           pattern: /(export type )([\S\s]*)( };)/g,
           template: '$1$2, T{{pascalCase componentName}}Props$3'
         },
         {
-          type: 'add',
+          type: PLOP_ACTION_TYPE.ADD,
           path: storyFilePath,
           templateFile: `${BASE_PATH.PLOP_TEMPLATE}/storybook.hbs`
-        }
+        },
+        { type: PLOP_ACTION_TYPE.PRETTIER }
       ];
     }
   });
 
-  plop.setGenerator('remove-component', {
+  plop.setGenerator(PLOP_COMMAND.REMOVE_COMPONENT, {
     description: 'Remove Component',
     prompts: [
       {
-        type: 'list',
+        type: PLOP_PROMPT_TYPE.LIST,
         name: 'componentType',
         choices: Object.values(COMPONENT_TYPE),
         message: 'Component type?'
       },
       {
-        type: 'input',
+        type: PLOP_PROMPT_TYPE.INPUT,
         name: 'componentName',
         message: 'Component name?'
       }
@@ -122,77 +152,78 @@ const plopConfig = (plop) => {
 
       return [
         {
-          type: 'removeMany',
+          type: PLOP_ACTION_TYPE.REMOVE_MANY,
           paths: [componentDirPath, storyFilePath]
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: STYLE_MAIN_CLASSES_PATH,
           pattern: new RegExp(BREAK_LINE + `\\${templateRenderedStyle}`, 'g'),
           template: ''
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
           pattern: new RegExp(`(${BREAK_LINE}${indexFileImportLineTemplate})`, 'g'),
           template: ''
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
           pattern: new RegExp(`\\, ${correctComponentName} };`, 'g'),
           template: ' };'
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
           pattern: new RegExp(`, ${correctComponentName}\\,`, 'g'),
           template: ','
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
           pattern: new RegExp(`{ ${correctComponentName}\\,`, 'g'),
           template: '{'
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
           pattern: new RegExp(`\\, T${correctComponentName}Props };`, 'g'),
           template: ' };'
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
           pattern: new RegExp(`, T${correctComponentName}Props\\,`, 'g'),
           template: ','
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: indexFileInComponentTypeDirPath,
           pattern: new RegExp(`{ T${correctComponentName}Props\\,`, 'g'),
           template: '{'
-        }
+        },
+        { type: PLOP_ACTION_TYPE.PRETTIER }
       ];
     }
   });
 
-  plop.setGenerator('create-layout', {
+  plop.setGenerator(PLOP_COMMAND.CREATE_LAYOUT, {
     description: 'Create Layout',
     prompts: [
       {
-        type: 'list',
+        type: PLOP_PROMPT_TYPE.LIST,
         name: 'layoutType',
         choices: Object.values(LAYOUT_TYPE),
         message: 'Layout type?'
       },
       {
-        type: 'input',
+        type: PLOP_PROMPT_TYPE.INPUT,
         name: 'rawLayoutName',
         message: 'Layout name?'
       },
       {
-        type: 'input',
+        type: PLOP_PROMPT_TYPE.INPUT,
         name: 'rawLayoutBasePath',
         message: 'Layout base path?',
         when: ({ rawLayoutName }) => !!rawLayoutName
@@ -257,35 +288,35 @@ const plopConfig = (plop) => {
 
       return [
         {
-          type: 'addMany',
+          type: PLOP_ACTION_TYPE.ADD_MANY,
           destination: layoutParts.default.path,
           base: TEMPLATE_COMPONENT_PATH,
           templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
           data: { componentName: layoutParts.default.componentName }
         },
         {
-          type: 'addMany',
+          type: PLOP_ACTION_TYPE.ADD_MANY,
           destination: layoutParts.error.path,
           base: TEMPLATE_COMPONENT_PATH,
           templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
           data: { componentName: layoutParts.error.componentName }
         },
         {
-          type: 'addMany',
+          type: PLOP_ACTION_TYPE.ADD_MANY,
           destination: layoutParts.main.path,
           base: TEMPLATE_LAYOUT_MAIN_COMPONENT_PATH,
           templateFiles: `${TEMPLATE_LAYOUT_MAIN_COMPONENT_PATH}/*`,
           data: { componentName: layoutParts.main.componentName }
         },
         {
-          type: 'addMany',
+          type: PLOP_ACTION_TYPE.ADD_MANY,
           destination: layoutParts.notFound.path,
           base: TEMPLATE_COMPONENT_PATH,
           templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
           data: { componentName: layoutParts.notFound.componentName }
         },
         {
-          type: 'addMany',
+          type: PLOP_ACTION_TYPE.ADD_MANY,
           destination: layoutParts.permissionDenied.path,
           base: TEMPLATE_COMPONENT_PATH,
           templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
@@ -295,7 +326,7 @@ const plopConfig = (plop) => {
           }
         },
         {
-          type: 'add',
+          type: PLOP_ACTION_TYPE.ADD,
           path: `${layoutDirPath}/index.ts`,
           templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/index.hbs`,
           data: { componentName: data.layoutName },
@@ -304,7 +335,7 @@ const plopConfig = (plop) => {
           }
         },
         {
-          type: 'add',
+          type: PLOP_ACTION_TYPE.ADD,
           path: `${layoutDirPath}/index.ts`,
           templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/index.hbs`,
           data: { componentName: data.layoutName },
@@ -313,14 +344,14 @@ const plopConfig = (plop) => {
           }
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: `${LAYOUTS_PATH}/${layoutType}/index.ts`,
           pattern: new RegExp('(' + BREAK_LINE + ')', 'g'),
           template: `${BREAK_LINE}export * from './{{pascalCase componentName}}';$1`,
           data: { componentName: data.layoutName }
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: STYLE_MAIN_CLASSES_PATH,
           pattern: /(\/\/ \[END\] Layouts)/g,
           template:
@@ -340,7 +371,7 @@ const plopConfig = (plop) => {
           }
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: STYLE_MAIN_CLASSES_PATH,
           pattern: /(\/\/ \[END\] Layouts)/g,
           template:
@@ -358,7 +389,7 @@ const plopConfig = (plop) => {
           }
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: `${ROUTER_PATH}/enums.ts`,
           pattern: new RegExp(
             '(export enum ELayoutPath )([\\S\\s]*)(' + BREAK_LINE + '}' + BREAK_LINE + BREAK_LINE + 'export enum EPagePath)',
@@ -367,7 +398,7 @@ const plopConfig = (plop) => {
           template: '$1$2,' + BREAK_LINE + "  {{constantCase rawLayoutName}} = '{{lowerCase layoutBasePath}}'" + '$3'
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: `${ROUTER_PATH}/config.ts`,
           pattern: new RegExp('(import [\\S\\s]*)(' + BREAK_LINE + "} from '@/layouts';)", 'g'),
           template:
@@ -386,7 +417,7 @@ const plopConfig = (plop) => {
           }
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: `${ROUTER_PATH}/config.ts`,
           pattern: new RegExp('(import [\\S\\s]*)(' + BREAK_LINE + "} from '@/layouts';)", 'g'),
           template:
@@ -407,7 +438,7 @@ const plopConfig = (plop) => {
           }
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: `${ROUTER_PATH}/config.ts`,
           pattern: new RegExp('(routes[\\S\\s]*)(' + BREAK_LINE + ')(  ])', 'g'),
           templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/router-config.hbs`,
@@ -417,7 +448,7 @@ const plopConfig = (plop) => {
           }
         },
         {
-          type: 'modify',
+          type: PLOP_ACTION_TYPE.MODIFY,
           path: `${ROUTER_PATH}/config.ts`,
           pattern: new RegExp('(routes[\\S\\s]*)(' + BREAK_LINE + ')(  ])', 'g'),
           templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/router-config.hbs`,
@@ -425,7 +456,8 @@ const plopConfig = (plop) => {
           skip: () => {
             if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
           }
-        }
+        },
+        { type: PLOP_ACTION_TYPE.PRETTIER }
       ];
     }
   });
