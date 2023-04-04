@@ -25,7 +25,9 @@
     "create-component": "yarn plop create-component",
     "remove-component": "yarn plop remove-component",
     "create-layout": "yarn plop create-layout",
-    "remove-layout": "yarn plop remove-layout"
+    "remove-layout": "yarn plop remove-layout",
+    "create-page": "yarn plop create-page",
+    "remove-page": "yarn plop remove-page"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",

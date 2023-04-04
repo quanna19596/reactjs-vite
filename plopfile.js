@@ -15,7 +15,9 @@ const PLOP_COMMAND = {
   CREATE_COMPONENT: 'create-component',
   REMOVE_COMPONENT: 'remove-component',
   CREATE_LAYOUT: 'create-layout',
-  REMOVE_LAYOUT: 'remove-layout'
+  REMOVE_LAYOUT: 'remove-layout',
+  CREATE_PAGE: 'create-page',
+  REMOVE_PAGE: 'remove-page'
 };
 
 const PLOP_HELPER_TYPE = {
@@ -578,6 +580,37 @@ const plopConfig = (plop) => {
         },
         { type: PLOP_ACTION_TYPE.PRETTIER }
       ];
+    }
+  });
+
+  plop.setGenerator(PLOP_COMMAND.CREATE_PAGE, {
+    description: 'Remove Layout',
+    prompts: [
+      {
+        type: PLOP_PROMPT_TYPE.LIST,
+        name: 'pageType',
+        choices: Object.values(LAYOUT_TYPE),
+        message: 'Page type?'
+      },
+      {
+        type: PLOP_PROMPT_TYPE.INPUT,
+        name: 'pageName',
+        message: 'Page name?'
+      },
+      {
+        type: PLOP_PROMPT_TYPE.LIST,
+        name: 'layoutName',
+        choices: () => {
+          const privateLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/private`);
+          const publicLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/public`)
+          const layouts = [...privateLayouts, ...publicLayouts].filter((dir) => !dir.includes('.'));
+          return layouts;
+        },
+        message: 'Layout name?'
+      }
+    ],
+    actions: (data) => {
+      return [];
     }
   });
 };
