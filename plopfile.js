@@ -30,8 +30,7 @@ const PLOP_PROMPT_TYPE = {
 };
 
 const COMPONENT_TYPE = { COMPONENTS: 'components', CONTAINERS: 'containers' };
-const LAYOUT_TYPE = { PUBLIC: 'public', PRIVATE: 'private' };
-const PAGE_TYPE = { PUBLIC: 'public', PRIVATE: 'private', COMMON: 'common' };
+const PROTECTION_TYPE = { PUBLIC: 'public', PRIVATE: 'private' };
 
 const BASE_PATH = { SRC: './src', STORYBOOK: './stories', PLOP_TEMPLATE: './plop-templates' };
 
@@ -87,8 +86,8 @@ const plopConfig = (plop) => {
     ],
     actions: ({ componentType }) => {
       const componentDirPath = `${BASE_PATH.SRC}/${componentType}/{{pascalCase componentName}}`;
-      const storyFilePath = `${BASE_PATH.STORYBOOK}/${componentType}/{{pascalCase componentName}}.stories.tsx`;
       const indexFileInComponentTypeDirPath = `${BASE_PATH.SRC}/${componentType}/index.ts`;
+      const storyFilePath = `${BASE_PATH.STORYBOOK}/${componentType}/{{pascalCase componentName}}.stories.tsx`;
 
       return [
         {
@@ -225,7 +224,7 @@ const plopConfig = (plop) => {
       {
         type: PLOP_PROMPT_TYPE.LIST,
         name: 'layoutType',
-        choices: Object.values(LAYOUT_TYPE),
+        choices: Object.values(PROTECTION_TYPE),
         message: 'Layout type?'
       },
       {
@@ -333,7 +332,7 @@ const plopConfig = (plop) => {
           templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
           data: { componentName: layoutParts.permissionDenied.componentName },
           skip: () => {
-            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+            if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
           }
         },
         {
@@ -342,7 +341,7 @@ const plopConfig = (plop) => {
           templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/index.hbs`,
           data: { componentName: data.layoutName },
           skip: () => {
-            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+            if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
           }
         },
         {
@@ -351,7 +350,7 @@ const plopConfig = (plop) => {
           templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/index.hbs`,
           data: { componentName: data.layoutName },
           skip: () => {
-            if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+            if (layoutType === PROTECTION_TYPE.PRIVATE) return '';
           }
         },
         {
@@ -378,7 +377,7 @@ const plopConfig = (plop) => {
             BREAK_LINE +
             '$1',
           skip: () => {
-            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+            if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
           }
         },
         {
@@ -396,7 +395,7 @@ const plopConfig = (plop) => {
             BREAK_LINE +
             '$1',
           skip: () => {
-            if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+            if (layoutType === PROTECTION_TYPE.PRIVATE) return '';
           }
         },
         {
@@ -424,7 +423,7 @@ const plopConfig = (plop) => {
             `  ${capitalize(layoutParts.notFound.componentName)}` +
             '$2',
           skip: () => {
-            if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+            if (layoutType === PROTECTION_TYPE.PRIVATE) return '';
           }
         },
         {
@@ -445,7 +444,7 @@ const plopConfig = (plop) => {
             `  ${capitalize(layoutParts.permissionDenied.componentName)}` +
             '$2',
           skip: () => {
-            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+            if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
           }
         },
         {
@@ -455,7 +454,7 @@ const plopConfig = (plop) => {
           templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/router-config.hbs`,
           data: { rawLayoutName, layoutName: data.layoutName },
           skip: () => {
-            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+            if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
           }
         },
         {
@@ -465,7 +464,7 @@ const plopConfig = (plop) => {
           templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/router-config.hbs`,
           data: { rawLayoutName, layoutName: data.layoutName },
           skip: () => {
-            if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+            if (layoutType === PROTECTION_TYPE.PRIVATE) return '';
           }
         },
         { type: PLOP_ACTION_TYPE.PRETTIER }
@@ -479,7 +478,7 @@ const plopConfig = (plop) => {
       {
         type: PLOP_PROMPT_TYPE.LIST,
         name: 'layoutType',
-        choices: Object.values(LAYOUT_TYPE),
+        choices: Object.values(PROTECTION_TYPE),
         message: 'Layout type?'
       },
       {
@@ -515,7 +514,7 @@ const plopConfig = (plop) => {
           pattern: new RegExp(BREAK_LINE + '\\$' + layoutName + 'Default[\\S\\s]*' + layoutName + "PermissionDenied';", 'g'),
           template: '',
           skip: () => {
-            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+            if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
           }
         },
         {
@@ -524,7 +523,7 @@ const plopConfig = (plop) => {
           pattern: new RegExp(BREAK_LINE + '\\$' + layoutName + 'Default[\\S\\s]*' + layoutName + "NotFound';", 'g'),
           template: '',
           skip: () => {
-            if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+            if (layoutType === PROTECTION_TYPE.PRIVATE) return '';
           }
         },
         {
@@ -542,7 +541,7 @@ const plopConfig = (plop) => {
           ),
           template: BREAK_LINE + '$1',
           skip: () => {
-            if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+            if (layoutType === PROTECTION_TYPE.PRIVATE) return '';
           }
         },
         {
@@ -554,7 +553,7 @@ const plopConfig = (plop) => {
           ),
           template: BREAK_LINE + '$1',
           skip: () => {
-            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+            if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
           }
         },
         {
@@ -587,12 +586,6 @@ const plopConfig = (plop) => {
     description: 'Remove Layout',
     prompts: [
       {
-        type: PLOP_PROMPT_TYPE.LIST,
-        name: 'pageType',
-        choices: Object.values(LAYOUT_TYPE),
-        message: 'Page type?'
-      },
-      {
         type: PLOP_PROMPT_TYPE.INPUT,
         name: 'pageName',
         message: 'Page name?'
@@ -601,16 +594,94 @@ const plopConfig = (plop) => {
         type: PLOP_PROMPT_TYPE.LIST,
         name: 'layoutName',
         choices: () => {
-          const privateLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/private`);
-          const publicLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/public`)
+          const privateLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/private`).map((layout) => `${layout} (private)`);
+          const publicLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/public`).map((layout) => `${layout} (public)`);
           const layouts = [...privateLayouts, ...publicLayouts].filter((dir) => !dir.includes('.'));
           return layouts;
         },
-        message: 'Layout name?'
+        message: 'Belong to?',
+        when: ({ pageName }) => !!pageName
+      },
+      {
+        type: PLOP_PROMPT_TYPE.LIST,
+        name: 'pageType',
+        choices: Object.values(PROTECTION_TYPE),
+        message: 'Page type?',
+        when: ({ pageName, layoutName }) => !!pageName && layoutName.includes(PROTECTION_TYPE.PUBLIC)
+      },
+      {
+        type: PLOP_PROMPT_TYPE.INPUT,
+        name: 'rawPagePath',
+        message: 'Page path?',
+        when: ({ pageName }) => !!pageName
       }
     ],
     actions: (data) => {
-      return [];
+      const { pageType, pageName, rawPagePath } = data;
+      const correctPageType = pageType || PROTECTION_TYPE.PRIVATE;
+      const pageDirPath = `${BASE_PATH.SRC}/pages/{{lowerCase correctPageType}}/{{pascalCase pageName}}`;
+      const indexFileInPagesDirPath = `${BASE_PATH.SRC}/pages/{{lowerCase correctPageType}}/index.ts`;
+
+      if (!pageName) throw new Error('Page name should not empty!');
+
+      data.pagePath = rawPagePath.replace('/', '');
+
+      const alreadyExistPaths = readFileAsJSON('./src/router/enums.ts')
+        .split('export enum ESpecialPath')[0]
+        .match(/'(.*?)'/g)
+        .map((w) => w.replace(/'(.*?)'/g, '$1'));
+
+      const pagePathIsAlreadyExist = alreadyExistPaths.includes(data.pagePath);
+
+      if (!rawPagePath) throw new Error('Page path should not empty!');
+      if (pagePathIsAlreadyExist) throw new Error('Page path is already exist!');
+
+      return [
+        {
+          type: PLOP_ACTION_TYPE.ADD_MANY,
+          destination: pageDirPath,
+          base: TEMPLATE_COMPONENT_PATH,
+          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+          data: { correctPageType, componentName: pageName, ...data }
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: STYLE_MAIN_CLASSES_PATH,
+          pattern: /(\/\/ \[END\] Pages)/g,
+          template: "${{pascalCase pageName}}: '.{{pascalCase pageName}}';" + BREAK_LINE + '$1'
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: indexFileInPagesDirPath,
+          pattern: new RegExp('(' + BREAK_LINE + BREAK_LINE + ')', 'g'),
+          template: BREAK_LINE + "import {{pascalCase pageName}}, { T{{pascalCase pageName}}Props } from './{{pascalCase pageName}}';$1",
+          data: { correctPageType, ...data }
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: indexFileInPagesDirPath,
+          pattern: new RegExp('(export )([\\S\\s]*)( };' + BREAK_LINE + 'export type)', 'g'),
+          template: '$1$2, {{pascalCase pageName}}$3',
+          data: { correctPageType, ...data }
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: indexFileInPagesDirPath,
+          pattern: /(export type )([\S\s]*)( };)/g,
+          template: '$1$2, T{{pascalCase pageName}}Props$3',
+          data: { correctPageType, ...data }
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: `${ROUTER_PATH}/enums.ts`,
+          pattern: new RegExp(
+            '(export enum EPagePath )([\\S\\s]*)(' + BREAK_LINE + '}' + BREAK_LINE + BREAK_LINE + 'export enum ESpecialPath)',
+            'g'
+          ),
+          template: '$1$2,' + BREAK_LINE + "  {{constantCase pageName}} = '{{lowerCase pagePath}}'" + '$3'
+        },
+        // TODO: Add to config
+      ];
     }
   });
 };
