@@ -296,107 +296,107 @@ const plopConfig = (plop) => {
       };
 
       return [
-        // {
-        //   type: PLOP_ACTION_TYPE.ADD_MANY,
-        //   destination: layoutParts.default.path,
-        //   base: TEMPLATE_COMPONENT_PATH,
-        //   templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
-        //   data: { componentName: layoutParts.default.componentName }
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.ADD_MANY,
-        //   destination: layoutParts.error.path,
-        //   base: TEMPLATE_COMPONENT_PATH,
-        //   templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
-        //   data: { componentName: layoutParts.error.componentName }
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.ADD_MANY,
-        //   destination: layoutParts.main.path,
-        //   base: TEMPLATE_LAYOUT_MAIN_COMPONENT_PATH,
-        //   templateFiles: `${TEMPLATE_LAYOUT_MAIN_COMPONENT_PATH}/*`,
-        //   data: { componentName: layoutParts.main.componentName }
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.ADD_MANY,
-        //   destination: layoutParts.notFound.path,
-        //   base: TEMPLATE_COMPONENT_PATH,
-        //   templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
-        //   data: { componentName: layoutParts.notFound.componentName }
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.ADD_MANY,
-        //   destination: layoutParts.permissionDenied.path,
-        //   base: TEMPLATE_COMPONENT_PATH,
-        //   templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
-        //   data: { componentName: layoutParts.permissionDenied.componentName },
-        //   skip: () => {
-        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
-        //   }
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.ADD,
-        //   path: `${layoutDirPath}/index.ts`,
-        //   templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/index.hbs`,
-        //   data: { componentName: data.layoutName },
-        //   skip: () => {
-        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
-        //   }
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.ADD,
-        //   path: `${layoutDirPath}/index.ts`,
-        //   templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/index.hbs`,
-        //   data: { componentName: data.layoutName },
-        //   skip: () => {
-        //     if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
-        //   }
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.MODIFY,
-        //   path: `${LAYOUTS_PATH}/${layoutType}/index.ts`,
-        //   pattern: new RegExp('(' + BREAK_LINE + ')', 'g'),
-        //   template: `${BREAK_LINE}export * from './{{pascalCase componentName}}';$1`,
-        //   data: { componentName: data.layoutName }
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.MODIFY,
-        //   path: STYLE_MAIN_CLASSES_PATH,
-        //   pattern: /(\/\/ \[END\] Layouts)/g,
-        //   template:
-        //     layoutParts.default.templateInMainClassesFile +
-        //     BREAK_LINE +
-        //     layoutParts.error.templateInMainClassesFile +
-        //     BREAK_LINE +
-        //     layoutParts.main.templateInMainClassesFile +
-        //     BREAK_LINE +
-        //     layoutParts.notFound.templateInMainClassesFile +
-        //     BREAK_LINE +
-        //     layoutParts.permissionDenied.templateInMainClassesFile +
-        //     BREAK_LINE +
-        //     '$1',
-        //   skip: () => {
-        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
-        //   }
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.MODIFY,
-        //   path: STYLE_MAIN_CLASSES_PATH,
-        //   pattern: /(\/\/ \[END\] Layouts)/g,
-        //   template:
-        //     layoutParts.default.templateInMainClassesFile +
-        //     BREAK_LINE +
-        //     layoutParts.error.templateInMainClassesFile +
-        //     BREAK_LINE +
-        //     layoutParts.main.templateInMainClassesFile +
-        //     BREAK_LINE +
-        //     layoutParts.notFound.templateInMainClassesFile +
-        //     BREAK_LINE +
-        //     '$1',
-        //   skip: () => {
-        //     if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
-        //   }
-        // },
+        {
+          type: PLOP_ACTION_TYPE.ADD_MANY,
+          destination: layoutParts.default.path,
+          base: TEMPLATE_COMPONENT_PATH,
+          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+          data: { componentName: layoutParts.default.componentName }
+        },
+        {
+          type: PLOP_ACTION_TYPE.ADD_MANY,
+          destination: layoutParts.error.path,
+          base: TEMPLATE_COMPONENT_PATH,
+          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+          data: { componentName: layoutParts.error.componentName }
+        },
+        {
+          type: PLOP_ACTION_TYPE.ADD_MANY,
+          destination: layoutParts.main.path,
+          base: TEMPLATE_LAYOUT_MAIN_COMPONENT_PATH,
+          templateFiles: `${TEMPLATE_LAYOUT_MAIN_COMPONENT_PATH}/*`,
+          data: { componentName: layoutParts.main.componentName }
+        },
+        {
+          type: PLOP_ACTION_TYPE.ADD_MANY,
+          destination: layoutParts.notFound.path,
+          base: TEMPLATE_COMPONENT_PATH,
+          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+          data: { componentName: layoutParts.notFound.componentName }
+        },
+        {
+          type: PLOP_ACTION_TYPE.ADD_MANY,
+          destination: layoutParts.permissionDenied.path,
+          base: TEMPLATE_COMPONENT_PATH,
+          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+          data: { componentName: layoutParts.permissionDenied.componentName },
+          skip: () => {
+            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+          }
+        },
+        {
+          type: PLOP_ACTION_TYPE.ADD,
+          path: `${layoutDirPath}/index.ts`,
+          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/index.hbs`,
+          data: { componentName: data.layoutName },
+          skip: () => {
+            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+          }
+        },
+        {
+          type: PLOP_ACTION_TYPE.ADD,
+          path: `${layoutDirPath}/index.ts`,
+          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/index.hbs`,
+          data: { componentName: data.layoutName },
+          skip: () => {
+            if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+          }
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: `${LAYOUTS_PATH}/${layoutType}/index.ts`,
+          pattern: new RegExp('(' + BREAK_LINE + ')', 'g'),
+          template: `${BREAK_LINE}export * from './{{pascalCase componentName}}';$1`,
+          data: { componentName: data.layoutName }
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: STYLE_MAIN_CLASSES_PATH,
+          pattern: /(\/\/ \[END\] Layouts)/g,
+          template:
+            layoutParts.default.templateInMainClassesFile +
+            BREAK_LINE +
+            layoutParts.error.templateInMainClassesFile +
+            BREAK_LINE +
+            layoutParts.main.templateInMainClassesFile +
+            BREAK_LINE +
+            layoutParts.notFound.templateInMainClassesFile +
+            BREAK_LINE +
+            layoutParts.permissionDenied.templateInMainClassesFile +
+            BREAK_LINE +
+            '$1',
+          skip: () => {
+            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+          }
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: STYLE_MAIN_CLASSES_PATH,
+          pattern: /(\/\/ \[END\] Layouts)/g,
+          template:
+            layoutParts.default.templateInMainClassesFile +
+            BREAK_LINE +
+            layoutParts.error.templateInMainClassesFile +
+            BREAK_LINE +
+            layoutParts.main.templateInMainClassesFile +
+            BREAK_LINE +
+            layoutParts.notFound.templateInMainClassesFile +
+            BREAK_LINE +
+            '$1',
+          skip: () => {
+            if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+          }
+        },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
           path: `${ROUTER_PATH}/enums.ts`,
@@ -425,47 +425,47 @@ const plopConfig = (plop) => {
             if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
           }
         },
-        // {
-        //   type: PLOP_ACTION_TYPE.MODIFY,
-        //   path: `${ROUTER_PATH}/config.ts`,
-        //   pattern: new RegExp('(import [\\S\\s]*)(' + BREAK_LINE + "} from '@/layouts';)", 'g'),
-        //   template:
-        //     `$1,` +
-        //     BREAK_LINE +
-        //     `  ${capitalize(layoutParts.main.componentName)},` +
-        //     BREAK_LINE +
-        //     `  ${capitalize(layoutParts.default.componentName)},` +
-        //     BREAK_LINE +
-        //     `  ${capitalize(layoutParts.error.componentName)},` +
-        //     BREAK_LINE +
-        //     `  ${capitalize(layoutParts.notFound.componentName)},` +
-        //     BREAK_LINE +
-        //     `  ${capitalize(layoutParts.permissionDenied.componentName)}` +
-        //     '$2',
-        //   skip: () => {
-        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
-        //   }
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.MODIFY,
-        //   path: `${ROUTER_PATH}/config.ts`,
-        //   pattern: new RegExp('(routes[\\S\\s]*)(' + BREAK_LINE + ')(  ])', 'g'),
-        //   templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/router-config.hbs`,
-        //   data: { rawLayoutName, layoutName: data.layoutName },
-        //   skip: () => {
-        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
-        //   }
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.MODIFY,
-        //   path: `${ROUTER_PATH}/config.ts`,
-        //   pattern: new RegExp('(routes[\\S\\s]*)(' + BREAK_LINE + ')(  ])', 'g'),
-        //   templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/router-config.hbs`,
-        //   data: { rawLayoutName, layoutName: data.layoutName },
-        //   skip: () => {
-        //     if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
-        //   }
-        // },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: `${ROUTER_PATH}/config.ts`,
+          pattern: new RegExp('(import [\\S\\s]*)(' + BREAK_LINE + "} from '@/layouts';)", 'g'),
+          template:
+            `$1,` +
+            BREAK_LINE +
+            `  ${capitalize(layoutParts.main.componentName)},` +
+            BREAK_LINE +
+            `  ${capitalize(layoutParts.default.componentName)},` +
+            BREAK_LINE +
+            `  ${capitalize(layoutParts.error.componentName)},` +
+            BREAK_LINE +
+            `  ${capitalize(layoutParts.notFound.componentName)},` +
+            BREAK_LINE +
+            `  ${capitalize(layoutParts.permissionDenied.componentName)}` +
+            '$2',
+          skip: () => {
+            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+          }
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: `${ROUTER_PATH}/config.ts`,
+          pattern: new RegExp('(routes[\\S\\s]*)(' + BREAK_LINE + ')(  ])', 'g'),
+          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/router-config.hbs`,
+          data: { rawLayoutName, layoutName: data.layoutName },
+          skip: () => {
+            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+          }
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: `${ROUTER_PATH}/config.ts`,
+          pattern: new RegExp('(routes[\\S\\s]*)(' + BREAK_LINE + ')(  ])', 'g'),
+          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/router-config.hbs`,
+          data: { rawLayoutName, layoutName: data.layoutName },
+          skip: () => {
+            if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+          }
+        },
         { type: PLOP_ACTION_TYPE.PRETTIER }
       ];
     }
@@ -493,107 +493,89 @@ const plopConfig = (plop) => {
     ],
     actions: (data) => {
       const { layoutType, layoutName } = data;
+      const rawLayoutName = layoutName.replace('Layout', '');
       const layoutDirPath = `${LAYOUTS_PATH}/${layoutType}/${layoutName}`;
 
       return [
-        // {
-        //   type: PLOP_ACTION_TYPE.REMOVE,
-        //   path: layoutDirPath
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.MODIFY,
-        //   path: `${LAYOUTS_PATH}/${layoutType}/index.ts`,
-        //   pattern: new RegExp(BREAK_LINE + "export \\* from './" + layoutName + "';", 'g'),
-        //   template: ''
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.MODIFY,
-        //   path: STYLE_MAIN_CLASSES_PATH,
-        //   pattern: new RegExp(BREAK_LINE + '\\$' + layoutName + 'Default[\\S\\s]*' + layoutName + "PermissionDenied';" ,'g'),
-        //   template: '',
-        //   skip: () => {
-        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
-        //   }
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.MODIFY,
-        //   path: STYLE_MAIN_CLASSES_PATH,
-        //   pattern: new RegExp(BREAK_LINE + '\\$' + layoutName + 'Default[\\S\\s]*' + layoutName + "NotFound';" ,'g'),
-        //   template: '',
-        //   skip: () => {
-        //     if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
-        //   }
-        // },
-        // TODO: ...
-        // {
-        //   type: PLOP_ACTION_TYPE.MODIFY,
-        //   path: `${ROUTER_PATH}/enums.ts`,
-        //   pattern: new RegExp(
-        //     '(export enum ELayoutPath )([\\S\\s]*)(' + BREAK_LINE + '}' + BREAK_LINE + BREAK_LINE + 'export enum EPagePath)',
-        //     'g'
-        //   ),
-        //   template: '$1$2,' + BREAK_LINE + "  {{constantCase rawLayoutName}} = '{{lowerCase layoutBasePath}}'" + '$3'
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.MODIFY,
-        //   path: `${ROUTER_PATH}/config.ts`,
-        //   pattern: new RegExp('(import [\\S\\s]*)(' + BREAK_LINE + "} from '@/layouts';)", 'g'),
-        //   template:
-        //     `$1,` +
-        //     BREAK_LINE +
-        //     `  ${capitalize(layoutParts.main.componentName)},` +
-        //     BREAK_LINE +
-        //     `  ${capitalize(layoutParts.default.componentName)},` +
-        //     BREAK_LINE +
-        //     `  ${capitalize(layoutParts.error.componentName)},` +
-        //     BREAK_LINE +
-        //     `  ${capitalize(layoutParts.notFound.componentName)}` +
-        //     '$2',
-        //   skip: () => {
-        //     if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
-        //   }
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.MODIFY,
-        //   path: `${ROUTER_PATH}/config.ts`,
-        //   pattern: new RegExp('(import [\\S\\s]*)(' + BREAK_LINE + "} from '@/layouts';)", 'g'),
-        //   template:
-        //     `$1,` +
-        //     BREAK_LINE +
-        //     `  ${capitalize(layoutParts.main.componentName)},` +
-        //     BREAK_LINE +
-        //     `  ${capitalize(layoutParts.default.componentName)},` +
-        //     BREAK_LINE +
-        //     `  ${capitalize(layoutParts.error.componentName)},` +
-        //     BREAK_LINE +
-        //     `  ${capitalize(layoutParts.notFound.componentName)},` +
-        //     BREAK_LINE +
-        //     `  ${capitalize(layoutParts.permissionDenied.componentName)}` +
-        //     '$2',
-        //   skip: () => {
-        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
-        //   }
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.MODIFY,
-        //   path: `${ROUTER_PATH}/config.ts`,
-        //   pattern: new RegExp('(routes[\\S\\s]*)(' + BREAK_LINE + ')(  ])', 'g'),
-        //   templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/router-config.hbs`,
-        //   data: { rawLayoutName, layoutName: data.layoutName },
-        //   skip: () => {
-        //     if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
-        //   }
-        // },
-        // {
-        //   type: PLOP_ACTION_TYPE.MODIFY,
-        //   path: `${ROUTER_PATH}/config.ts`,
-        //   pattern: new RegExp('(routes[\\S\\s]*)(' + BREAK_LINE + ')(  ])', 'g'),
-        //   templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/router-config.hbs`,
-        //   data: { rawLayoutName, layoutName: data.layoutName },
-        //   skip: () => {
-        //     if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
-        //   }
-        // },
+        {
+          type: PLOP_ACTION_TYPE.REMOVE,
+          path: layoutDirPath
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: `${LAYOUTS_PATH}/${layoutType}/index.ts`,
+          pattern: new RegExp(BREAK_LINE + "export \\* from './" + layoutName + "';", 'g'),
+          template: ''
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: STYLE_MAIN_CLASSES_PATH,
+          pattern: new RegExp(BREAK_LINE + '\\$' + layoutName + 'Default[\\S\\s]*' + layoutName + "PermissionDenied';", 'g'),
+          template: '',
+          skip: () => {
+            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+          }
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: STYLE_MAIN_CLASSES_PATH,
+          pattern: new RegExp(BREAK_LINE + '\\$' + layoutName + 'Default[\\S\\s]*' + layoutName + "NotFound';", 'g'),
+          template: '',
+          skip: () => {
+            if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+          }
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: `${ROUTER_PATH}/enums.ts`,
+          pattern: new RegExp(BREAK_LINE + `  ${rawLayoutName.toUpperCase()} = '${rawLayoutName.toLowerCase()}'`, 'g'),
+          template: ''
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: `${ROUTER_PATH}/config.ts`,
+          pattern: new RegExp(
+            BREAK_LINE + `  ${layoutName}` + '[\\S\\s]*' + `${layoutName}NotFound` + BREAK_LINE + "(} from '@/layouts';)",
+            'g'
+          ),
+          template: BREAK_LINE + '$1',
+          skip: () => {
+            if (layoutType === LAYOUT_TYPE.PRIVATE) return '';
+          }
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: `${ROUTER_PATH}/config.ts`,
+          pattern: new RegExp(
+            BREAK_LINE + `  ${layoutName}` + '[\\S\\s]*' + `${layoutName}PermissionDenied` + BREAK_LINE + "(} from '@/layouts';)",
+            'g'
+          ),
+          template: BREAK_LINE + '$1',
+          skip: () => {
+            if (layoutType === LAYOUT_TYPE.PUBLIC) return '';
+          }
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: `${ROUTER_PATH}/config.ts`,
+          pattern: new RegExp(
+            BREAK_LINE +
+              '    {' +
+              BREAK_LINE +
+              '      ' +
+              `path: ELayoutPath.${rawLayoutName.toUpperCase()}[\\S\\s]*${layoutName}Error` +
+              BREAK_LINE +
+              '          }' +
+              BREAK_LINE +
+              '        }' +
+              BREAK_LINE +
+              '      ]' +
+              BREAK_LINE +
+              '    }',
+            'g'
+          ),
+          template: ''
+        },
         { type: PLOP_ACTION_TYPE.PRETTIER }
       ];
     }
