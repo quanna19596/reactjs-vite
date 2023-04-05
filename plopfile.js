@@ -529,7 +529,10 @@ const plopConfig = (plop) => {
         {
           type: PLOP_ACTION_TYPE.MODIFY,
           path: `${ROUTER_PATH}/enums.ts`,
-          pattern: new RegExp(BREAK_LINE + `  ${rawLayoutName.toUpperCase()} = '${rawLayoutName.toLowerCase()}'`, 'g'),
+          pattern: new RegExp(
+            BREAK_LINE + plop.renderString("  {{constantCase rawLayoutName}} = '{{lowerCase rawLayoutName}}'", { rawLayoutName }),
+            'g'
+          ),
           template: ''
         },
         {
@@ -564,7 +567,10 @@ const plopConfig = (plop) => {
               '    {' +
               BREAK_LINE +
               '      ' +
-              `path: ELayoutPath.${rawLayoutName.toUpperCase()}[\\S\\s]*${layoutName}Error` +
+              plop.renderString('path: ELayoutPath.{{constantCase rawLayoutName}}[\\S\\s]*{{layoutName}}Error', {
+                rawLayoutName,
+                layoutName
+              }) +
               BREAK_LINE +
               '          }' +
               BREAK_LINE +
@@ -617,7 +623,7 @@ const plopConfig = (plop) => {
       }
     ],
     actions: (data) => {
-      const { pageType, pageName, rawPagePath } = data;
+      const { pageType, layoutName, pageName, rawPagePath } = data;
       const correctPageType = pageType || PROTECTION_TYPE.PRIVATE;
       const pageDirPath = `${BASE_PATH.SRC}/pages/{{lowerCase correctPageType}}/{{pascalCase pageName}}`;
       const indexFileInPagesDirPath = `${BASE_PATH.SRC}/pages/{{lowerCase correctPageType}}/index.ts`;
@@ -625,6 +631,7 @@ const plopConfig = (plop) => {
       if (!pageName) throw new Error('Page name should not empty!');
 
       data.pagePath = rawPagePath.replace('/', '');
+      data.layoutNameWithoutSuffix = layoutName.replace('Layout', '');
 
       const alreadyExistPaths = readFileAsJSON('./src/router/enums.ts')
         .split('export enum ESpecialPath')[0]
@@ -680,7 +687,24 @@ const plopConfig = (plop) => {
           ),
           template: '$1$2,' + BREAK_LINE + "  {{constantCase pageName}} = '{{lowerCase pagePath}}'" + '$3'
         },
-        // TODO: Add to config
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: `${ROUTER_PATH}/config.ts`,
+          pattern: new RegExp(
+            plop.renderString('(path: ELayoutPath.{{constantCase layoutNameWithoutSuffix}}[\\S\\s]*)(', {
+              layoutNameWithoutSuffix: data.layoutNameWithoutSuffix
+            }) +
+              BREAK_LINE +
+              '        )({' +
+              BREAK_LINE +
+              '          path: ESpecialPath.REST)',
+            'g'
+          ),
+          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/page/public/router-config.hbs`,
+          skip: () => {
+            if (layoutName.includes(PROTECTION_TYPE.PRIVATE)) return '';
+          }
+        }
       ];
     }
   });
