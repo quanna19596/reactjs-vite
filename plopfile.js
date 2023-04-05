@@ -133,22 +133,19 @@ const plopConfig = (plop) => {
     prompts: [
       {
         type: PLOP_PROMPT_TYPE.LIST,
-        name: 'componentType',
-        choices: Object.values(COMPONENT_TYPE),
-        message: 'Component type?'
-      },
-      {
-        type: PLOP_PROMPT_TYPE.LIST,
-        name: 'componentName',
-        choices: ({ componentType }) => {
-          const componentTypePath = `${BASE_PATH.SRC}/${componentType}`;
-          const components = getAllDirsInDirectory(componentTypePath).filter((dir) => !dir.includes('.'));
+        name: 'rawComponentName',
+        choices: () => {
+          const unitComponents = getAllDirsInDirectory(`${BASE_PATH.SRC}/components`).map((comp) => `${comp} (components)`);
+          const containerComponents = getAllDirsInDirectory(`${BASE_PATH.SRC}/containers`).map((comp) => `${comp} (containers)`);
+          const components = [...unitComponents, ...containerComponents].filter((comp) => !comp.includes('.'));
           return components;
         },
         message: 'Component name?'
       }
     ],
-    actions: ({ componentType, componentName }) => {
+    actions: ({ rawComponentName }) => {
+      const componentName = rawComponentName.split(' (')[0];
+      const componentType = rawComponentName.split('(')[1].replace(')', '');
       const componentDirPath = `${BASE_PATH.SRC}/${componentType}/${componentName}`;
       const storyFilePath = `${BASE_PATH.STORYBOOK}/${componentType}/${componentName}.stories.tsx`;
       const indexFileInComponentTypeDirPath = `${BASE_PATH.SRC}/${componentType}/index.ts`;
@@ -416,23 +413,19 @@ const plopConfig = (plop) => {
     prompts: [
       {
         type: PLOP_PROMPT_TYPE.LIST,
-        name: 'layoutType',
-        choices: Object.values(PROTECTION_TYPE),
-        message: 'Layout type?'
-      },
-      {
-        type: PLOP_PROMPT_TYPE.LIST,
-        name: 'layoutName',
-        choices: ({ layoutType }) => {
-          const layoutTypePath = `${LAYOUTS_PATH}/${layoutType}`;
-          const layouts = getAllDirsInDirectory(layoutTypePath).filter((dir) => !dir.includes('.'));
+        name: 'layoutNameWithType',
+        choices: () => {
+          const privateLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/private`).map((layout) => `${layout} (private)`);
+          const publicLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/public`).map((layout) => `${layout} (public)`);
+          const layouts = [...privateLayouts, ...publicLayouts].filter((dir) => !dir.includes('.'));
           return layouts;
         },
         message: 'Layout name?'
       }
     ],
-    actions: (data) => {
-      const { layoutType, layoutName } = data;
+    actions: ({ layoutNameWithType }) => {
+      const layoutName = layoutNameWithType.split(' (')[0];
+      const layoutType = layoutNameWithType.split('(')[1].replace(')', '');
       const rawLayoutName = layoutName.replace('Layout', '');
       const layoutDirPath = `${LAYOUTS_PATH}/${layoutType}/${layoutName}`;
 
@@ -549,7 +542,7 @@ const plopConfig = (plop) => {
   });
 
   plop.setGenerator(PLOP_COMMAND.CREATE_PAGE, {
-    description: 'Remove Layout',
+    description: 'Create Page',
     prompts: [
       {
         type: PLOP_PROMPT_TYPE.INPUT,
@@ -689,6 +682,43 @@ const plopConfig = (plop) => {
         { type: PLOP_ACTION_TYPE.PRETTIER }
       ];
     }
+  });
+
+  plop.setGenerator(PLOP_COMMAND.REMOVE_PAGE, {
+    description: 'Remove Page',
+    prompts: [
+      {
+        type: PLOP_PROMPT_TYPE.INPUT,
+        name: 'pageName',
+        message: 'Page name?'
+      },
+      {
+        type: PLOP_PROMPT_TYPE.LIST,
+        name: 'layoutName',
+        choices: () => {
+          const privateLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/private`).map((layout) => `${layout} (private)`);
+          const publicLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/public`).map((layout) => `${layout} (public)`);
+          const layouts = [...privateLayouts, ...publicLayouts].filter((dir) => !dir.includes('.'));
+          return layouts;
+        },
+        message: 'Belong to?',
+        when: ({ pageName }) => !!pageName
+      },
+      {
+        type: PLOP_PROMPT_TYPE.LIST,
+        name: 'pageType',
+        choices: Object.values(PROTECTION_TYPE),
+        message: 'Page type?',
+        when: ({ pageName, layoutName }) => !!pageName && layoutName.includes(PROTECTION_TYPE.PUBLIC)
+      },
+      {
+        type: PLOP_PROMPT_TYPE.INPUT,
+        name: 'rawPagePath',
+        message: 'Page path?',
+        when: ({ pageName }) => !!pageName
+      }
+    ],
+    actions: (data) => []
   });
 };
 
