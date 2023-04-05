@@ -1,0 +1,9 @@
+$1{
+  path: EPagePath.{{constantCase pageName}},
+  element: {
+    component: {{pascalCase pageName}},
+    isPrivate: true,
+    fallbackPermissionDenied: {{layoutNameWithoutType}}PermissionDenied,
+    errorComponent: {{layoutNameWithoutType}}Error
+  }
+},$2
