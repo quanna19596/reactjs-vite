@@ -38,11 +38,12 @@ const TEMPLATE_COMPONENT_PATH = `${BASE_PATH.PLOP_TEMPLATE}/component`;
 const TEMPLATE_LAYOUT_MAIN_COMPONENT_PATH = `${BASE_PATH.PLOP_TEMPLATE}/layout/main-component`;
 const STYLE_MAIN_CLASSES_PATH = `${BASE_PATH.SRC}/styles/main-classes.scss`;
 const LAYOUTS_PATH = `${BASE_PATH.SRC}/layouts`;
+const PAGES_PATH = `${BASE_PATH.SRC}/pages`;
 const ROUTER_PATH = `${BASE_PATH.SRC}/router`;
 
 const BREAK_LINE = process.platform.startsWith('win') ? '\r\n' : '\n';
 
-const readFileAsJSON = (path) => JSON.stringify(fs.readFileSync(path, 'utf8').toString());
+const readFile = (path) => JSON.stringify(fs.readFileSync(path, 'utf8').toString());
 
 const getAllDirsInDirectory = (path) => fs.readdirSync(path).filter((dir) => !dir.includes('.'));
 
@@ -227,7 +228,7 @@ const plopConfig = (plop) => {
 
       data.layoutBasePath = rawLayoutBasePath.replace('/', '');
 
-      const alreadyExistPaths = readFileAsJSON('./src/router/enums.ts')
+      const alreadyExistPaths = readFile(`${ROUTER_PATH}/enums.ts`)
         .split('export enum EPagePath')[0]
         .match(/'(.*?)'/g)
         .map((w) => w.replace(/'(.*?)'/g, '$1'));
@@ -461,19 +462,7 @@ const plopConfig = (plop) => {
         {
           type: PLOP_ACTION_TYPE.MODIFY,
           path: `${ROUTER_PATH}/enums.ts`,
-          pattern: new RegExp(
-            BREAK_LINE + plop.renderString("  {{constantCase rawLayoutName}} = '{{dashCase rawLayoutName}}',", { rawLayoutName }),
-            'g'
-          ),
-          template: ''
-        },
-        {
-          type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/enums.ts`,
-          pattern: new RegExp(
-            BREAK_LINE + plop.renderString("  {{constantCase rawLayoutName}} = '{{dashCase rawLayoutName}}'", { rawLayoutName }),
-            'g'
-          ),
+          pattern: new RegExp(BREAK_LINE + plop.renderString('  {{constantCase rawLayoutName}}.*', { rawLayoutName }), 'g'),
           template: ''
         },
         {
@@ -578,15 +567,15 @@ const plopConfig = (plop) => {
     actions: (data) => {
       const { pageType, layoutName, pageName, rawPagePath } = data;
       const correctPageType = pageType || PROTECTION_TYPE.PRIVATE;
-      const pageDirPath = `${BASE_PATH.SRC}/pages/{{lowerCase correctPageType}}/{{pascalCase pageName}}`;
-      const indexFileInPagesDirPath = `${BASE_PATH.SRC}/pages/{{lowerCase correctPageType}}/index.ts`;
+      const pageDirPath = `${PAGES_PATH}/{{lowerCase correctPageType}}/{{pascalCase pageName}}`;
+      const indexFileInPagesDirPath = `${PAGES_PATH}/{{lowerCase correctPageType}}/index.ts`;
 
       if (!pageName) throw new Error('Page name should not empty!');
 
       data.pagePath = rawPagePath.replace('/', '');
       data.layoutNameWithoutSuffix = layoutName.replace(/Layout[\S\s]*\)/g, '');
 
-      const alreadyExistPaths = readFileAsJSON('./src/router/enums.ts')
+      const alreadyExistPaths = readFile(`${ROUTER_PATH}/enums.ts`)
         .split('export enum ESpecialPath')[0]
         .match(/'(.*?)'/g)
         .map((w) => w.replace(/'(.*?)'/g, '$1'));
@@ -688,37 +677,32 @@ const plopConfig = (plop) => {
     description: 'Remove Page',
     prompts: [
       {
-        type: PLOP_PROMPT_TYPE.INPUT,
+        type: PLOP_PROMPT_TYPE.LIST,
         name: 'pageName',
-        message: 'Page name?'
-      },
-      {
-        type: PLOP_PROMPT_TYPE.LIST,
-        name: 'layoutName',
         choices: () => {
-          const privateLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/private`).map((layout) => `${layout} (private)`);
-          const publicLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/public`).map((layout) => `${layout} (public)`);
-          const layouts = [...privateLayouts, ...publicLayouts].filter((dir) => !dir.includes('.'));
-          return layouts;
+          const privatePages = getAllDirsInDirectory(`${PAGES_PATH}/private`).map((page) => `${page} (private)`);
+          const publicPages = getAllDirsInDirectory(`${PAGES_PATH}/public`).map((page) => `${page} (public)`);
+          const pages = [...privatePages, ...publicPages].filter((dir) => !dir.includes('.'));
+          return pages;
         },
-        message: 'Belong to?',
-        when: ({ pageName }) => !!pageName
-      },
-      {
-        type: PLOP_PROMPT_TYPE.LIST,
-        name: 'pageType',
-        choices: Object.values(PROTECTION_TYPE),
-        message: 'Page type?',
-        when: ({ pageName, layoutName }) => !!pageName && layoutName.includes(PROTECTION_TYPE.PUBLIC)
-      },
-      {
-        type: PLOP_PROMPT_TYPE.INPUT,
-        name: 'rawPagePath',
-        message: 'Page path?',
-        when: ({ pageName }) => !!pageName
+        message: 'Page name?'
       }
     ],
-    actions: (data) => []
+    actions: ({ pageName }) => {
+      const routerConfig = readFile(`${ROUTER_PATH}/config.ts`);
+      const pageProtectionType = pageName.split('(')[1].replace(')', '');
+      const regexMark = plop.renderString('path: EPagePath.{{constantCase pageName}}', { pageName });
+      const numberLineAfterRegexMark = pageProtectionType === PROTECTION_TYPE.PUBLIC ? 5 : 7;
+      const pageConfigRegex = new RegExp(`{([${BREAK_LINE}].*?)(.*?(?:${regexMark}).*)(([${BREAK_LINE}]+([^${BREAK_LINE}]+)){${numberLineAfterRegexMark}})`, 'g');
+      const pageObj = routerConfig.match(pageConfigRegex)[0];
+
+      const privateLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/private`).map((layout) => `${layout} (private)`);
+      const publicLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/public`).map((layout) => `${layout} (public)`);
+      const layouts = [...privateLayouts, ...publicLayouts].filter((dir) => !dir.includes('.'));
+      const layout = layouts.find((l) => pageObj.includes(l));
+
+      return [];
+    }
   });
 };
 

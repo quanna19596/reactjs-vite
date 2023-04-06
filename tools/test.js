@@ -1,17 +1,15 @@
-import fs from 'fs';
+import { readFile } from './utils.js';
 
-const a = fs.readFileSync('./src/router/enums.ts', 'utf8').toString();
+const fileData = readFile('./src/router/config.ts');
 
-const x = JSON.stringify(fs.readFileSync('./src/router/enums.ts', 'utf8').toString())
-  .split('export enum EPagePath')[0]
-  .match(regex)
-  .map((w) => w.replace(regex, '$1'));
+const BREAK_LINE = process.platform.startsWith('win') ? '\r\n' : '\n';
 
-const regex = /'(.*?)'/g;
+const rg = new RegExp(`{([${BREAK_LINE}].*?)(.*?(?:path: EPagePath.${'SIGN_IN'}).*)(([${BREAK_LINE}]+([^${BREAK_LINE}]+)){7})`, 'g');
 
-console.log(
-  x
-    .split('export enum EPagePath')[0]
-    .match(regex)
-    .map((w) => w.replace(regex, '$1'))
-);
+const layouts = ['DashboardLayout', 'LandingLayout'];
+
+const pageObj = fileData.match(rg)[0];
+
+const layout = layouts.find((l) => pageObj.includes(l));
+
+console.log(layout);
