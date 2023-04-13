@@ -32,14 +32,38 @@ const PLOP_PROMPT_TYPE = {
 const COMPONENT_TYPE = { COMPONENTS: 'components', CONTAINERS: 'containers' };
 const PROTECTION_TYPE = { PUBLIC: 'public', PRIVATE: 'private' };
 
-const BASE_PATH = { SRC: './src', STORYBOOK: './stories', PLOP_TEMPLATE: './plop-templates' };
-
-const TEMPLATE_COMPONENT_PATH = `${BASE_PATH.PLOP_TEMPLATE}/component`;
-const TEMPLATE_LAYOUT_MAIN_COMPONENT_PATH = `${BASE_PATH.PLOP_TEMPLATE}/layout/main-component`;
-const STYLE_MAIN_CLASSES_PATH = `${BASE_PATH.SRC}/styles/main-classes.scss`;
-const LAYOUTS_PATH = `${BASE_PATH.SRC}/layouts`;
-const PAGES_PATH = `${BASE_PATH.SRC}/pages`;
-const ROUTER_PATH = `${BASE_PATH.SRC}/router`;
+const PATH = {
+  SRC: {
+    _self: './src',
+    LAYOUTS: './src/layouts',
+    PAGES: './src/pages`',
+    ROUTER: './src/router',
+    STORYBOOK: './src/stories',
+    STYLES: {
+      _self: './src/styles',
+      MAIN_CLASSES: './src/styles/main-classes.scss'
+    }
+  },
+  PLOP: {
+    _self: './plop',
+    TEMPLATES: {
+      self: './plop/templates',
+      COMPONENT: './plop/templates/component',
+      LAYOUT: {
+        _self: './plop/templates/layout',
+        MAIN_COMPONENT: './plop/templates/layout/main-component',
+        PRIVATE: './plop/templates/layout/private',
+        PUBLIC: './plop/templates/layout/public'
+      },
+      PAGE: {
+        _self: './plop/templates/page',
+        PRIVATE: './plop/templates/page/private',
+        PUBLIC: './plop/templates/page/public'
+      }
+    },
+    CONFIG: './plop/config'
+  }
+};
 
 const BREAK_LINE = process.platform.startsWith('win') ? '\r\n' : '\n';
 
@@ -84,20 +108,20 @@ const plopConfig = (plop) => {
       }
     ],
     actions: ({ componentType }) => {
-      const componentDirPath = `${BASE_PATH.SRC}/${componentType}/{{pascalCase componentName}}`;
-      const indexFileInComponentTypeDirPath = `${BASE_PATH.SRC}/${componentType}/index.ts`;
-      const storyFilePath = `${BASE_PATH.STORYBOOK}/${componentType}/{{pascalCase componentName}}.stories.tsx`;
+      const componentDirPath = `${PATH.SRC._self}/${componentType}/{{pascalCase componentName}}`;
+      const indexFileInComponentTypeDirPath = `${PATH.SRC._self}/${componentType}/index.ts`;
+      const storyFilePath = `${PATH.STORYBOOK}/${componentType}/{{pascalCase componentName}}.stories.tsx`;
 
       return [
         {
           type: PLOP_ACTION_TYPE.ADD_MANY,
           destination: componentDirPath,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`
+          base: PATH.PLOP.TEMPLATES.COMPONENT,
+          templateFiles: `${PATH.PLOP.TEMPLATES.COMPONENT}/*`
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: STYLE_MAIN_CLASSES_PATH,
+          path: PATH.SRC.STYLES.MAIN_CLASSES,
           pattern: /(\/\/ \[END\] Components)/g,
           template: "${{pascalCase componentName}}: '.{{pascalCase componentName}}';" + BREAK_LINE + '$1'
         },
@@ -122,7 +146,7 @@ const plopConfig = (plop) => {
         {
           type: PLOP_ACTION_TYPE.ADD,
           path: storyFilePath,
-          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/storybook.hbs`
+          templateFile: `${PATH.PLOP.TEMPLATES.self}/storybook.hbs`
         },
         { type: PLOP_ACTION_TYPE.PRETTIER }
       ];
@@ -136,8 +160,8 @@ const plopConfig = (plop) => {
         type: PLOP_PROMPT_TYPE.LIST,
         name: 'rawComponentName',
         choices: () => {
-          const unitComponents = getAllDirsInDirectory(`${BASE_PATH.SRC}/components`).map((comp) => `${comp} (components)`);
-          const containerComponents = getAllDirsInDirectory(`${BASE_PATH.SRC}/containers`).map((comp) => `${comp} (containers)`);
+          const unitComponents = getAllDirsInDirectory(`${PATH.SRC._self}/components`).map((comp) => `${comp} (components)`);
+          const containerComponents = getAllDirsInDirectory(`${PATH.SRC._self}/containers`).map((comp) => `${comp} (containers)`);
           const components = [...unitComponents, ...containerComponents].filter((comp) => !comp.includes('.'));
           return components;
         },
@@ -147,9 +171,9 @@ const plopConfig = (plop) => {
     actions: ({ rawComponentName }) => {
       const componentName = rawComponentName.split(' (')[0];
       const componentType = rawComponentName.split('(')[1].replace(')', '');
-      const componentDirPath = `${BASE_PATH.SRC}/${componentType}/${componentName}`;
-      const storyFilePath = `${BASE_PATH.STORYBOOK}/${componentType}/${componentName}.stories.tsx`;
-      const indexFileInComponentTypeDirPath = `${BASE_PATH.SRC}/${componentType}/index.ts`;
+      const componentDirPath = `${PATH.SRC._self}/${componentType}/${componentName}`;
+      const storyFilePath = `${PATH.SRC.STORYBOOK}/${componentType}/${componentName}.stories.tsx`;
+      const indexFileInComponentTypeDirPath = `${PATH.SRC._self}/${componentType}/index.ts`;
 
       const templateRenderedStyle = `$${componentName}: '.${componentName}';`;
       const indexFileImportLineTemplate = `import ${componentName}, { T${componentName}Props } from './${componentName}';`;
@@ -161,7 +185,7 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: STYLE_MAIN_CLASSES_PATH,
+          path: PATH.SRC.STYLES.MAIN_CLASSES,
           pattern: new RegExp(BREAK_LINE + `\\${templateRenderedStyle}`, 'g'),
           template: ''
         },
@@ -228,18 +252,20 @@ const plopConfig = (plop) => {
 
       data.layoutBasePath = rawLayoutBasePath.replace('/', '');
 
-      const alreadyExistPaths = readFile(`${ROUTER_PATH}/enums.ts`)
-        .split('export enum EPagePath')[0]
-        .match(/'(.*?)'/g)
-        .map((w) => w.replace(/'(.*?)'/g, '$1'));
+      const alreadyExistPaths = readFile(`${PATH.SRC.ROUTER}/enums.ts`)
+        ?.split('export enum EPagePath')[0]
+        ?.match(/'(.*?)'/g)
+        ?.map((w) => w.replace(/'(.*?)'/g, '$1'));
 
-      const layoutBasePathIsAlreadyExist = alreadyExistPaths.includes(data.layoutBasePath);
+      const layoutBasePathIsAlreadyExist = alreadyExistPaths?.includes(data.layoutBasePath);
 
       if (!rawLayoutBasePath) throw new Error('Layout base path should not empty!');
       if (layoutBasePathIsAlreadyExist) throw new Error('Layout base path is already exist!');
 
       data.layoutName = `${rawLayoutName}Layout`;
-      const layoutDirPath = plop.renderString(`${LAYOUTS_PATH}/${layoutType}/{{pascalCase layoutName}}`, { layoutName: data.layoutName });
+      const layoutDirPath = plop.renderString(`${PATH.SRC.LAYOUTS}/${layoutType}/{{pascalCase layoutName}}`, {
+        layoutName: data.layoutName
+      });
       const layoutParts = {
         default: {
           path: `${layoutDirPath}/default`,
@@ -282,36 +308,36 @@ const plopConfig = (plop) => {
         {
           type: PLOP_ACTION_TYPE.ADD_MANY,
           destination: layoutParts.default.path,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+          base: PATH.PLOP.TEMPLATES.COMPONENT,
+          templateFiles: `${PATH.PLOP.TEMPLATES.COMPONENT}/*`,
           data: { componentName: layoutParts.default.componentName }
         },
         {
           type: PLOP_ACTION_TYPE.ADD_MANY,
           destination: layoutParts.error.path,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+          base: PATH.PLOP.TEMPLATES.COMPONENT,
+          templateFiles: `${PATH.PLOP.TEMPLATES.COMPONENT}/*`,
           data: { componentName: layoutParts.error.componentName }
         },
         {
           type: PLOP_ACTION_TYPE.ADD_MANY,
           destination: layoutParts.main.path,
-          base: TEMPLATE_LAYOUT_MAIN_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_LAYOUT_MAIN_COMPONENT_PATH}/*`,
+          base: PATH.PLOP.TEMPLATES.LAYOUT.MAIN_COMPONENT,
+          templateFiles: `${PATH.PLOP.TEMPLATES.LAYOUT.MAIN_COMPONENT}/*`,
           data: { componentName: layoutParts.main.componentName }
         },
         {
           type: PLOP_ACTION_TYPE.ADD_MANY,
           destination: layoutParts.notFound.path,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+          base: PATH.PLOP.TEMPLATES.COMPONENT,
+          templateFiles: `${PATH.PLOP.TEMPLATES.COMPONENT}/*`,
           data: { componentName: layoutParts.notFound.componentName }
         },
         {
           type: PLOP_ACTION_TYPE.ADD_MANY,
           destination: layoutParts.permissionDenied.path,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+          base: PATH.PLOP.TEMPLATES.COMPONENT,
+          templateFiles: `${PATH.PLOP.TEMPLATES.COMPONENT}/*`,
           data: { componentName: layoutParts.permissionDenied.componentName },
           skip: () => {
             if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
@@ -320,7 +346,7 @@ const plopConfig = (plop) => {
         {
           type: PLOP_ACTION_TYPE.ADD,
           path: `${layoutDirPath}/index.ts`,
-          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/index.hbs`,
+          templateFile: `${PATH.PLOP.TEMPLATES.self}/layout/private/index.hbs`,
           data: { componentName: data.layoutName },
           skip: () => {
             if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
@@ -329,7 +355,7 @@ const plopConfig = (plop) => {
         {
           type: PLOP_ACTION_TYPE.ADD,
           path: `${layoutDirPath}/index.ts`,
-          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/index.hbs`,
+          templateFile: `${PATH.PLOP.TEMPLATES.self}/layout/public/index.hbs`,
           data: { componentName: data.layoutName },
           skip: () => {
             if (layoutType === PROTECTION_TYPE.PRIVATE) return '';
@@ -337,14 +363,14 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${LAYOUTS_PATH}/${layoutType}/index.ts`,
+          path: `${PATH.SRC.LAYOUTS}/${layoutType}/index.ts`,
           pattern: new RegExp('(' + BREAK_LINE + ')', 'g'),
           template: `${BREAK_LINE}export * from './{{pascalCase componentName}}';$1`,
           data: { componentName: data.layoutName }
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: STYLE_MAIN_CLASSES_PATH,
+          path: PATH.SRC.STYLES.MAIN_CLASSES,
           pattern: /(\/\/ \[END\] Layouts)/g,
           template: `${layoutParts.default.templateInMainClassesFile};${layoutParts.error.templateInMainClassesFile};${layoutParts.main.templateInMainClassesFile};${layoutParts.notFound.templateInMainClassesFile};${layoutParts.permissionDenied.templateInMainClassesFile}${BREAK_LINE}$1`,
           skip: () => {
@@ -353,7 +379,7 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: STYLE_MAIN_CLASSES_PATH,
+          path: PATH.SRC.STYLES.MAIN_CLASSES,
           pattern: /(\/\/ \[END\] Layouts)/g,
           template: `${layoutParts.default.templateInMainClassesFile};${layoutParts.error.templateInMainClassesFile};${layoutParts.main.templateInMainClassesFile};${layoutParts.notFound.templateInMainClassesFile}${BREAK_LINE}$1`,
           skip: () => {
@@ -362,13 +388,13 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/enums.ts`,
+          path: `${PATH.SRC.ROUTER}/enums.ts`,
           pattern: /(ELayoutPath[\S\s]*)(}[\S\s]*EPagePath)/g,
           template: "$1,{{constantCase rawLayoutName}} = '{{dashCase layoutBasePath}}'$2"
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/config.ts`,
+          path: `${PATH.SRC.ROUTER}/config.ts`,
           pattern: /(import[\S\s]*)(} from '@\/layouts')/g,
           template: `$1,${layoutParts.main.componentName},${layoutParts.default.componentName},${layoutParts.error.componentName},${layoutParts.notFound.componentName}$2`,
           skip: () => {
@@ -377,7 +403,7 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/config.ts`,
+          path: `${PATH.SRC.ROUTER}/config.ts`,
           pattern: /(import[\S\s]*)(} from '@\/layouts')/g,
           template: `$1,${layoutParts.main.componentName},${layoutParts.default.componentName},${layoutParts.error.componentName},${layoutParts.notFound.componentName},${layoutParts.permissionDenied.componentName}$2`,
           skip: () => {
@@ -386,9 +412,9 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/config.ts`,
+          path: `${PATH.SRC.ROUTER}/config.ts`,
           pattern: new RegExp('(routes[\\S\\s]*)(]' + BREAK_LINE + '};)', 'g'),
-          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/private/router-config.hbs`,
+          templateFile: `${PATH.PLOP.TEMPLATES.self}/layout/private/router-config.hbs`,
           data: { rawLayoutName, layoutName: data.layoutName },
           skip: () => {
             if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
@@ -396,9 +422,9 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/config.ts`,
+          path: `${PATH.SRC.ROUTER}/config.ts`,
           pattern: new RegExp('(routes[\\S\\s]*)(]' + BREAK_LINE + '};)', 'g'),
-          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/layout/public/router-config.hbs`,
+          templateFile: `${PATH.PLOP.TEMPLATES.self}/layout/public/router-config.hbs`,
           data: { rawLayoutName, layoutName: data.layoutName },
           skip: () => {
             if (layoutType === PROTECTION_TYPE.PRIVATE) return '';
@@ -416,8 +442,8 @@ const plopConfig = (plop) => {
         type: PLOP_PROMPT_TYPE.LIST,
         name: 'layoutNameWithType',
         choices: () => {
-          const privateLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/private`).map((layout) => `${layout} (private)`);
-          const publicLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/public`).map((layout) => `${layout} (public)`);
+          const privateLayouts = getAllDirsInDirectory(`${PATH.SRC.LAYOUTS}/private`).map((layout) => `${layout} (private)`);
+          const publicLayouts = getAllDirsInDirectory(`${PATH.SRC.LAYOUTS}/public`).map((layout) => `${layout} (public)`);
           const layouts = [...privateLayouts, ...publicLayouts].filter((dir) => !dir.includes('.'));
           return layouts;
         },
@@ -428,7 +454,7 @@ const plopConfig = (plop) => {
       const layoutName = layoutNameWithType.split(' (')[0];
       const layoutType = layoutNameWithType.split('(')[1].replace(')', '');
       const rawLayoutName = layoutName.replace('Layout', '');
-      const layoutDirPath = `${LAYOUTS_PATH}/${layoutType}/${layoutName}`;
+      const layoutDirPath = `${PATH.SRC.LAYOUTS}/${layoutType}/${layoutName}`;
 
       return [
         {
@@ -437,13 +463,13 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${LAYOUTS_PATH}/${layoutType}/index.ts`,
+          path: `${PATH.SRC.LAYOUTS}/${layoutType}/index.ts`,
           pattern: new RegExp(BREAK_LINE + "export \\* from './" + layoutName + "';", 'g'),
           template: ''
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: STYLE_MAIN_CLASSES_PATH,
+          path: PATH.SRC.STYLES.MAIN_CLASSES,
           pattern: new RegExp(BREAK_LINE + '\\$' + layoutName + 'Default[\\S\\s]*' + layoutName + "PermissionDenied';", 'g'),
           template: '',
           skip: () => {
@@ -452,7 +478,7 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: STYLE_MAIN_CLASSES_PATH,
+          path: PATH.SRC.STYLES.MAIN_CLASSES,
           pattern: new RegExp(BREAK_LINE + '\\$' + layoutName + 'Default[\\S\\s]*' + layoutName + "NotFound';", 'g'),
           template: '',
           skip: () => {
@@ -461,13 +487,13 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/enums.ts`,
+          path: `${PATH.SRC.ROUTER}/enums.ts`,
           pattern: new RegExp(BREAK_LINE + plop.renderString('  {{constantCase rawLayoutName}}.*', { rawLayoutName }), 'g'),
           template: ''
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/config.ts`,
+          path: `${PATH.SRC.ROUTER}/config.ts`,
           pattern: new RegExp(`${layoutName}[\\S\\s]*${layoutName}NotFound,([\\S\\s]*} from '@/layouts')`, 'g'),
           template: '$1',
           skip: () => {
@@ -476,7 +502,7 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/config.ts`,
+          path: `${PATH.SRC.ROUTER}/config.ts`,
           pattern: new RegExp(`${layoutName}[\\S\\s]*${layoutName}NotFound([\\S\\s]*} from '@/layouts')`, 'g'),
           template: '$1',
           skip: () => {
@@ -485,7 +511,7 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/config.ts`,
+          path: `${PATH.SRC.ROUTER}/config.ts`,
           pattern: new RegExp(`${layoutName}[\\S\\s]*${layoutName}PermissionDenied,([\\S\\s]*} from '@/layouts')`, 'g'),
           template: '$1',
           skip: () => {
@@ -494,7 +520,7 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/config.ts`,
+          path: `${PATH.SRC.ROUTER}/config.ts`,
           pattern: new RegExp(`${layoutName}[\\S\\s]*${layoutName}PermissionDenied([\\S\\s]*} from '@/layouts')`, 'g'),
           template: '$1',
           skip: () => {
@@ -503,7 +529,7 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/config.ts`,
+          path: `${PATH.SRC.ROUTER}/config.ts`,
           pattern: new RegExp(
             BREAK_LINE +
               '    {' +
@@ -542,8 +568,8 @@ const plopConfig = (plop) => {
         type: PLOP_PROMPT_TYPE.LIST,
         name: 'layoutName',
         choices: () => {
-          const privateLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/private`).map((layout) => `${layout} (private)`);
-          const publicLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/public`).map((layout) => `${layout} (public)`);
+          const privateLayouts = getAllDirsInDirectory(`${PATH.SRC.LAYOUTS}/private`).map((layout) => `${layout} (private)`);
+          const publicLayouts = getAllDirsInDirectory(`${PATH.SRC.LAYOUTS}/public`).map((layout) => `${layout} (public)`);
           const layouts = [...privateLayouts, ...publicLayouts].filter((dir) => !dir.includes('.'));
           return layouts;
         },
@@ -567,20 +593,20 @@ const plopConfig = (plop) => {
     actions: (data) => {
       const { pageType, layoutName, pageName, rawPagePath } = data;
       const correctPageType = pageType || PROTECTION_TYPE.PRIVATE;
-      const pageDirPath = `${PAGES_PATH}/{{lowerCase correctPageType}}/{{pascalCase pageName}}`;
-      const indexFileInPagesDirPath = `${PAGES_PATH}/{{lowerCase correctPageType}}/index.ts`;
+      const pageDirPath = `${PATH.SRC.PAGES}/{{lowerCase correctPageType}}/{{pascalCase pageName}}`;
+      const indexFileInPagesDirPath = `${PATH.SRC.PAGES}/{{lowerCase correctPageType}}/index.ts`;
 
       if (!pageName) throw new Error('Page name should not empty!');
 
       data.pagePath = rawPagePath.replace('/', '');
       data.layoutNameWithoutSuffix = layoutName.replace(/Layout[\S\s]*\)/g, '');
 
-      const alreadyExistPaths = readFile(`${ROUTER_PATH}/enums.ts`)
-        .split('export enum ESpecialPath')[0]
-        .match(/'(.*?)'/g)
-        .map((w) => w.replace(/'(.*?)'/g, '$1'));
+      const alreadyExistPaths = readFile(`${PATH.SRC.ROUTER}/enums.ts`)
+        ?.split('export enum ESpecialPath')[0]
+        ?.match(/'(.*?)'/g)
+        ?.map((w) => w.replace(/'(.*?)'/g, '$1'));
 
-      const pagePathIsAlreadyExist = alreadyExistPaths.includes(data.pagePath);
+      const pagePathIsAlreadyExist = alreadyExistPaths?.includes(data.pagePath);
 
       if (!rawPagePath) throw new Error('Page path should not empty!');
       if (pagePathIsAlreadyExist) throw new Error('Page path is already exist!');
@@ -589,13 +615,13 @@ const plopConfig = (plop) => {
         {
           type: PLOP_ACTION_TYPE.ADD_MANY,
           destination: pageDirPath,
-          base: TEMPLATE_COMPONENT_PATH,
-          templateFiles: `${TEMPLATE_COMPONENT_PATH}/*`,
+          base: PATH.PLOP.TEMPLATES.COMPONENT,
+          templateFiles: `${PATH.PLOP.TEMPLATES.COMPONENT}/*`,
           data: { correctPageType, componentName: pageName, ...data }
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: STYLE_MAIN_CLASSES_PATH,
+          path: PATH.SRC.STYLES.MAIN_CLASSES,
           pattern: /(\/\/ \[END\] Pages)/g,
           template: "${{pascalCase pageName}}: '.{{pascalCase pageName}}';" + BREAK_LINE + '$1'
         },
@@ -622,19 +648,19 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/enums.ts`,
+          path: `${PATH.SRC.ROUTER}/enums.ts`,
           pattern: /(EPagePath[\S\s]*)(}[\S\s]*ESpecialPath)/g,
           template: "$1,{{constantCase pageName}} = '{{dashCase pagePath}}'$2"
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/config.ts`,
+          path: `${PATH.SRC.ROUTER}/config.ts`,
           pattern: /(import [\S\s]*)(} from '@\/router')/g,
           template: '$1,{{pascalCase pageName}}$2'
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/config.ts`,
+          path: `${PATH.SRC.ROUTER}/config.ts`,
           pattern: new RegExp(
             plop.renderString(
               '(path: ELayoutPath.{{constantCase layoutNameWithoutSuffix}}[\\S\\s]*},)([\\S\\s]*{{pascalCase layoutNameWithoutSuffix}}LayoutNotFound)',
@@ -644,7 +670,7 @@ const plopConfig = (plop) => {
             ),
             'g'
           ),
-          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/page/private/router-config.hbs`,
+          templateFile: `${PATH.PLOP.TEMPLATES.self}/page/private/router-config.hbs`,
           data: { layoutNameWithoutType: `${data.layoutNameWithoutSuffix}Layout` },
           skip: () => {
             if (correctPageType === PROTECTION_TYPE.PUBLIC) return '';
@@ -652,7 +678,7 @@ const plopConfig = (plop) => {
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
-          path: `${ROUTER_PATH}/config.ts`,
+          path: `${PATH.SRC.ROUTER}/config.ts`,
           pattern: new RegExp(
             plop.renderString(
               '(path: ELayoutPath.{{constantCase layoutNameWithoutSuffix}}[\\S\\s]*},)([\\S\\s]*{{pascalCase layoutNameWithoutSuffix}}LayoutNotFound)',
@@ -662,7 +688,7 @@ const plopConfig = (plop) => {
             ),
             'g'
           ),
-          templateFile: `${BASE_PATH.PLOP_TEMPLATE}/page/public/router-config.hbs`,
+          templateFile: `${PATH.PLOP.TEMPLATES.self}/page/public/router-config.hbs`,
           data: { layoutNameWithoutType: `${data.layoutNameWithoutSuffix}Layout` },
           skip: () => {
             if (correctPageType === PROTECTION_TYPE.PRIVATE) return '';
@@ -680,8 +706,8 @@ const plopConfig = (plop) => {
         type: PLOP_PROMPT_TYPE.LIST,
         name: 'pageName',
         choices: () => {
-          const privatePages = getAllDirsInDirectory(`${PAGES_PATH}/private`).map((page) => `${page} (private)`);
-          const publicPages = getAllDirsInDirectory(`${PAGES_PATH}/public`).map((page) => `${page} (public)`);
+          const privatePages = getAllDirsInDirectory(`${PATH.SRC.PAGES}/private`).map((page) => `${page} (private)`);
+          const publicPages = getAllDirsInDirectory(`${PATH.SRC.PAGES}/public`).map((page) => `${page} (public)`);
           const pages = [...privatePages, ...publicPages].filter((dir) => !dir.includes('.'));
           return pages;
         },
@@ -689,17 +715,20 @@ const plopConfig = (plop) => {
       }
     ],
     actions: ({ pageName }) => {
-      const routerConfig = readFile(`${ROUTER_PATH}/config.ts`);
+      const routerConfig = readFile(`${PATH.SRC.ROUTER}/config.ts`);
       const pageProtectionType = pageName.split('(')[1].replace(')', '');
       const regexMark = plop.renderString('path: EPagePath.{{constantCase pageName}}', { pageName });
       const numberLineAfterRegexMark = pageProtectionType === PROTECTION_TYPE.PUBLIC ? 5 : 7;
-      const pageConfigRegex = new RegExp(`{([${BREAK_LINE}].*?)(.*?(?:${regexMark}).*)(([${BREAK_LINE}]+([^${BREAK_LINE}]+)){${numberLineAfterRegexMark}})`, 'g');
-      const pageObj = routerConfig.match(pageConfigRegex)[0];
+      const pageConfigRegex = new RegExp(
+        `{([${BREAK_LINE}].*?)(.*?(?:${regexMark}).*)(([${BREAK_LINE}]+([^${BREAK_LINE}]+)){${numberLineAfterRegexMark}})`,
+        'g'
+      );
+      const pageObj = routerConfig?.match(pageConfigRegex)?.[0];
 
-      const privateLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/private`).map((layout) => `${layout} (private)`);
-      const publicLayouts = getAllDirsInDirectory(`${LAYOUTS_PATH}/public`).map((layout) => `${layout} (public)`);
+      const privateLayouts = getAllDirsInDirectory(`${PATH.SRC.LAYOUTS}/private`).map((layout) => `${layout} (private)`);
+      const publicLayouts = getAllDirsInDirectory(`${PATH.SRC.LAYOUTS}/public`).map((layout) => `${layout} (public)`);
       const layouts = [...privateLayouts, ...publicLayouts].filter((dir) => !dir.includes('.'));
-      const layout = layouts.find((l) => pageObj.includes(l));
+      const layout = layouts.find((l) => pageObj?.includes(l));
 
       return [];
     }
