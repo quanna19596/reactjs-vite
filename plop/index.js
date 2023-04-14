@@ -1,4 +1,4 @@
-import generator from './generators';
+import generator from './generators/index.js';
 import actionType from './actionType.js';
 import helper from './helper.js';
 
