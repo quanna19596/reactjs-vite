@@ -142,8 +142,9 @@ export default (plop) => ({
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: `${PATH.SRC.ROUTER}/utils/lazy-importter.ts`,
-        pattern: new RegExp('/(// [END] ' + capitalize(correctPageType) + ')/', 'g'),
-        template: "export const {{constantCase pageName}} = lazy(() => retryLoadComponent(() => import('@/pages/{{correctPageType}}/{{constantCase pageName}}')));" + BREAK_LINE + '$1',
+        pattern: new RegExp('(// \\[END\\] ' + capitalize(correctPageType) + ')', 'g'),
+        template: "export const {{pascalCase pageName}} = lazy(() => retryLoadComponent(() => import('@/pages/{{correctPageType}}/{{pascalCase pageName}}')));" + BREAK_LINE + '$1',
+        data: { correctPageType }
       },
       { type: PLOP_ACTION_TYPE.PRETTIER }
     ];
