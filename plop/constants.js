@@ -32,7 +32,7 @@ export const PATH = {
   SRC: {
     _self: './src',
     LAYOUTS: './src/layouts',
-    PAGES: './src/pages`',
+    PAGES: './src/pages',
     ROUTER: './src/router',
     STYLES: {
       _self: './src/styles',
