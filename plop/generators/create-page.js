@@ -1,5 +1,5 @@
 import { BREAK_LINE, PATH, PLOP_ACTION_TYPE, PLOP_PROMPT_TYPE, PROTECTION_TYPE } from "../constants.js";
-import { getAllDirsInDirectory, readFile } from "../utils.js";
+import { getAllDirsInDirectory, readFile, capitalize } from "../utils.js";
 
 export default (plop) => ({
   description: 'Create Page',
@@ -138,6 +138,12 @@ export default (plop) => ({
         skip: () => {
           if (correctPageType === PROTECTION_TYPE.PRIVATE) return '';
         }
+      },
+      {
+        type: PLOP_ACTION_TYPE.MODIFY,
+        path: `${PATH.SRC.ROUTER}/utils/lazy-importter.ts`,
+        pattern: new RegExp('/(// [END] ' + capitalize(correctPageType), 'g'),
+        template: "export const {{constantCase pageName}} = lazy(() => retryLoadComponent(() => import('@/pages/{{correctPageType}}/{{constantCase pageName}}')));" + BREAK_LINE + '$1',
       },
       { type: PLOP_ACTION_TYPE.PRETTIER }
     ];

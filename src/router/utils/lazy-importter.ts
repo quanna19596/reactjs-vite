@@ -21,8 +21,12 @@ export const AppError = lazy(() => retryLoadComponent(() => import('@/pages/comm
 export const AppNotFound = lazy(() => retryLoadComponent(() => import('@/pages/common/AppNotFound')));
 export const AppPermissionDenied = lazy(() => retryLoadComponent(() => import('@/pages/common/AppPermissionDenied')));
 
+// [BEGIN] Public
 export const SignIn = lazy(() => retryLoadComponent(() => import('@/pages/public/SignIn')));
 export const SignUp = lazy(() => retryLoadComponent(() => import('@/pages/public/SignUp')));
+// [END] Public
 
+// [BEGIN] Private
 export const Products = lazy(() => retryLoadComponent(() => import('@/pages/private/Products')));
 export const Users = lazy(() => retryLoadComponent(() => import('@/pages/private/Users')));
+// [END] Private
