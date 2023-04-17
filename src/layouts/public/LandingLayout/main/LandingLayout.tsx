@@ -1,7 +1,8 @@
 import { Outlet } from 'react-router-dom';
 
-import './LandingLayout.scss';
 import { TLandingLayoutProps } from './LandingLayout.types';
+
+import './LandingLayout.scss';
 
 const LandingLayout: React.FC<TLandingLayoutProps> = () => {
   return (

@@ -1,7 +1,7 @@
 import cookie from 'react-cookies';
 
 import env from '@/env';
-import { ELayoutPath, EPagePath, routerConfig, TRoute } from '@/router';
+import { routerConfig, TRoute } from '@/router';
 
 export const urlSafe = (url: string): string => {
   return url
@@ -11,7 +11,7 @@ export const urlSafe = (url: string): string => {
     .toLowerCase();
 };
 
-export const getFullPath = (path: ELayoutPath | EPagePath): string => {
+export const getFullPath = (path: string): string => {
   let fullPath = '';
 
   const recursion = (elArr: TRoute[]): void => {

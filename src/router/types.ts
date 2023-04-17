@@ -1,5 +1,3 @@
-import { ELayoutPath, EPagePath, ESpecialPath } from '@/router';
-
 export type TRouteCommon = {
   appError: React.FC;
   appNotFound: React.FC;
@@ -15,7 +13,7 @@ export type TRouteElement = {
 };
 
 export type TRoute = {
-  path?: ELayoutPath | EPagePath | ESpecialPath;
+  path?: string;
   element: TRouteElement;
   children?: TRoute[];
 };
@@ -24,3 +22,5 @@ export type TRouteConfig = {
   common: TRouteCommon;
   routes: TRoute[];
 };
+
+export type TPathParams = { [key: string]: string };

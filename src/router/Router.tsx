@@ -1,7 +1,7 @@
 import { ErrorBoundary } from 'react-error-boundary';
 import { Route, Routes } from 'react-router-dom';
 
-import { ESpecialPath, history, HistoryRouter, PrivateRoute, PublicRoute, routerConfig, TRoute, TRouteElement } from '@/router';
+import { history, HistoryRouter, PATHS, PrivateRoute, PublicRoute, routerConfig, TRoute, TRouteElement } from '@/router';
 
 const Router: React.FC = () => {
   const elementWrapper = (element: TRouteElement): JSX.Element => {
@@ -13,7 +13,7 @@ const Router: React.FC = () => {
     return wrappedElement;
   };
 
-  const renderRoutes = (routes: TRoute[]): JSX.Element[] => {
+  const renderRoutes = (routes: TRoute[], parentRoute?: TRoute): JSX.Element[] => {
     return routes.map((route) => {
       const wrappedElement = elementWrapper(route.element);
       const isDefaultRoute = route.element.index;
@@ -22,8 +22,8 @@ const Router: React.FC = () => {
       return isDefaultRoute ? (
         <Route key='indexRoute' index {...commonRouteProps} />
       ) : (
-        <Route key={route.path} path={route.path} {...commonRouteProps}>
-          {route.children && renderRoutes(route.children)}
+        <Route key={route.path} path={`${parentRoute?.path || ''}${route.path || ''}`} {...commonRouteProps}>
+          {route.children && renderRoutes(route.children, route)}
         </Route>
       );
     });
@@ -34,7 +34,7 @@ const Router: React.FC = () => {
       <ErrorBoundary FallbackComponent={routerConfig.common.appError}>
         <Routes>
           {renderRoutes(routerConfig.routes)}
-          <Route path={ESpecialPath.REST} element={<PublicRoute component={routerConfig.common.appNotFound} />} />
+          <Route path={PATHS.SPECIAL.REST()} element={<PublicRoute component={routerConfig.common.appNotFound} />} />
         </Routes>
       </ErrorBoundary>
     </HistoryRouter>

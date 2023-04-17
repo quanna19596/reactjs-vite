@@ -11,7 +11,8 @@ import {
 } from '@/layouts';
 import { AppError, AppNotFound, AppPermissionDenied, Products, SignIn, SignUp, TRouteConfig, Users } from '@/router';
 
-import { ELayoutPath, EPagePath, ESpecialPath } from './enums';
+// import { AppError } from '@/router/utils/lazy-importter';
+import { PATHS } from './paths';
 
 export const routerConfig: TRouteConfig = {
   common: {
@@ -21,7 +22,7 @@ export const routerConfig: TRouteConfig = {
   },
   routes: [
     {
-      path: ELayoutPath.LANDING,
+      path: PATHS.LAYOUT.LANDING(),
       element: {
         component: LandingLayout
       },
@@ -34,21 +35,21 @@ export const routerConfig: TRouteConfig = {
           }
         },
         {
-          path: EPagePath.SIGN_IN,
+          path: PATHS.PAGE.SIGN_IN(),
           element: {
             component: SignIn,
             errorComponent: LandingLayoutError
           }
         },
         {
-          path: EPagePath.SIGN_UP,
+          path: PATHS.PAGE.SIGN_UP(),
           element: {
             component: SignUp,
             errorComponent: LandingLayoutError
           }
         },
         {
-          path: ESpecialPath.REST,
+          path: PATHS.SPECIAL.REST(),
           element: {
             component: LandingLayoutNotFound,
             errorComponent: LandingLayoutError
@@ -57,7 +58,7 @@ export const routerConfig: TRouteConfig = {
       ]
     },
     {
-      path: ELayoutPath.DASHBOARD,
+      path: PATHS.LAYOUT.DASHBOARD(),
       element: {
         component: DashboardLayout,
         isPrivate: true,
@@ -72,7 +73,7 @@ export const routerConfig: TRouteConfig = {
           }
         },
         {
-          path: EPagePath.PRODUCTS,
+          path: PATHS.PAGE.PRODUCTS(),
           element: {
             component: Products,
             isPrivate: true,
@@ -81,7 +82,7 @@ export const routerConfig: TRouteConfig = {
           }
         },
         {
-          path: EPagePath.USERS,
+          path: PATHS.PAGE.USERS(),
           element: {
             component: Users,
             isPrivate: true,
@@ -90,7 +91,7 @@ export const routerConfig: TRouteConfig = {
           }
         },
         {
-          path: ESpecialPath.REST,
+          path: PATHS.SPECIAL.REST(),
           element: {
             component: DashboardLayoutNotFound,
             errorComponent: DashboardLayoutError

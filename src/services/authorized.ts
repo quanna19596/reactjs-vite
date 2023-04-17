@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
 import { EStatusCode } from '@/enums';
-import { EPagePath, history } from '@/router';
+import { history, PATHS } from '@/router';
 import { ICustomAxiosRequestConfig, TTokenSubscribers } from '@/services';
 import { clearTokens, getAccessToken, getFullPath, getRefreshToken, storeAccessToken, storeRefreshToken } from '@/utils';
 
@@ -15,7 +15,7 @@ export const AuthorizedInstance = (baseURL: string): AxiosInstance => {
     baseURL
   });
 
-  const goToLogin = (): void => history.push(getFullPath(EPagePath.SIGN_IN));
+  const goToLogin = (): void => history.push(getFullPath(PATHS.PAGE.SIGN_IN()));
 
   const getBearerToken = (token: string): string => `Bearer ${token}`;
 

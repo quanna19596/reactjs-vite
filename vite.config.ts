@@ -1,10 +1,36 @@
 import react from '@vitejs/plugin-react-swc';
 import path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, ModuleNode, PluginOption } from 'vite';
 import eslint from 'vite-plugin-eslint';
 
+export const hotReload = (): PluginOption => ({
+  name: 'singleHMR',
+  handleHotUpdate({ modules }): ModuleNode[] {
+    modules.map((m) => {
+      m.importedModules = new Set();
+      m.importers = new Set();
+    });
+
+    return modules;
+  }
+});
+
 export default defineConfig({
-  plugins: [react(), eslint()],
+  plugins: [
+    react(),
+    eslint(),
+    {
+      name: 'singleHMR',
+      handleHotUpdate({ modules }): ModuleNode[] {
+        modules.map((m) => {
+          m.importedModules = new Set();
+          m.importers = new Set();
+        });
+
+        return modules;
+      }
+    }
+  ],
   server: {
     port: 3000
   },
