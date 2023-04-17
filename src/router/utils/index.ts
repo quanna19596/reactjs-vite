@@ -1,2 +1,2 @@
-export * from './lazy-importter';
 export * from './history';
+export * from './lazy-importter';

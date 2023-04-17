@@ -1,5 +1,5 @@
-import Fallback, { TFallbackProps } from './Fallback';
 import Button, { TButtonProps } from './Button';
+import Fallback, { TFallbackProps } from './Fallback';
 
-export { Fallback, Button };
-export type { TFallbackProps, TButtonProps };
+export { Button, Fallback };
+export type { TButtonProps, TFallbackProps };

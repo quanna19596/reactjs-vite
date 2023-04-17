@@ -1,6 +1,6 @@
 import { ReactNode, useLayoutEffect, useState } from 'react';
-import { Action, History, Location } from 'history';
 import { Router } from 'react-router-dom';
+import { Action, History, Location } from 'history';
 
 type TBrowserRouterProps = {
   basename?: string;

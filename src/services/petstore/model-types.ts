@@ -1,4 +1,4 @@
-import { ETagStatus, EOrderStatus } from '@/services';
+import { EOrderStatus, ETagStatus } from '@/services';
 
 export type TApiResponse = {
   code: number;

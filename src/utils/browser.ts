@@ -1,7 +1,7 @@
 import cookie from 'react-cookies';
 
 import env from '@/env';
-import { ELayoutPath, EPagePath, TRoute, routerConfig } from '@/router';
+import { ELayoutPath, EPagePath, routerConfig, TRoute } from '@/router';
 
 export const urlSafe = (url: string): string => {
   return url

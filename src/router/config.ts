@@ -9,7 +9,8 @@ import {
   LandingLayoutError,
   LandingLayoutNotFound
 } from '@/layouts';
-import { TRouteConfig, AppError, AppNotFound, AppPermissionDenied, Products, SignIn, SignUp, Users } from '@/router';
+import { AppError, AppNotFound, AppPermissionDenied, Products, SignIn, SignUp, TRouteConfig, Users } from '@/router';
+
 import { ELayoutPath, EPagePath, ESpecialPath } from './enums';
 
 export const routerConfig: TRouteConfig = {

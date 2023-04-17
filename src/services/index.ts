@@ -1,3 +1,3 @@
-export type { TTokenSubscribers, ICustomAxiosRequestConfig } from './types';
 export * from './authorized';
 export * from './petstore';
+export type { ICustomAxiosRequestConfig, TTokenSubscribers } from './types';

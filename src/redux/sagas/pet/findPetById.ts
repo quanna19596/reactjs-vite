@@ -1,8 +1,8 @@
+import { PayloadAction } from '@reduxjs/toolkit';
 import { call, put } from 'redux-saga/effects';
 
-import { findPetById, TFindPetByIdParameters } from '@/services';
 import { petActions, TRequestHandlerCallbacks } from '@/redux';
-import { PayloadAction } from '@reduxjs/toolkit';
+import { findPetById, TFindPetByIdParameters } from '@/services';
 
 export function* findPetByIdSaga(action: PayloadAction<TFindPetByIdParameters & TRequestHandlerCallbacks>): Generator {
   const { successCb, failedCb, ...params } = action.payload;

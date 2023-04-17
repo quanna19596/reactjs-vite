@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { getAccessToken } from '@/utils';
 import { Fallback } from '@/components';
+import { getAccessToken } from '@/utils';
 
 const PrivateRoute: React.FC<{
   component: React.FC;

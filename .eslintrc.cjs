@@ -17,7 +17,7 @@ module.exports = {
     'prettier',
     'plugin:storybook/recommended'
   ],
-  plugins: ['prettier'],
+  plugins: ['prettier', 'simple-import-sort'],
   settings: {
     react: {
       version: 'detect'
@@ -44,6 +44,8 @@ module.exports = {
 
     'import/prefer-default-export': 'off',
     'import/extensions': 'off',
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
 
     'no-shadow': 'off',
     'no-static-element-interactions': 'off',
@@ -110,5 +112,19 @@ module.exports = {
         jsxSingleQuote: true
       }
     ]
-  }
+  },
+  overrides: [
+    // override "simple-import-sort" config
+    {
+      files: ['*.js', '*.jsx', '*.ts', '*.tsx'],
+      rules: {
+        'simple-import-sort/imports': [
+          'error',
+          {
+            groups: [['^react', '^@?\\w'], ['^(@|components)(/.*|$)']]
+          }
+        ]
+      }
+    }
+  ]
 };

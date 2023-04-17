@@ -1,3 +1,3 @@
 export * from './pet';
+export type { TErrorHandlerPayload, TRequestHandlerCallbacks } from './types';
 export * from './utils';
-export type { TRequestHandlerCallbacks, TErrorHandlerPayload } from './types';

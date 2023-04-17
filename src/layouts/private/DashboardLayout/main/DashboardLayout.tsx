@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 
-import { TDashboardLayoutProps } from './DashboardLayout.types';
 import './DashboardLayout.scss';
+import { TDashboardLayoutProps } from './DashboardLayout.types';
 
 const DashboardLayout: React.FC<TDashboardLayoutProps> = () => {
   return (

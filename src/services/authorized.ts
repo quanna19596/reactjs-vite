@@ -1,9 +1,9 @@
-import axios, { AxiosResponse, AxiosError, AxiosInstance } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
 import { EStatusCode } from '@/enums';
-import { clearTokens, getAccessToken, getFullPath, getRefreshToken, storeAccessToken, storeRefreshToken } from '@/utils';
-import { TTokenSubscribers, ICustomAxiosRequestConfig } from '@/services';
 import { EPagePath, history } from '@/router';
+import { ICustomAxiosRequestConfig, TTokenSubscribers } from '@/services';
+import { clearTokens, getAccessToken, getFullPath, getRefreshToken, storeAccessToken, storeRefreshToken } from '@/utils';
 
 // import { EAuthEndPoint } from './eco/auth/endpoints';
 

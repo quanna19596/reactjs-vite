@@ -1,5 +1,5 @@
+import HistoryRouter from './HistoryRouter';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
-import HistoryRouter from './HistoryRouter';
 
-export { PrivateRoute, PublicRoute, HistoryRouter };
+export { HistoryRouter, PrivateRoute, PublicRoute };

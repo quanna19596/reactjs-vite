@@ -1,5 +1,5 @@
+import { errorHandler, requestHandler } from '@/redux/slices/utils';
 import { TFindPetByIdParameters } from '@/services';
-import { requestHandler, errorHandler } from '@/redux/slices/utils';
 
 const stateReducers = {
   findPetByIdRequest: requestHandler as typeof requestHandler<TFindPetByIdParameters>,
