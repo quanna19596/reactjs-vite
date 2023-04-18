@@ -33,7 +33,11 @@ export const PATH = {
     _self: './src',
     LAYOUTS: './src/layouts',
     PAGES: './src/pages',
-    ROUTER: './src/router',
+    ROUTER: {
+      _self: './src/router',
+      PATHS: './src/router/paths.ts',
+      CONFIG: './src/router/config.ts',
+    },
     STYLES: {
       _self: './src/styles',
       MAIN_CLASSES: './src/styles/main-classes.scss'
@@ -42,7 +46,7 @@ export const PATH = {
   PLOP: {
     _self: './plop',
     TEMPLATES: {
-      self: './plop/templates',
+      _self: './plop/templates',
       COMPONENT: './plop/templates/component',
       LAYOUT: {
         _self: './plop/templates/layout',

@@ -53,13 +53,13 @@ export default (plop) => ({
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/enums.ts`,
+        path: PATH.SRC.ROUTER.PATHS,
         pattern: new RegExp(BREAK_LINE + plop.renderString('  {{constantCase rawLayoutName}}.*', { rawLayoutName }), 'g'),
         template: ''
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/config.ts`,
+        path: PATH.SRC.ROUTER.CONFIG,
         pattern: new RegExp(`${layoutName}[\\S\\s]*${layoutName}NotFound,([\\S\\s]*} from '@/layouts')`, 'g'),
         template: '$1',
         skip: () => {
@@ -68,7 +68,7 @@ export default (plop) => ({
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/config.ts`,
+        path: PATH.SRC.ROUTER.CONFIG,
         pattern: new RegExp(`${layoutName}[\\S\\s]*${layoutName}NotFound([\\S\\s]*} from '@/layouts')`, 'g'),
         template: '$1',
         skip: () => {
@@ -77,7 +77,7 @@ export default (plop) => ({
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/config.ts`,
+        path: PATH.SRC.ROUTER.CONFIG,
         pattern: new RegExp(`${layoutName}[\\S\\s]*${layoutName}PermissionDenied,([\\S\\s]*} from '@/layouts')`, 'g'),
         template: '$1',
         skip: () => {
@@ -86,7 +86,7 @@ export default (plop) => ({
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/config.ts`,
+        path: PATH.SRC.ROUTER.CONFIG,
         pattern: new RegExp(`${layoutName}[\\S\\s]*${layoutName}PermissionDenied([\\S\\s]*} from '@/layouts')`, 'g'),
         template: '$1',
         skip: () => {
@@ -95,13 +95,13 @@ export default (plop) => ({
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/config.ts`,
+        path: PATH.SRC.ROUTER.CONFIG,
         pattern: new RegExp(
           BREAK_LINE +
             '    {' +
             BREAK_LINE +
             '      ' +
-            plop.renderString('path: ELayoutPath.{{constantCase rawLayoutName}}[\\S\\s]*{{layoutName}}Error', {
+            plop.renderString('path: PATHS.LAYOUT.{{constantCase rawLayoutName}}()[\\S\\s]*{{layoutName}}Error', {
               rawLayoutName,
               layoutName
             }) +

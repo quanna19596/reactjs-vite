@@ -29,8 +29,9 @@ export default (plop) => ({
 
     data.layoutBasePath = rawLayoutBasePath.replace('/', '');
 
-    const alreadyExistPaths = readFile(`${PATH.SRC.ROUTER}/enums.ts`)
-      ?.split('export enum EPagePath')[0]
+    const alreadyExistPaths = readFile(PATH.SRC.ROUTER.PATHS)
+      ?.split('const PATHS = {')[1]
+      ?.split('PAGE: {')[0]
       ?.match(/'(.*?)'/g)
       ?.map((w) => w.replace(/'(.*?)'/g, '$1'));
 
@@ -123,7 +124,7 @@ export default (plop) => ({
       {
         type: PLOP_ACTION_TYPE.ADD,
         path: `${layoutDirPath}/index.ts`,
-        templateFile: `${PATH.PLOP.TEMPLATES.self}/layout/private/index.hbs`,
+        templateFile: `${PATH.PLOP.TEMPLATES._self}/layout/private/index.hbs`,
         data: { componentName: data.layoutName },
         skip: () => {
           if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
@@ -132,7 +133,7 @@ export default (plop) => ({
       {
         type: PLOP_ACTION_TYPE.ADD,
         path: `${layoutDirPath}/index.ts`,
-        templateFile: `${PATH.PLOP.TEMPLATES.self}/layout/public/index.hbs`,
+        templateFile: `${PATH.PLOP.TEMPLATES._self}/layout/public/index.hbs`,
         data: { componentName: data.layoutName },
         skip: () => {
           if (layoutType === PROTECTION_TYPE.PRIVATE) return '';
@@ -165,13 +166,13 @@ export default (plop) => ({
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/enums.ts`,
-        pattern: /(ELayoutPath[\S\s]*)(}[\S\s]*EPagePath)/g,
-        template: "$1,{{constantCase rawLayoutName}} = '{{dashCase layoutBasePath}}'$2"
+        path: PATH.SRC.ROUTER.PATHS,
+        pattern: /(},[\S\s]*PAGE)/g,
+        template: `,{{constantCase rawLayoutName}}: (): string => '/{{dashCase layoutBasePath}}'$1`
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/config.ts`,
+        path: PATH.SRC.ROUTER.CONFIG,
         pattern: /(import[\S\s]*)(} from '@\/layouts')/g,
         template: `$1,${layoutParts.main.componentName},${layoutParts.default.componentName},${layoutParts.error.componentName},${layoutParts.notFound.componentName}$2`,
         skip: () => {
@@ -180,7 +181,7 @@ export default (plop) => ({
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/config.ts`,
+        path: PATH.SRC.ROUTER.CONFIG,
         pattern: /(import[\S\s]*)(} from '@\/layouts')/g,
         template: `$1,${layoutParts.main.componentName},${layoutParts.default.componentName},${layoutParts.error.componentName},${layoutParts.notFound.componentName},${layoutParts.permissionDenied.componentName}$2`,
         skip: () => {
@@ -189,9 +190,9 @@ export default (plop) => ({
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/config.ts`,
+        path: PATH.SRC.ROUTER.CONFIG,
         pattern: new RegExp('(routes[\\S\\s]*)(]' + BREAK_LINE + '};)', 'g'),
-        templateFile: `${PATH.PLOP.TEMPLATES.self}/layout/private/router-config.hbs`,
+        templateFile: `${PATH.PLOP.TEMPLATES._self}/layout/private/router-config.hbs`,
         data: { rawLayoutName, layoutName: data.layoutName },
         skip: () => {
           if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
@@ -199,9 +200,9 @@ export default (plop) => ({
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/config.ts`,
+        path: PATH.SRC.ROUTER.CONFIG,
         pattern: new RegExp('(routes[\\S\\s]*)(]' + BREAK_LINE + '};)', 'g'),
-        templateFile: `${PATH.PLOP.TEMPLATES.self}/layout/public/router-config.hbs`,
+        templateFile: `${PATH.PLOP.TEMPLATES._self}/layout/public/router-config.hbs`,
         data: { rawLayoutName, layoutName: data.layoutName },
         skip: () => {
           if (layoutType === PROTECTION_TYPE.PRIVATE) return '';

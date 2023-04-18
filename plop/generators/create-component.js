@@ -1,4 +1,5 @@
 import { PLOP_PROMPT_TYPE, COMPONENT_TYPE, PATH, PLOP_ACTION_TYPE, BREAK_LINE } from "../constants.js";
+import { capitalize } from "../utils.js";
 
 export default (plop) => ({
   description: 'Create Component',
@@ -30,7 +31,7 @@ export default (plop) => ({
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.STYLES.MAIN_CLASSES,
-        pattern: /(\/\/ \[END\] Components)/g,
+        pattern: new RegExp('(// \\[END\\] ' + capitalize(componentType) + ')' ,'g'), 
         template: "${{pascalCase componentName}}: '.{{pascalCase componentName}}';" + BREAK_LINE + '$1'
       },
       {
@@ -54,7 +55,7 @@ export default (plop) => ({
       {
         type: PLOP_ACTION_TYPE.ADD,
         path: storyFilePath,
-        templateFile: `${PATH.PLOP.TEMPLATES.self}/storybook.hbs`
+        templateFile: `${PATH.PLOP.TEMPLATES._self}/storybook.hbs`
       },
       { type: PLOP_ACTION_TYPE.PRETTIER }
     ];

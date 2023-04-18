@@ -1,6 +1,6 @@
 $1,
 {
-  path: ELayoutPath.{{constantCase rawLayoutName}},
+  path: PATHS.LAYOUT.{{constantCase rawLayoutName}}(),
   element: {
     component: {{pascalCase layoutName}}
   },
@@ -13,7 +13,7 @@ $1,
       }
     },
     {
-      path: ESpecialPath.REST,
+      path: PATHS.SPECIAL.REST(),
       element: {
         component: {{pascalCase layoutName}}NotFound,
         errorComponent: {{pascalCase layoutName}}Error

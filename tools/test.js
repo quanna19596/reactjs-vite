@@ -1,9 +1,10 @@
-// @ts-nocheck
-const getColors = () => {
-  const selectColorEl = document.getElementById('colorop');
-  const [defaultOption, ...colorOptions] = selectColorEl?.getElementsByTagName('option');
-  const colorsInScss = colorOptions.map(({ label, value }) => `$${label.replace(/ /g, '-').toLowerCase()}: #${value.toLowerCase()};`).join('');
-  const colorsInEnum = colorOptions.map(({ label, value }) => `${label.replace(/ /g, '_').toUpperCase()} = '#${value.toLowerCase()}'`).join(',');
+import fs from 'fs';
 
-  console.log(colorsInScss);
-};
+export const readFile = (path) => JSON.stringify(fs.readFileSync(path, 'utf8').toString());
+
+const alreadyExistPaths = readFile('./src/router/paths.ts')
+      ?.split('const PATHS = {')[1]?.split('PAGE: {')[0]
+      ?.match(/'(.*?)'/g)
+      ?.map((w) => w.replace(/'(.*?)'/g, '$1'));
+
+console.log(alreadyExistPaths)

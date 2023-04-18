@@ -6,11 +6,10 @@ Please use VSCode as IDE and install some extensions following:
 
 Improve codebase
 
--	check remove-component plop
+PLOP Issue:
 -	check create-component with multi export type src/components/index.ts
-
+-   validation plop
 -	check plop create-page lazy-importer
 
--	change router/enums to router/paths
 -	rewrite tools related to path
 -	duplicate style

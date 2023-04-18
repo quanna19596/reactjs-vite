@@ -39,15 +39,16 @@ export default (plop) => ({
     const { pageType, layoutName, pageName, rawPagePath } = data;
     const correctPageType = pageType || PROTECTION_TYPE.PRIVATE;
     const pageDirPath = `${PATH.SRC.PAGES}/{{lowerCase correctPageType}}/{{pascalCase pageName}}`;
-    const indexFileInPagesDirPath = `${PATH.SRC.PAGES}/{{lowerCase correctPageType}}/index.ts`;
+    const indexFileInPageTypeDirPath = `${PATH.SRC.PAGES}/{{lowerCase correctPageType}}/index.ts`;
 
     if (!pageName) throw new Error('Page name should not empty!');
 
     data.pagePath = rawPagePath.replace('/', '');
     data.layoutNameWithoutSuffix = layoutName.replace(/Layout[\S\s]*\)/g, '');
 
-    const alreadyExistPaths = readFile(`${PATH.SRC.ROUTER}/enums.ts`)
-      ?.split('export enum ESpecialPath')[0]
+    const alreadyExistPaths = readFile(PATH.SRC.ROUTER.PATHS)
+      ?.split('const PATHS = {')[1]
+      ?.split('SPECIAL: {')[0]
       ?.match(/'(.*?)'/g)
       ?.map((w) => w.replace(/'(.*?)'/g, '$1'));
 
@@ -72,50 +73,50 @@ export default (plop) => ({
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFileInPagesDirPath,
+        path: indexFileInPageTypeDirPath,
         pattern: new RegExp('(' + BREAK_LINE + BREAK_LINE + ')', 'g'),
         template: "import {{pascalCase pageName}}, { T{{pascalCase pageName}}Props } from './{{pascalCase pageName}}';$1",
         data: { correctPageType, ...data }
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFileInPagesDirPath,
+        path: indexFileInPageTypeDirPath,
         pattern: new RegExp('(export[\\S\\s]*)( };' + BREAK_LINE + 'export type)', 'g'),
         template: '$1,{{pascalCase pageName}}$2',
         data: { correctPageType, ...data }
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFileInPagesDirPath,
+        path: indexFileInPageTypeDirPath,
         pattern: /(export type[\S\s]*)( };)/g,
         template: '$1,T{{pascalCase pageName}}Props$2',
         data: { correctPageType, ...data }
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/enums.ts`,
-        pattern: /(EPagePath[\S\s]*)(}[\S\s]*ESpecialPath)/g,
-        template: "$1,{{constantCase pageName}} = '{{dashCase pagePath}}'$2"
+        path: PATH.SRC.ROUTER.PATHS,
+        pattern: /(},[\S\s]*SPECIAL)/g,
+        template: `,{{constantCase pageName}}: (): string => '/{{dashCase pagePath}}'$1`
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/config.ts`,
+        path: PATH.SRC.ROUTER.CONFIG,
         pattern: /(import [\S\s]*)(} from '@\/router')/g,
         template: '$1,{{pascalCase pageName}}$2'
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/config.ts`,
+        path: PATH.SRC.ROUTER.CONFIG,
         pattern: new RegExp(
           plop.renderString(
-            '(path: ELayoutPath.{{constantCase layoutNameWithoutSuffix}}[\\S\\s]*},)([\\S\\s]*{{pascalCase layoutNameWithoutSuffix}}LayoutNotFound)',
+            '(path: PATHS.LAYOUT.{{constantCase layoutNameWithoutSuffix}}[\\S\\s]*},)([\\S\\s]*{{pascalCase layoutNameWithoutSuffix}}LayoutNotFound)',
             {
               layoutNameWithoutSuffix: data.layoutNameWithoutSuffix
             }
           ),
           'g'
         ),
-        templateFile: `${PATH.PLOP.TEMPLATES.self}/page/private/router-config.hbs`,
+        templateFile: `${PATH.PLOP.TEMPLATES._self}/page/private/router-config.hbs`,
         data: { layoutNameWithoutType: `${data.layoutNameWithoutSuffix}Layout` },
         skip: () => {
           if (correctPageType === PROTECTION_TYPE.PUBLIC) return '';
@@ -123,17 +124,17 @@ export default (plop) => ({
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/config.ts`,
+        path: PATH.SRC.ROUTER.CONFIG,
         pattern: new RegExp(
           plop.renderString(
-            '(path: ELayoutPath.{{constantCase layoutNameWithoutSuffix}}[\\S\\s]*},)([\\S\\s]*{{pascalCase layoutNameWithoutSuffix}}LayoutNotFound)',
+            '(path: PATHS.LAYOUT.{{constantCase layoutNameWithoutSuffix}}[\\S\\s]*},)([\\S\\s]*{{pascalCase layoutNameWithoutSuffix}}LayoutNotFound)',
             {
               layoutNameWithoutSuffix: data.layoutNameWithoutSuffix
             }
           ),
           'g'
         ),
-        templateFile: `${PATH.PLOP.TEMPLATES.self}/page/public/router-config.hbs`,
+        templateFile: `${PATH.PLOP.TEMPLATES._self}/page/public/router-config.hbs`,
         data: { layoutNameWithoutType: `${data.layoutNameWithoutSuffix}Layout` },
         skip: () => {
           if (correctPageType === PROTECTION_TYPE.PRIVATE) return '';
@@ -141,7 +142,7 @@ export default (plop) => ({
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.ROUTER}/utils/lazy-importter.ts`,
+        path: `${PATH.SRC.PAGES}/index.ts`,
         pattern: new RegExp('(// \\[END\\] ' + capitalize(correctPageType) + ')', 'g'),
         template: "export const {{pascalCase pageName}} = lazy(() => retryLoadComponent(() => import('@/pages/{{correctPageType}}/{{pascalCase pageName}}')));" + BREAK_LINE + '$1',
         data: { correctPageType }
