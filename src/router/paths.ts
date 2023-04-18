@@ -1,6 +1,6 @@
 import { TPathParams } from './types';
 
-export const PATHS = {
+const PATHS = {
   LAYOUT: {
     LANDING: (): string => '/',
     DASHBOARD: (): string => '/dashboard'
@@ -19,3 +19,5 @@ export const PATHS = {
     REST: (): string => '*'
   }
 };
+
+export default PATHS;

@@ -9,12 +9,12 @@ import {
   LandingLayoutError,
   LandingLayoutNotFound
 } from '@/layouts';
-import { AppError, AppNotFound, AppPermissionDenied, Products, SignIn, SignUp, TRouteConfig, Users } from '@/router';
+import { AppError, AppNotFound, AppPermissionDenied, Products, SignIn, SignUp, Users } from '@/pages';
+import { TRouteConfig } from '@/router';
 
-// import { AppError } from '@/router/utils/lazy-importter';
-import { PATHS } from './paths';
+import PATHS from './paths';
 
-export const routerConfig: TRouteConfig = {
+const routerConfig: TRouteConfig = {
   common: {
     appError: AppError,
     appNotFound: AppNotFound,
@@ -101,3 +101,5 @@ export const routerConfig: TRouteConfig = {
     }
   ]
 };
+
+export default routerConfig;

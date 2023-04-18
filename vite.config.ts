@@ -3,7 +3,7 @@ import path from 'path';
 import { defineConfig, ModuleNode, PluginOption } from 'vite';
 import eslint from 'vite-plugin-eslint';
 
-export const hotReload = (): PluginOption => ({
+const hotReload = (): PluginOption => ({
   name: 'singleHMR',
   handleHotUpdate({ modules }): ModuleNode[] {
     modules.map((m) => {
@@ -16,21 +16,7 @@ export const hotReload = (): PluginOption => ({
 });
 
 export default defineConfig({
-  plugins: [
-    react(),
-    eslint(),
-    {
-      name: 'singleHMR',
-      handleHotUpdate({ modules }): ModuleNode[] {
-        modules.map((m) => {
-          m.importedModules = new Set();
-          m.importers = new Set();
-        });
-
-        return modules;
-      }
-    }
-  ],
+  plugins: [react(), eslint(), hotReload()],
   server: {
     port: 3000
   },

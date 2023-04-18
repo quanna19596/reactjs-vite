@@ -9,7 +9,9 @@ const petSlice = createSlice({
   name: 'pet',
   initialState,
   reducers: {
-    findPetByIdSuccess: (state, action) => {},
+    findPetByIdSuccess: (state, action) => {
+      console.log(state, action);
+    },
     ...stateReducers
   },
   extraReducers: asyncStatusReducers
