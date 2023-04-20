@@ -38,60 +38,24 @@ export default (plop) => ({
         path: PATH.SRC.STYLES.MAIN_CLASSES,
         pattern: new RegExp(BREAK_LINE + '\\$' + layoutName + 'Default[\\S\\s]*' + layoutName + "PermissionDenied';", 'g'),
         template: '',
-        skip: () => {
-          if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
-        }
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: PATH.SRC.STYLES.MAIN_CLASSES,
-        pattern: new RegExp(BREAK_LINE + '\\$' + layoutName + 'Default[\\S\\s]*' + layoutName + "NotFound';", 'g'),
-        template: '',
-        skip: () => {
-          if (layoutType === PROTECTION_TYPE.PRIVATE) return '';
-        }
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.ROUTER.PATHS,
-        pattern: new RegExp(BREAK_LINE + plop.renderString('  {{constantCase rawLayoutName}}.*', { rawLayoutName }), 'g'),
+        pattern: new RegExp(BREAK_LINE + plop.renderString('    {{constantCase rawLayoutName}}.*', { rawLayoutName }), 'g'),
         template: ''
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: PATH.SRC.ROUTER.CONFIG,
-        pattern: new RegExp(`${layoutName}[\\S\\s]*${layoutName}NotFound,([\\S\\s]*} from '@/layouts')`, 'g'),
-        template: '$1',
-        skip: () => {
-          if (layoutType === PROTECTION_TYPE.PRIVATE) return '';
-        }
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: PATH.SRC.ROUTER.CONFIG,
-        pattern: new RegExp(`${layoutName}[\\S\\s]*${layoutName}NotFound([\\S\\s]*} from '@/layouts')`, 'g'),
-        template: '$1',
-        skip: () => {
-          if (layoutType === PROTECTION_TYPE.PRIVATE) return '';
-        }
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.ROUTER.CONFIG,
         pattern: new RegExp(`${layoutName}[\\S\\s]*${layoutName}PermissionDenied,([\\S\\s]*} from '@/layouts')`, 'g'),
         template: '$1',
-        skip: () => {
-          if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
-        }
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.ROUTER.CONFIG,
         pattern: new RegExp(`${layoutName}[\\S\\s]*${layoutName}PermissionDenied([\\S\\s]*} from '@/layouts')`, 'g'),
         template: '$1',
-        skip: () => {
-          if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
-        }
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,

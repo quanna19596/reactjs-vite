@@ -117,27 +117,12 @@ export default (plop) => ({
         base: PATH.PLOP.TEMPLATES.COMPONENT,
         templateFiles: `${PATH.PLOP.TEMPLATES.COMPONENT}/*`,
         data: { componentName: layoutParts.permissionDenied.componentName },
-        skip: () => {
-          if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
-        }
       },
       {
         type: PLOP_ACTION_TYPE.ADD,
         path: `${layoutDirPath}/index.ts`,
-        templateFile: `${PATH.PLOP.TEMPLATES._self}/layout/private/index.hbs`,
+        templateFile: `${PATH.PLOP.TEMPLATES._self}/layout/index.hbs`,
         data: { componentName: data.layoutName },
-        skip: () => {
-          if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
-        }
-      },
-      {
-        type: PLOP_ACTION_TYPE.ADD,
-        path: `${layoutDirPath}/index.ts`,
-        templateFile: `${PATH.PLOP.TEMPLATES._self}/layout/public/index.hbs`,
-        data: { componentName: data.layoutName },
-        skip: () => {
-          if (layoutType === PROTECTION_TYPE.PRIVATE) return '';
-        }
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
@@ -151,42 +136,18 @@ export default (plop) => ({
         path: PATH.SRC.STYLES.MAIN_CLASSES,
         pattern: /(\/\/ \[END\] Layouts)/g,
         template: `${layoutParts.default.templateInMainClassesFile};${layoutParts.error.templateInMainClassesFile};${layoutParts.main.templateInMainClassesFile};${layoutParts.notFound.templateInMainClassesFile};${layoutParts.permissionDenied.templateInMainClassesFile}${BREAK_LINE}$1`,
-        skip: () => {
-          if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
-        }
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: PATH.SRC.STYLES.MAIN_CLASSES,
-        pattern: /(\/\/ \[END\] Layouts)/g,
-        template: `${layoutParts.default.templateInMainClassesFile};${layoutParts.error.templateInMainClassesFile};${layoutParts.main.templateInMainClassesFile};${layoutParts.notFound.templateInMainClassesFile}${BREAK_LINE}$1`,
-        skip: () => {
-          if (layoutType === PROTECTION_TYPE.PRIVATE) return '';
-        }
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.ROUTER.PATHS,
-        pattern: /(},[\S\s]*PAGE)/g,
-        template: `,{{constantCase rawLayoutName}}: (): string => '/{{dashCase layoutBasePath}}'$1`
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: PATH.SRC.ROUTER.CONFIG,
-        pattern: /(import[\S\s]*)(} from '@\/layouts')/g,
-        template: `$1,${layoutParts.main.componentName},${layoutParts.default.componentName},${layoutParts.error.componentName},${layoutParts.notFound.componentName}$2`,
-        skip: () => {
-          if (layoutType === PROTECTION_TYPE.PRIVATE) return '';
-        }
+        pattern: /(LAYOUT[\S\s]*)(},[\S\s]*PAGE)/g,
+        template: `$1,{{constantCase rawLayoutName}}: (): string => '/{{dashCase layoutBasePath}}'$2`
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.ROUTER.CONFIG,
         pattern: /(import[\S\s]*)(} from '@\/layouts')/g,
         template: `$1,${layoutParts.main.componentName},${layoutParts.default.componentName},${layoutParts.error.componentName},${layoutParts.notFound.componentName},${layoutParts.permissionDenied.componentName}$2`,
-        skip: () => {
-          if (layoutType === PROTECTION_TYPE.PUBLIC) return '';
-        }
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,

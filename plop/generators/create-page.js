@@ -10,6 +10,12 @@ export default (plop) => ({
       message: 'Page name?'
     },
     {
+      type: PLOP_PROMPT_TYPE.INPUT,
+      name: 'rawPagePath',
+      message: 'Page path?',
+      when: ({ pageName }) => !!pageName
+    },
+    {
       type: PLOP_PROMPT_TYPE.LIST,
       name: 'layoutName',
       choices: () => {
@@ -28,12 +34,6 @@ export default (plop) => ({
       message: 'Page type?',
       when: ({ pageName, layoutName }) => !!pageName && layoutName.includes(PROTECTION_TYPE.PUBLIC)
     },
-    {
-      type: PLOP_PROMPT_TYPE.INPUT,
-      name: 'rawPagePath',
-      message: 'Page path?',
-      when: ({ pageName }) => !!pageName
-    }
   ],
   actions: (data) => {
     const { pageType, layoutName, pageName, rawPagePath } = data;
@@ -95,13 +95,13 @@ export default (plop) => ({
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.ROUTER.PATHS,
-        pattern: /(},[\S\s]*SPECIAL)/g,
-        template: `,{{constantCase pageName}}: (): string => '/{{dashCase pagePath}}'$1`
+        pattern: /(PAGE[\S\s]*)(},[\S\s]*SPECIAL)/g,
+        template: `$1,{{constantCase pageName}}: (): string => '/{{dashCase pagePath}}'$2`
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.ROUTER.CONFIG,
-        pattern: /(import [\S\s]*)(} from '@\/router')/g,
+        pattern: /(import [\S\s]*)(} from '@\/pages')/g,
         template: '$1,{{pascalCase pageName}}$2'
       },
       {
