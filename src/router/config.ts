@@ -7,7 +7,8 @@ import {
   LandingLayout,
   LandingLayoutDefault,
   LandingLayoutError,
-  LandingLayoutNotFound
+  LandingLayoutNotFound,
+  LandingLayoutPermissionDenied
 } from '@/layouts';
 import { AppError, AppNotFound, AppPermissionDenied, Products, SignIn, SignUp, Users } from '@/pages';
 import { TRouteConfig } from '@/router';
