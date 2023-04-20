@@ -7,9 +7,8 @@ Please use VSCode as IDE and install some extensions following:
 
 PLOP Issue:
 
-- check create-component with multi export type src/components/index.ts
+- remove-page plop
 - validation plop
-- check plop create-page lazy-importer
-
-- rewrite tools related to path
 - duplicate style
+- write plop tools for create-service, remove-service
+- generate full service from postman/swagger file
