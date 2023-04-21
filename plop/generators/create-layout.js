@@ -28,7 +28,7 @@ export default (plop) => ({
 
     if (!rawLayoutName) throw new Error('Layout name should not empty!');
 
-    data.layoutBasePath = rawLayoutBasePath.replace('/', '');
+    data.layoutBasePath = rawLayoutBasePath[0] === '/' ? rawLayoutBasePath.replace('/', '') : rawLayoutBasePath;
 
     const alreadyExistPaths = readFile(PATH.SRC.ROUTER.PATHS)
       ?.split('const PATHS = {')[1]

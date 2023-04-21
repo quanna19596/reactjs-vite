@@ -43,7 +43,7 @@ export default (plop) => ({
 
     if (!pageName) throw new Error('Page name should not empty!');
 
-    data.pagePath = rawPagePath.replace('/', '');
+    data.pagePath = rawPagePath[0] === '/' ? rawPagePath.replace('/', '') : rawPagePath;
     data.layoutNameWithoutSuffix = layoutName.replace(/Layout[\S\s]*\)/g, '');
 
     const alreadyExistPaths = readFile(PATH.SRC.ROUTER.PATHS)
