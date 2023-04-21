@@ -5,12 +5,6 @@ export default (plop) => ({
   description: 'Create Layout',
   prompts: [
     {
-      type: PLOP_PROMPT_TYPE.LIST,
-      name: 'layoutType',
-      choices: Object.values(PROTECTION_TYPE),
-      message: 'Layout type?'
-    },
-    {
       type: PLOP_PROMPT_TYPE.INPUT,
       name: 'rawLayoutName',
       message: 'Layout name?'
@@ -20,9 +14,16 @@ export default (plop) => ({
       name: 'rawLayoutBasePath',
       message: 'Layout base path?',
       when: ({ rawLayoutName }) => !!rawLayoutName
-    }
+    },
+    {
+      type: PLOP_PROMPT_TYPE.LIST,
+      name: 'layoutType',
+      choices: Object.values(PROTECTION_TYPE),
+      message: 'Layout type?'
+    },
   ],
   actions: (data) => {
+    data.rawLayoutName = data.rawLayoutName.replace(/layout/gi, '')
     const { layoutType, rawLayoutName, rawLayoutBasePath } = data;
 
     if (!rawLayoutName) throw new Error('Layout name should not empty!');

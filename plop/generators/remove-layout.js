@@ -10,7 +10,7 @@ export default (plop) => ({
       choices: () => {
         const privateLayouts = getAllDirsInDirectory(`${PATH.SRC.LAYOUTS}/private`).map((layout) => `${layout} (private)`);
         const publicLayouts = getAllDirsInDirectory(`${PATH.SRC.LAYOUTS}/public`).map((layout) => `${layout} (public)`);
-        const layouts = [...privateLayouts, ...publicLayouts].filter((dir) => !dir.includes('.'));
+        const layouts = [...privateLayouts, ...publicLayouts, 'HelloLayout (public)'].filter((dir) => !dir.includes('.'));
         return layouts;
       },
       message: 'Layout name?'
@@ -30,7 +30,7 @@ export default (plop) => ({
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: `${PATH.SRC.LAYOUTS}/${layoutType}/index.ts`,
-        pattern: new RegExp(BREAK_LINE + "export \\* from './" + layoutName + "';", 'g'),
+        pattern: new RegExp("export \\* from './" + layoutName + "';", 'g'),
         template: ''
       },
       {
