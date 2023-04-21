@@ -5,10 +5,13 @@ Please use VSCode as IDE and install some extensions following:
 - Prettier - Code formatter
 - EditorConfig for VS Code
 
-PLOP Issue:
+PLOP Issues:
 
 - handle create-page with url params
 - validation plop
-- duplicate style
 - write plop tools for create-service, remove-service
 - generate full service from postman/swagger file
+
+CODEBASE Issues:
+
+- duplicate style
