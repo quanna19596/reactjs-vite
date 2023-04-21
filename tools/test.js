@@ -1,10 +1,19 @@
 import fs from 'fs';
 
-export const readFile = (path) => JSON.stringify(fs.readFileSync(path, 'utf8').toString());
+export const readFile = (path) => fs.readFileSync(path, 'utf8').toString();
 
-const alreadyExistPaths = readFile('./src/router/paths.ts')
-      ?.split('const PATHS = {')[1]?.split('PAGE: {')[0]
-      ?.match(/'(.*?)'/g)
-      ?.map((w) => w.replace(/'(.*?)'/g, '$1'));
+export const BREAK_LINE = process.platform.startsWith('win') ? '\r\n' : '\n';
 
-console.log(alreadyExistPaths)
+const regexMark = 'path: PATHS.PAGE.PRODUCTS()'
+
+const routerConfig = readFile('./src/router/config.ts');
+
+const pageConfigRegex = new RegExp(
+      `{([${BREAK_LINE}].*?)(.*?(?:${regexMark}).*)(([${BREAK_LINE}]+([^${BREAK_LINE}]+)){7})`,
+      'g'
+    );
+
+
+const a = routerConfig.match(pageConfigRegex)
+
+console.log(a)

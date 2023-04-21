@@ -10,7 +10,7 @@ const PATHS = {
     SIGN_UP: (): string => '/sign-up',
     USERS: (): string => '/users',
     PRODUCTS: (): string => '/products',
-    NOT_FOUND: (): string => 'not-found',
+    NOT_FOUND: (): string => '/not-found',
     PRODUCT_DETAIL: (params?: TPathParams): string => `/products/${params?.slug || ':slug'}`
   },
   SPECIAL: {

@@ -31,7 +31,11 @@ export const PROTECTION_TYPE = { PUBLIC: 'public', PRIVATE: 'private' };
 export const PATH = {
   SRC: {
     _self: './src',
-    LAYOUTS: './src/layouts',
+    LAYOUTS: {
+      _self: './src/layouts',
+      PRIVATE: './src/layouts/private',
+      PUBLIC: './src/layouts/public',
+    },
     PAGES: './src/pages',
     ROUTER: {
       _self: './src/router',

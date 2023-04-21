@@ -19,8 +19,8 @@ export default (plop) => ({
       type: PLOP_PROMPT_TYPE.LIST,
       name: 'layoutName',
       choices: () => {
-        const privateLayouts = getAllDirsInDirectory(`${PATH.SRC.LAYOUTS}/private`).map((layout) => `${layout} (private)`);
-        const publicLayouts = getAllDirsInDirectory(`${PATH.SRC.LAYOUTS}/public`).map((layout) => `${layout} (public)`);
+        const privateLayouts = getAllDirsInDirectory(PATH.SRC.LAYOUTS.PRIVATE).map((layout) => `${layout} (private)`);
+        const publicLayouts = getAllDirsInDirectory(PATH.SRC.LAYOUTS.PUBLIC).map((layout) => `${layout} (public)`);
         const layouts = [...privateLayouts, ...publicLayouts].filter((dir) => !dir.includes('.'));
         return layouts;
       },
@@ -47,9 +47,10 @@ export default (plop) => ({
     data.layoutNameWithoutSuffix = layoutName.replace(/Layout[\S\s]*\)/g, '');
 
     const alreadyExistPaths = readFile(PATH.SRC.ROUTER.PATHS)
-      ?.split('const PATHS = {')[1]
+      ?.split('PAGE: {')[1]
       ?.split('SPECIAL: {')[0]
       ?.match(/'(.*?)'/g)
+      ?.filter(path => !path.includes(':'))
       ?.map((w) => w.replace(/'(.*?)'/g, '$1'));
 
     const pagePathIsAlreadyExist = alreadyExistPaths?.includes(data.pagePath);

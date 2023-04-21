@@ -34,6 +34,7 @@ export default (plop) => ({
       ?.split('const PATHS = {')[1]
       ?.split('PAGE: {')[0]
       ?.match(/'(.*?)'/g)
+      ?.filter(path => !path.includes(':'))
       ?.map((w) => w.replace(/'(.*?)'/g, '$1'));
 
     const layoutBasePathIsAlreadyExist = alreadyExistPaths?.includes(data.layoutBasePath);
@@ -42,7 +43,7 @@ export default (plop) => ({
     if (layoutBasePathIsAlreadyExist) throw new Error('Layout base path is already exist!');
 
     data.layoutName = `${rawLayoutName}Layout`;
-    const layoutDirPath = plop.renderString(`${PATH.SRC.LAYOUTS}/${layoutType}/{{pascalCase layoutName}}`, {
+    const layoutDirPath = plop.renderString(`${PATH.SRC.LAYOUTS._self}/${layoutType}/{{pascalCase layoutName}}`, {
       layoutName: data.layoutName
     });
     const layoutParts = {
@@ -127,7 +128,7 @@ export default (plop) => ({
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: `${PATH.SRC.LAYOUTS}/${layoutType}/index.ts`,
+        path: `${PATH.SRC.LAYOUTS._self}/${layoutType}/index.ts`,
         pattern: new RegExp('(' + BREAK_LINE + ')', 'g'),
         template: `${BREAK_LINE}export * from './{{pascalCase componentName}}';$1`,
         data: { componentName: data.layoutName }

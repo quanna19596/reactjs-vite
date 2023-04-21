@@ -8,8 +8,8 @@ export default (plop) => ({
       type: PLOP_PROMPT_TYPE.LIST,
       name: 'layoutNameWithType',
       choices: () => {
-        const privateLayouts = getAllDirsInDirectory(`${PATH.SRC.LAYOUTS}/private`).map((layout) => `${layout} (private)`);
-        const publicLayouts = getAllDirsInDirectory(`${PATH.SRC.LAYOUTS}/public`).map((layout) => `${layout} (public)`);
+        const privateLayouts = getAllDirsInDirectory(PATH.SRC.LAYOUTS.PRIVATE).map((layout) => `${layout} (private)`);
+        const publicLayouts = getAllDirsInDirectory(PATH.SRC.LAYOUTS.PUBLIC).map((layout) => `${layout} (public)`);
         const layouts = [...privateLayouts, ...publicLayouts, 'HelloLayout (public)'].filter((dir) => !dir.includes('.'));
         return layouts;
       },
