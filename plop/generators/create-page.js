@@ -58,6 +58,16 @@ export default (plop) => ({
     if (!rawPagePath) throw new Error('Page path should not empty!');
     if (pagePathIsAlreadyExist) throw new Error('Page path is already exist!');
 
+    const pathRg = /\:(.[a-z]*)/g;
+    const params = data.pagePath.match(pathRg);
+    const pathNameHasParams = data.pagePath.includes(':')
+    const beautifiedPath = pathNameHasParams ? params.map((param, paramIdx) => {
+      const paramName = param.replace(':', '')
+      const previousParam = paramIdx > 0 ? params[paramIdx - 1] : ''
+      const paramRg = new RegExp(previousParam + '(.*)' + param, 'g')
+      return data.pagePath.match(paramRg)[0].replace(paramRg, `$1${'$'}{params?.${paramName} || ':${paramName}'}`).replace(previousParam,'');
+    }).join('') : data.pagePath;
+
     return [
       {
         type: PLOP_ACTION_TYPE.ADD_MANY,
@@ -97,7 +107,7 @@ export default (plop) => ({
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.ROUTER.PATHS,
         pattern: /(PAGE[\S\s]*)(},[\S\s]*SPECIAL)/g,
-        template: `$1,{{constantCase pageName}}: (): string => '/{{dashCase pagePath}}'$2`
+        template: `$1,{{constantCase pageName}}: (${data.pagePath.includes(':') ? 'params?: TPathParams' : ''}): string => ${'`'}${`/${beautifiedPath}`}${'`'}$2`,
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
