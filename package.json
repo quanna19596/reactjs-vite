@@ -14,8 +14,7 @@
     "build:production": "GENERATE_SOURCEMAP=false tsc && vite build --mode production",
     "build-window:production": "set \"GENERATE_SOURCEMAP=false\" && tsc && vite build --mode production",
     "preview": "vite preview",
-    "lint": "eslint --ext ts,tsx src/ stories/",
-    "lint:fix": "eslint --fix --ext ts,tsx src/ stories/",
+    "lint": "./node_modules/.bin/eslint src --fix",
     "lint:staged": "lint-staged",
     "prettier": "prettier --check \"src/**/(*.tsx|*.ts|*.css|*.scss)\" \"stories/**/(*.tsx|*.ts)\"",
     "format": "prettier --write \"src/**/(*.tsx|*.ts|*.css|*.scss)\" \"stories/**/(*.tsx|*.ts)\"",
@@ -90,7 +89,7 @@
   "lint-staged": {
     "**/*.{ts,tsx}": [
       "yarn format",
-      "yarn lint:fix"
+      "yarn lint"
     ],
     "**/*.{tsx,ts}": [
       "prettier --write"

@@ -114,7 +114,6 @@ module.exports = {
     ]
   },
   overrides: [
-    // override "simple-import-sort" config
     {
       files: ['*.js', '*.jsx', '*.ts', '*.tsx'],
       rules: {
