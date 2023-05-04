@@ -2,7 +2,7 @@ import { exec } from 'child_process';
 import rimraf from 'rimraf';
 
 export default {
-	prettier: () => exec('yarn format & yarn lint:fix'),
+	prettier: () => exec('yarn format & yarn lint'),
 	remove: (answers, config, plop) => {
     const { path } = config;
     const correctPath = plop.renderString(path, answers);
