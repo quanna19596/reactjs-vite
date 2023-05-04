@@ -92,14 +92,14 @@ export default (plop) => ({
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: indexFileInPageTypeDirPath,
-        pattern: new RegExp('(export[\\S\\s]*)( };' + BREAK_LINE + 'export type)', 'g'),
+        pattern: new RegExp('(export[\\S\\s]*)(};' + BREAK_LINE + 'export type)', 'g'),
         template: '$1,{{pascalCase pageName}}$2',
         data: { correctPageType, ...data }
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: indexFileInPageTypeDirPath,
-        pattern: /(export type[\S\s]*)( };)/g,
+        pattern: /(export type[\S\s]*)(};)/g,
         template: '$1,T{{pascalCase pageName}}Props$2',
         data: { correctPageType, ...data }
       },

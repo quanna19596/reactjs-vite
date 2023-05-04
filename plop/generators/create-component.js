@@ -43,13 +43,13 @@ export default (plop) => ({
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: indexFileInComponentTypeDirPath,
-        pattern: new RegExp('(export[\\S\\s]*)( };' + BREAK_LINE + 'export type)', 'g'),
+        pattern: new RegExp('(export[\\S\\s]*)(};' + BREAK_LINE + 'export type)', 'g'),
         template: '$1,{{pascalCase componentName}}$2'
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: indexFileInComponentTypeDirPath,
-        pattern: /(export type[\S\s]*)( };)/g,
+        pattern: /(export type[\S\s]*)(};)/g,
         template: '$1,T{{pascalCase componentName}}Props$2'
       },
       {

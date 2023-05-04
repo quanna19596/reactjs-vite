@@ -31,7 +31,6 @@ export default (plop) => ({
     const privateLayouts = getAllDirsInDirectory(PATH.SRC.LAYOUTS.PRIVATE);
     const publicLayouts = getAllDirsInDirectory(PATH.SRC.LAYOUTS.PUBLIC);
     const layouts = [...privateLayouts, ...publicLayouts].filter((dir) => !dir.includes('.'));
-    const layout = layouts.find((l) => pageObj?.includes(l));
   
     const pageDirPath = `${PATH.SRC.PAGES}/${pageProtectionType}/${pageName}`;
   
