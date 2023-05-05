@@ -14,4 +14,4 @@ PLOP Issues:
 
 CODEBASE Issues:
 
-- duplicate style
+- fix duplicate style
