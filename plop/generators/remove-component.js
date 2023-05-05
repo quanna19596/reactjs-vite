@@ -8,8 +8,8 @@ export default (plop) => ({
       type: PLOP_PROMPT_TYPE.LIST,
       name: 'rawComponentName',
       choices: () => {
-        const unitComponents = getAllDirsInDirectory(`${PATH.SRC._self}/components`).map((comp) => `${comp} (components)`);
-        const containerComponents = getAllDirsInDirectory(`${PATH.SRC._self}/containers`).map((comp) => `${comp} (containers)`);
+        const unitComponents = getAllDirsInDirectory(PATH.SRC.COMPONENTS).map((comp) => `${comp} (components)`);
+        const containerComponents = getAllDirsInDirectory(PATH.SRC.CONTAINERS).map((comp) => `${comp} (containers)`);
         const components = [...unitComponents, ...containerComponents].filter((comp) => !comp.includes('.'));
         return components;
       },

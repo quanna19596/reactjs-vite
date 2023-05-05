@@ -36,7 +36,13 @@ export const PATH = {
       PRIVATE: './src/layouts/private',
       PUBLIC: './src/layouts/public',
     },
+    COMPONENTS: './src/components',
+    CONTAINERS: './src/containers',
     PAGES: './src/pages',
+    REDUX: './src/redux',
+    SERVICES: './src/services',
+    TYPES: './src/types',
+    UTILS: './src/types',
     ROUTER: {
       _self: './src/router',
       PATHS: './src/router/paths.ts',
