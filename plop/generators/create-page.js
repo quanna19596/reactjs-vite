@@ -58,7 +58,7 @@ export default (plop) => ({
     if (!rawPagePath) throw new Error('Page path should not empty!');
     if (pagePathIsAlreadyExist) throw new Error('Page path is already exist!');
 
-    const pathRg = /\:(.[a-z]*)/g;
+    const pathRg = /\:(.[a-zA-Z]*)/g;
     const params = data.pagePath.match(pathRg);
     const pathNameHasParams = data.pagePath.includes(':')
     const beautifiedPath = pathNameHasParams ? params.map((param, paramIdx) => {
