@@ -18,3 +18,5 @@ CODEBASE Issues:
 - add GUARD protection
 - update saga error
 - update global class .container-fluid
+- localize
+
