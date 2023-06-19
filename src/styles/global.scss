@@ -1,3 +1,9 @@
+@import './fonts.scss';
+@import './mixins.scss';
+@import './colors.scss';
+@import './constants.scss';
+@import './main-classes.scss';
+
 * {
   box-sizing: border-box;
 }
@@ -12,13 +18,17 @@ body,
   margin: 0px;
 }
 
-img {
-  vertical-align: bottom;
+.container {
+  max-width: calc(100% - 32px);
 }
 
-.container {
+.container-fluid {
+  max-width: 100%;
+}
+
+.container,
+.container-fluid {
   width: 100%;
-  max-width: calc(100% - 32px);
   margin: auto;
   transition: $medium-animation;
 
@@ -41,4 +51,8 @@ img {
   @media screen and (min-width: $xxl) {
     max-width: 1320px;
   }
+}
+
+img {
+  vertical-align: bottom;
 }

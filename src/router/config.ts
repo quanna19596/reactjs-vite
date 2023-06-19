@@ -39,6 +39,8 @@ const routerConfig: TRouteConfig = {
           path: PATHS.PAGE.SIGN_IN(),
           element: {
             component: SignIn,
+            isPrivate: true,
+            fallbackPermissionDenied: LandingLayoutPermissionDenied,
             errorComponent: LandingLayoutError
           }
         },

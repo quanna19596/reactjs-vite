@@ -1,9 +1,13 @@
-export type TErrorHandlerPayload = {
-  status: number;
-  message: string;
+import { TError } from '@/services';
+
+export type TErrorHandlerPayload = TError;
+
+export type TRequestHandlerCallbacks<T> = {
+  successCb?: (response?: T) => void;
+  failedCb?: (err?: TErrorHandlerPayload) => void;
+  storeInGlobalState?: boolean;
 };
 
-export type TRequestHandlerCallbacks = {
-  successCb?: (response?: any) => void;
-  failedCb?: (err?: TErrorHandlerPayload) => void;
-};
+export type TStatusState = { isLoading?: boolean; error?: any };
+
+export type TInitialState<T> = TStatusState & { data?: T };

@@ -1,7 +1,7 @@
-import { petReducer } from './slices';
+import { petstoreSlices } from './slices';
 
 const rootReducer = {
-  pet: petReducer
+  pet: petstoreSlices.petSlice.reducer
 };
 
 export default rootReducer;

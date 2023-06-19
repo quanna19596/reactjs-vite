@@ -6,16 +6,13 @@ import initialState from './initial-state';
 import stateReducers from './state-reducers';
 
 const petSlice = createSlice({
-  name: 'pet',
+  name: 'petstore/pet',
   initialState,
   reducers: {
-    findPetByIdSuccess: (state, action) => {
-      console.log(state, action);
-    },
+    getPetByIdSuccess: (state, action) => ({ ...state, getPetById: { data: action.payload } }),
     ...stateReducers
   },
   extraReducers: asyncStatusReducers
 });
 
-export const petActions = petSlice.actions;
-export const petReducer = petSlice.reducer;
+export default petSlice;

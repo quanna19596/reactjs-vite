@@ -14,7 +14,5 @@ PLOP Issues:
 
 CODEBASE Issues:
 
-- fix duplicate style on dev
 - add GUARD protection
-- update saga error
-- update global class .container-fluid
+- no catch error vite console

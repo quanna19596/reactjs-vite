@@ -1,5 +1,18 @@
 import { EOrderStatus, ETagStatus } from '@/services';
 
+export type TError = {
+  statusCode: number;
+  message: string;
+};
+
+export type TPaging = {
+  paging: {
+    pageSize: 0;
+    pageNumber: 0;
+    totalNumber: 0;
+  };
+};
+
 export type TApiResponse = {
   code: number;
   type: string;

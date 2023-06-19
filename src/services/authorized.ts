@@ -1,11 +1,9 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
 import { EStatusCode } from '@/enums';
-import { history, PATHS } from '@/router';
+import env from '@/env';
 import { ICustomAxiosRequestConfig, TTokenSubscribers } from '@/services';
-import { clearTokens, getAccessToken, getFullPath, getRefreshToken, storeAccessToken, storeRefreshToken } from '@/utils';
-
-// import { EAuthEndPoint } from './eco/auth/endpoints';
+import { clearTokens, getAccessToken, getRefreshToken, storeAccessToken, storeRefreshToken } from '@/utils';
 
 let isRefreshingAccessToken = false;
 let tokenSubscribers: TTokenSubscribers[] = [];
@@ -15,23 +13,27 @@ export const AuthorizedInstance = (baseURL: string): AxiosInstance => {
     baseURL
   });
 
-  const goToLogin = (): void => history.push(getFullPath(PATHS.PAGE.SIGN_IN()));
+  const logout = (): void => {
+    clearTokens();
+    location.reload();
+  };
 
   const getBearerToken = (token: string): string => `Bearer ${token}`;
 
   const refreshTokens = async (): Promise<string> => {
     const existingRefreshToken: string = getRefreshToken();
 
-    if (!existingRefreshToken) goToLogin();
+    if (!existingRefreshToken) logout();
 
-    // const { jwtAccessToken, refreshToken } = await AuthInstance.refreshToken({
-    //   refreshToken: existingRefreshToken ?? '',
-    // });
+    const bearerRefreshToken = getBearerToken(existingRefreshToken);
 
-    const jwtAccessToken = '';
-    const refreshToken = '';
+    const {
+      data: { accessToken, refreshToken }
+    } = await axios.get(`${env.service.petStore.baseUrl}/auth/refresh`, {
+      headers: { Authorization: bearerRefreshToken }
+    });
 
-    storeAccessToken(jwtAccessToken);
+    storeAccessToken(accessToken);
     storeRefreshToken(refreshToken);
 
     return getAccessToken();
@@ -64,7 +66,7 @@ export const AuthorizedInstance = (baseURL: string): AxiosInstance => {
     if (requestUnauthorized && refreshTokenFailed) {
       onTokenRefreshed(new Error('Failed to refresh access token'));
       clearTokens();
-      goToLogin();
+      logout();
       return Promise.reject(axiosError);
     }
 
@@ -78,7 +80,7 @@ export const AuthorizedInstance = (baseURL: string): AxiosInstance => {
           .catch(() => {
             onTokenRefreshed(new Error('Failed to refresh access token'));
             clearTokens();
-            goToLogin();
+            logout();
             return Promise.reject(axiosError);
           })
           .finally(() => {

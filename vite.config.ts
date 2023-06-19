@@ -3,6 +3,8 @@ import path from 'path';
 import { defineConfig, ModuleNode, PluginOption } from 'vite';
 import eslint from 'vite-plugin-eslint';
 
+const SPLIT_CSS_MARK = '/* ##SPLIT_CSS_MARK## */';
+
 const hotReload = (): PluginOption => ({
   name: 'singleHMR',
   handleHotUpdate({ modules }): ModuleNode[] {
@@ -15,22 +17,31 @@ const hotReload = (): PluginOption => ({
   }
 });
 
+const removeDuplicatedStyles = (): { name: string; transform(src: string, id: any): { code: string; map: any } } => ({
+  name: 'vite-plugin-strip-css',
+  transform: (src: string, id): { code: string; map: any } => {
+    if (id.includes('.scss')) {
+      if (id.includes('src/index.scss')) {
+        return { code: src, map: null };
+      }
+
+      const split = src.split(SPLIT_CSS_MARK);
+      const newSrc = split[split.length - 1];
+      return { code: newSrc, map: null };
+    }
+  }
+});
+
 export default defineConfig({
-  plugins: [react(), eslint(), hotReload()],
+  plugins: [react(), eslint(), hotReload(), removeDuplicatedStyles()],
+  // plugins: [react(), eslint(), hotReload()],
   server: {
-    port: 3000
+    port: 3003
   },
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `
-          @import '@/styles/fonts.scss';
-          @import '@/styles/mixins.scss';
-          @import '@/styles/colors.scss';
-          @import '@/styles/constants.scss';
-          @import '@/styles/main-classes.scss';
-          @import "@/styles/global.scss";
-        `
+        additionalData: `@import "@/styles/global.scss";${SPLIT_CSS_MARK}`
       }
     }
   },
