@@ -16,3 +16,4 @@ CODEBASE Issues:
 
 - add GUARD protection
 - no catch error vite console
+- localize
