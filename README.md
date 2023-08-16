@@ -17,3 +17,5 @@ CODEBASE Issues:
 - add GUARD protection
 - no catch error vite console
 - localize
+- update redux-toolkit
+- fix issue storeInGlobalState redux
