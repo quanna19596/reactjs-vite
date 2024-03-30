@@ -1,7 +1,7 @@
-import { ActionReducerMapBuilder, AnyAction } from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, UnknownAction } from '@reduxjs/toolkit';
 
 const requestAction = {
-  isDispatching: (action: AnyAction): boolean => {
+  isDispatching: (action: UnknownAction): boolean => {
     return action.type.endsWith('Request');
   },
   handler: (state: any): void => {
@@ -11,7 +11,7 @@ const requestAction = {
 };
 
 const successAction = {
-  isDispatching: (action: AnyAction): boolean => {
+  isDispatching: (action: UnknownAction): boolean => {
     return action.type.endsWith('Success');
   },
   handler: (state: any): void => {
@@ -21,10 +21,10 @@ const successAction = {
 };
 
 const failedAction = {
-  isDispatching: (action: AnyAction): boolean => {
+  isDispatching: (action: UnknownAction): boolean => {
     return action.type.endsWith('Failed');
   },
-  handler: (state: any, action: AnyAction): void => {
+  handler: (state: any, action: UnknownAction): void => {
     state.error = action.payload;
     state.isLoading = false;
   }

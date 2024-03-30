@@ -5,13 +5,14 @@ import eslint from 'vite-plugin-eslint';
 
 const SPLIT_CSS_MARK = '/* ##SPLIT_CSS_MARK## */';
 
-const hotReload = (): PluginOption => ({
+const hotReload = (): PluginOption => ({ // // A plugin for hot module error for cannot access xxx before initialization.
   name: 'singleHMR',
   handleHotUpdate({ modules }): ModuleNode[] {
-    modules.map((m) => {
-      m.importedModules = new Set();
-      m.importers = new Set();
-    });
+    modules.map((m) => ({
+      ...m,
+      importedModules: new Set(),
+      importers: new Set(),
+    }));
 
     return modules;
   }
@@ -34,7 +35,6 @@ const removeDuplicatedStyles = (): { name: string; transform(src: string, id: an
 
 export default defineConfig({
   plugins: [react(), eslint(), hotReload(), removeDuplicatedStyles()],
-  // plugins: [react(), eslint(), hotReload()],
   server: {
     port: 3003
   },
