@@ -1,4 +1,9 @@
-export enum EStatusCode {
+export enum EStorageKey {
+  COOKIE_ACCESS_TOKEN = 'c_atk',
+  COOKIE_REFRESH_TOKEN = 'c_rtk'
+}
+
+export enum EHttpStatusCode {
   OK = 200,
   CREATED = 201,
   ACCEPTED = 202,
@@ -59,4 +64,16 @@ export enum EStatusCode {
   LOOP_DETECTED = 508,
   NOT_EXTENDED = 510,
   NETWORK_AUTHENTICATION_REQUIRED = 511
+}
+
+export enum EEnvironmentMode {
+  DEVELOPMENT = 'development',
+  STAGING = 'staging',
+  PRODUCTION = 'production'
+}
+
+export enum EActionType {
+  REQUEST = 'Request',
+  SUCCESS = 'Success',
+  FAILED = 'Failed'
 }

@@ -1,15 +1,15 @@
-import { EStorage } from '@/enums';
+import { EStorageKey } from '@/enums';
 import { getCookie, removeCookie, setCookie } from '@/utils';
 
-export const getRefreshToken = (): string => getCookie(EStorage.COOKIE_REFRESH_TOKEN);
+export const getRefreshToken = (): string => getCookie(EStorageKey.COOKIE_REFRESH_TOKEN);
 
-export const storeRefreshToken = (refreshToken: string): void => setCookie(EStorage.COOKIE_REFRESH_TOKEN, refreshToken);
+export const storeRefreshToken = (refreshToken: string): void => setCookie(EStorageKey.COOKIE_REFRESH_TOKEN, refreshToken);
 
-export const getAccessToken = (): string => getCookie(EStorage.COOKIE_ACCESS_TOKEN);
+export const getAccessToken = (): string => getCookie(EStorageKey.COOKIE_ACCESS_TOKEN);
 
-export const storeAccessToken = (accessToken: string): void => setCookie(EStorage.COOKIE_ACCESS_TOKEN, accessToken);
+export const storeAccessToken = (accessToken: string): void => setCookie(EStorageKey.COOKIE_ACCESS_TOKEN, accessToken);
 
 export const clearTokens = (): void => {
-  removeCookie(EStorage.COOKIE_REFRESH_TOKEN);
-  removeCookie(EStorage.COOKIE_ACCESS_TOKEN);
+  removeCookie(EStorageKey.COOKIE_REFRESH_TOKEN);
+  removeCookie(EStorageKey.COOKIE_ACCESS_TOKEN);
 };

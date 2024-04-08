@@ -1,3 +1,2 @@
-export * from './browser';
-export * from './http';
-export * from './ui-ux';
+export * from './other';
+export * from './style';

@@ -13,7 +13,13 @@ export const PLOP_COMMAND = {
   CREATE_LAYOUT: 'create-layout',
   REMOVE_LAYOUT: 'remove-layout',
   CREATE_PAGE: 'create-page',
-  REMOVE_PAGE: 'remove-page'
+  REMOVE_PAGE: 'remove-page',
+  CREATE_ICON: 'create-icon',
+  REMOVE_ICON: 'remove-icon',
+  CREATE_API: 'create-api',
+  REMOVE_API: 'remove-api',
+  CREATE_SERVICE: 'create-service',
+  REMOVE_SERVICE: 'remove-service'
 };
 
 export const PLOP_HELPER_TYPE = {

@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 
+import { EIconName, TIconProps } from '@/components/Icon';
+
 import Cart from './Cart';
-import { EIconName } from './Icon.enums';
-import { TIconProps } from './Icon.types';
 
 import './Icon.scss';
 

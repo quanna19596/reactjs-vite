@@ -11,7 +11,7 @@ export default function* getPetByIdSaga(
   const { successCb, failedCb, storeInGlobalState, ...params } = action.payload;
   try {
     const response = yield call(getPetById, params);
-    yield put(petstoreSlices.petSlice.actions.getPetByIdSuccess(storeInGlobalState ? response : undefined));
+    yield put(petstoreSlices.petSlice.actions.getPetByIdSuccess({ storeInGlobalState, response }));
     successCb?.(response as TGetPetByIdResponse);
   } catch (err) {
     const error = (err as AxiosError).response?.data as TError;

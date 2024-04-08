@@ -5,13 +5,14 @@ import eslint from 'vite-plugin-eslint';
 
 const SPLIT_CSS_MARK = '/* ##SPLIT_CSS_MARK## */';
 
-const hotReload = (): PluginOption => ({ // // A plugin for hot module error for cannot access xxx before initialization.
+// A plugin for hot module error for cannot access xxx before initialization.
+const hotReload = (): PluginOption => ({
   name: 'singleHMR',
   handleHotUpdate({ modules }): ModuleNode[] {
     modules.map((m) => ({
       ...m,
       importedModules: new Set(),
-      importers: new Set(),
+      importers: new Set()
     }));
 
     return modules;

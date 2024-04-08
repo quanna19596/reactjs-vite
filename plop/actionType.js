@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import rimraf from 'rimraf';
+import { rimraf } from 'rimraf';
 
 export default {
 	prettier: () => exec('yarn format & yarn lint'),

@@ -13,4 +13,11 @@ export default (plop) => {
   plop.setGenerator(PLOP_COMMAND.REMOVE_LAYOUT, generator.removeLayout(plop));
   plop.setGenerator(PLOP_COMMAND.CREATE_PAGE, generator.createPage(plop));
   plop.setGenerator(PLOP_COMMAND.REMOVE_PAGE, generator.removePage(plop));
+  plop.setGenerator(PLOP_COMMAND.CREATE_ICON, generator.createIcon(plop));
+  plop.setGenerator(PLOP_COMMAND.REMOVE_ICON, generator.removeIcon(plop));
+
+  plop.setGenerator(PLOP_COMMAND.CREATE_API, generator.createApi(plop));
+  plop.setGenerator(PLOP_COMMAND.REMOVE_API, generator.removeApi(plop));
+  plop.setGenerator(PLOP_COMMAND.CREATE_SERVICE, generator.createService(plop));
+  plop.setGenerator(PLOP_COMMAND.REMOVE_SERVICE, generator.removeService(plop));
 };

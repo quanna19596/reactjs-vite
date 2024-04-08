@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
-import { EStatusCode } from '@/enums';
+import { EHttpStatusCode } from '@/enums';
 import env from '@/env';
 import { ICustomAxiosRequestConfig, TTokenSubscribers } from '@/services';
 import { clearTokens, getAccessToken, getRefreshToken, storeAccessToken, storeRefreshToken } from '@/utils';
@@ -61,7 +61,7 @@ export const AuthorizedInstance = (baseURL: string): AxiosInstance => {
     const responseStatus = response?.status;
     const originalRequest = axiosError.config;
     const refreshTokenFailed = originalRequest?.url === '/refresh-token';
-    const requestUnauthorized = responseStatus === EStatusCode.UNAUTHORIZED;
+    const requestUnauthorized = responseStatus === EHttpStatusCode.UNAUTHORIZED;
 
     if (requestUnauthorized && refreshTokenFailed) {
       onTokenRefreshed(new Error('Failed to refresh access token'));
@@ -70,7 +70,7 @@ export const AuthorizedInstance = (baseURL: string): AxiosInstance => {
       return Promise.reject(axiosError);
     }
 
-    if (responseStatus === EStatusCode.UNAUTHORIZED && originalRequest) {
+    if (responseStatus === EHttpStatusCode.UNAUTHORIZED && originalRequest) {
       if (!isRefreshingAccessToken) {
         isRefreshingAccessToken = true;
         refreshTokens()

@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { DependencyList, EffectCallback, RefObject, useEffect, useState } from 'react';
+
+import { EEnvironmentMode } from '@/enums';
+import env from '@/env';
 
 type TScroll = {
   x: number;
@@ -45,7 +48,7 @@ export const useScroll = (): TScroll => {
   return scroll;
 };
 
-export const useOnClickOutside = (ref: React.RefObject<HTMLElement>, handler: (event: MouseEvent | TouchEvent) => void): void => {
+export const useOnClickOutside = (ref: RefObject<HTMLElement>, handler: (event: MouseEvent | TouchEvent) => void): void => {
   useEffect(() => {
     const listener = (event: MouseEvent | TouchEvent): void => {
       if (!ref.current || ref.current.contains(event.target as Node)) {
@@ -61,3 +64,27 @@ export const useOnClickOutside = (ref: React.RefObject<HTMLElement>, handler: (e
     };
   }, [ref, handler]);
 };
+
+const createStrictEffectHook = (): ((effect: EffectCallback, deps?: DependencyList | undefined) => void) => {
+  const isProductionMode = env.mode === EEnvironmentMode.PRODUCTION;
+  if (isProductionMode) return useEffect;
+
+  return (effect: EffectCallback, deps?: DependencyList): void => {
+    useEffect(() => {
+      let isMounted = true;
+      let unmount: void | (() => void);
+
+      queueMicrotask(() => {
+        if (isMounted) unmount = effect();
+      });
+
+      return () => {
+        isMounted = false;
+        unmount?.();
+      };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, deps);
+  };
+};
+
+export const useStrictEffect = createStrictEffectHook();
