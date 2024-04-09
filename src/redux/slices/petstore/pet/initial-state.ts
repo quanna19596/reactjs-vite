@@ -1,5 +1,5 @@
 import { TInitialState } from '@/redux';
-import { TGetPetByIdResponse } from '@/services';
+import { TGetPetByIdResponse } from '@/services/petstore';
 
 const initialState: {
   getPetById: TInitialState<TGetPetByIdResponse>;

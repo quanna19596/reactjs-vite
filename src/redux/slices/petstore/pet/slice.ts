@@ -1,12 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import asyncStatusReducers from '@/redux/async-status-handling';
-import { successHandler } from '@/redux/slices/utils';
+import { asyncStatusReducers, successHandler } from '@/redux';
 
 import initialState from './initial-state';
 import stateReducers from './state-reducers';
 
-const petSlice = createSlice({
+export const petSlice = createSlice({
   name: 'petstore/pet',
   initialState,
   reducers: {
@@ -15,5 +14,3 @@ const petSlice = createSlice({
   },
   extraReducers: asyncStatusReducers
 });
-
-export default petSlice;

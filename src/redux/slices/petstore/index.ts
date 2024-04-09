@@ -1,3 +1,1 @@
-import { petSlice } from './pet';
-
-export default { petSlice };
+export * from './pet/slice';

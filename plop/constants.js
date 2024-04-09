@@ -57,7 +57,8 @@ export const PATH = {
     STYLES: {
       _self: './src/styles',
       MAIN_CLASSES: './src/styles/main-classes.scss'
-    }
+    },
+    ENV: './src/env.ts'
   },
   PLOP: {
     _self: './plop',
@@ -74,11 +75,15 @@ export const PATH = {
         _self: './plop/templates/page',
         PRIVATE: './plop/templates/page/private',
         PUBLIC: './plop/templates/page/public'
-      }
+      },
+      SERVICE: './plop/templates/service'
     },
     GENERATORS: './plop/generators'
   },
-  STORYBOOK: './stories'
+  STORYBOOK: './stories',
+  DEVELOPMENT_ENV: '.env.development',
+  STAGING_ENV: '.env.staging',
+  PRODUCTION_ENV: '.env.production'
 };
 
 export const BREAK_LINE = process.platform.startsWith('win') ? '\r\n' : '\n';

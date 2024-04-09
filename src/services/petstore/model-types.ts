@@ -1,11 +1,11 @@
-import { EOrderStatus, ETagStatus } from '@/services';
+import { ETagStatus } from '@/services/petstore';
 
-export type TError = {
+export type TResponseError = {
   statusCode: number;
   message: string;
 };
 
-export type TPaging = {
+export type TResponsePaging = {
   paging: {
     pageSize: 0;
     pageNumber: 0;
@@ -13,47 +13,19 @@ export type TPaging = {
   };
 };
 
-export type TApiResponse = {
-  code: number;
-  type: string;
-  message: string;
-};
-
-export type TCategory = {
-  id: number;
-  name: string;
-};
+export type TResponseSuccess<T> = T;
 
 export type TPet = {
   id: number;
-  category: TCategory;
+  category: {
+    id: number;
+    name: string;
+  };
   name: string;
   photoUrls: string[];
-  tags: TTag[];
+  tags: {
+    id: number;
+    name: string;
+  }[];
   status: ETagStatus;
-};
-
-export type TTag = {
-  id: number;
-  name: string;
-};
-
-export type TOrder = {
-  id: number;
-  petId: number;
-  quantity: number;
-  shipDate: string;
-  status: EOrderStatus;
-  complete: boolean;
-};
-
-export type TUser = {
-  id: number;
-  username: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  phone: string;
-  userStatus: number;
 };

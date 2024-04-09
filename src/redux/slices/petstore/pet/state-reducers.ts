@@ -1,9 +1,9 @@
-import { errorHandler, requestHandler } from '@/redux/slices/utils';
-import { TGetPetByIdParameters, TGetPetByIdResponse } from '@/services';
+import { errorHandler, requestHandler } from '@/redux';
+import { TGetPetByIdParameters, TGetPetByIdResponse, TResponseError } from '@/services/petstore';
 
 const stateReducers = {
-  getPetByIdRequest: requestHandler<TGetPetByIdParameters, TGetPetByIdResponse>,
-  getPetByIdFailed: errorHandler
+  getPetByIdRequest: requestHandler<TGetPetByIdParameters, TGetPetByIdResponse, TResponseError>,
+  getPetByIdFailed: errorHandler<TResponseError>
 };
 
 export default stateReducers;

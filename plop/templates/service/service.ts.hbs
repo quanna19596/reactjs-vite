@@ -1,0 +1,4 @@
+import env from '@/env';
+import { AuthorizedInstance } from '@/services';
+
+export const {{constantCase serviceName}}Service = AuthorizedInstance(env.service.{{camelCase serviceName}}.baseUrl);

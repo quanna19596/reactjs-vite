@@ -1,7 +1,11 @@
-import { petstoreSlices } from './slices';
+import { combineReducers } from 'redux';
+
+import { petSlice } from './slices/petstore';
 
 const rootReducer = {
-  pet: petstoreSlices.petSlice.reducer
+  petStore: combineReducers({
+    pet: petSlice.reducer
+  })
 };
 
 export default rootReducer;
