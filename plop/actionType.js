@@ -1,8 +1,8 @@
-import { exec } from 'child_process';
+import { execSync } from 'child_process';
 import { rimraf } from 'rimraf';
 
 export default {
-	prettier: () => exec('yarn format & yarn lint'),
+	prettier: () => { execSync('yarn format & yarn lint', { stdio: 'ignore' }); },
 	remove: (answers, config, plop) => {
     const { path } = config;
     const correctPath = plop.renderString(path, answers);

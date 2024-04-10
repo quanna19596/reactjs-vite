@@ -8,4 +8,4 @@ export const getAllFilesInDirectory = (path) => fs.readdirSync(path);
 
 export const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
-export const skipAction = (skipCondition, filePath) => skipCondition ? `Skipped ${filePath}` : null
+export const skipAction = ({ when, path, actionType }) => when ? `Skipped [${actionType.toUpperCase()}] ${path}` : null

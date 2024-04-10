@@ -6,6 +6,17 @@ const PROMPT_OPTION = {
   ADD_NEW_GROUP: 'Add new a group'
 };
 
+const API_METHOD = {
+  GET: 'GET',
+  POST: 'POST',
+  POST_FORM: 'POST FORM',
+  PUT: 'PUT',
+  PUT_FORM: 'PUT FORM',
+  PATCH: 'PATCH',
+  PATCH_FORM: 'PATCH FORM',
+  DELETE: 'DELETE'
+};
+
 export default (plop) => {
   const userWantCreateNewService = ({ rawServiceName }) => rawServiceName === PROMPT_OPTION.ADD_NEW_SERVICE;
   const userWantCreateNewGroup = ({ rawGroupName, rawServiceName }) =>
@@ -76,9 +87,7 @@ export default (plop) => {
       {
         type: PLOP_PROMPT_TYPE.LIST,
         name: 'method',
-        choices: () => {
-          return ['GET', 'POST', 'POST FORM', 'PUT', 'PUT FORM', 'PATCH', 'PATCH FORM', 'DELETE'];
-        },
+        choices: () => Object.values(API_METHOD),
         message: 'Method?'
       }
     ],
@@ -96,25 +105,26 @@ export default (plop) => {
       const prodEnvFilePath = PATH.PRODUCTION_ENV;
       const objEnvFilePath = PATH.SRC.ENV;
 
-      const newServiceDirPath = plop.renderString(`${PATH.SRC.SERVICES}/{{camelCase serviceName}}`, { serviceName });
-      const newApiFilePath = plop.renderString(`${PATH.SRC.SERVICES}/{{camelCase serviceName}}/{{camelCase groupName}}/{{dashCase apiName}}.ts`, { serviceName, groupName, apiName });
-      const groupDirPath = plop.renderString(`${PATH.SRC.SERVICES}/{{camelCase serviceName}}/{{camelCase groupName}}`, { serviceName, groupName });
+      const serviceDirPath = plop.renderString(`${PATH.SRC.SERVICES}/{{dashCase serviceName}}`, { serviceName });
+      const apiFilePath = plop.renderString(
+        `${PATH.SRC.SERVICES}/{{dashCase serviceName}}/{{dashCase groupName}}/{{dashCase apiName}}.ts`,
+        { serviceName, groupName, apiName }
+      );
+      const groupDirPath = plop.renderString(`${PATH.SRC.SERVICES}/{{dashCase serviceName}}/{{dashCase groupName}}`, {
+        serviceName,
+        groupName
+      });
 
       const pathsFormatter = (endpoint) => {
         const endpointSplitted = endpoint.split('/');
-        return `${endpointSplitted.filter((el) => el.includes('{')).map((el) => el.replace(/{/g, '').replace(/}/g, '')).join(';')};`;
+        const pathParams = endpointSplitted.filter((el) => el.includes('{'));
+        return !!pathParams.length ? `${pathParams.map((el) => el.replace(/{/g, '').replace(/}/g, '')).join(';')};` : '';
       };
 
       const endpointFormatter = (endpoint) => {
         const endpointSplitted = endpoint.split('/');
-        return endpointSplitted.map((el) => !el.includes('{') ? el : `${el.split(':')[0].replace(/{/g, '${params.paths?.')}}`).join('/');
+        return endpointSplitted.map((el) => (!el.includes('{') ? el : `${el.split(':')[0].replace(/{/g, '${params.paths?.')}}`)).join('/');
       };
-
-      // console.log(`${PATH.PLOP.TEMPLATES.API}/${['get', 'delete'].includes(method) ? 'no-body' : 'has-body'}.hbs`);
-      // console.log({
-      //   pathsFormatted: pathsFormatter(endpoint),
-      //   endpointFormatted: endpointFormatter(endpoint),
-      // })
 
       return [
         {
@@ -122,58 +132,64 @@ export default (plop) => {
           path: devEnvFilePath,
           pattern: new RegExp('(# END SERVICES)', 'g'),
           template: 'VITE_{{constantCase serviceName}}_SERVICE={{lowerCase devBaseUrl}}' + BREAK_LINE + '$1',
-          skip: () => skipAction(!isUserWantCreateNewService, devEnvFilePath)
+          skip: () => skipAction({ when: !isUserWantCreateNewService, path: devEnvFilePath, actionType: PLOP_ACTION_TYPE.MODIFY })
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
           path: stagingEnvFilePath,
           pattern: new RegExp('(# END SERVICES)', 'g'),
           template: 'VITE_{{constantCase serviceName}}_SERVICE={{lowerCase stagingBaseUrl}}' + BREAK_LINE + '$1',
-          skip: () => skipAction(!isUserWantCreateNewService, stagingEnvFilePath)
+          skip: () => skipAction({ when: !isUserWantCreateNewService, path: stagingEnvFilePath, actionType: PLOP_ACTION_TYPE.MODIFY })
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
           path: prodEnvFilePath,
           pattern: new RegExp('(# END SERVICES)', 'g'),
           template: 'VITE_{{constantCase serviceName}}_SERVICE={{lowerCase prodBaseUrl}}' + BREAK_LINE + '$1',
-          skip: () => skipAction(!isUserWantCreateNewService, prodEnvFilePath)
+          skip: () => skipAction({ when: !isUserWantCreateNewService, path: prodEnvFilePath, actionType: PLOP_ACTION_TYPE.MODIFY })
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
           path: objEnvFilePath,
           pattern: new RegExp('(service: {)', 'g'),
           template: "$1{{camelCase serviceName}}: { baseUrl: import.meta.env.VITE_{{constantCase serviceName}}_SERVICE ?? '' },",
-          skip: () => skipAction(!isUserWantCreateNewService, objEnvFilePath)
+          skip: () => skipAction({ when: !isUserWantCreateNewService, path: objEnvFilePath, actionType: PLOP_ACTION_TYPE.MODIFY })
         },
         {
           type: PLOP_ACTION_TYPE.ADD_MANY,
-          destination: newServiceDirPath,
+          destination: serviceDirPath,
           base: PATH.PLOP.TEMPLATES.SERVICE,
           templateFiles: `${PATH.PLOP.TEMPLATES.SERVICE}/*`,
-          skip: () => skipAction(!isUserWantCreateNewService, newServiceDirPath)
+          skip: () => skipAction({ when: !isUserWantCreateNewService, path: serviceDirPath, actionType: PLOP_ACTION_TYPE.ADD_MANY })
         },
         {
           type: PLOP_ACTION_TYPE.ADD,
-          path: newApiFilePath,
-          templateFile: `${PATH.PLOP.TEMPLATES.API}/${['get', 'delete'].includes(method) ? 'no-body' : 'has-body'}.hbs`,
+          path: apiFilePath,
+          templateFile: `${PATH.PLOP.TEMPLATES.API}/${[API_METHOD.GET, API_METHOD.DELETE].includes(method) ? 'no-body' : 'has-body'}.hbs`,
           data: {
             pathsFormatted: pathsFormatter(endpoint),
-            endpointFormatted: endpointFormatter(endpoint),
+            endpointFormatted: endpointFormatter(endpoint)
           }
         },
         {
           type: PLOP_ACTION_TYPE.ADD,
           path: `${groupDirPath}/index.ts`,
           template: `export * from './{{dashCase apiName}}';`,
-          skip: () => skipAction(!isUserWantCreateNewGroup, `${groupDirPath}/index.ts`)
+          skip: () => skipAction({ when: !isUserWantCreateNewGroup, path: `${groupDirPath}/index.ts`, actionType: PLOP_ACTION_TYPE.ADD })
         },
         {
           type: PLOP_ACTION_TYPE.MODIFY,
           path: `${groupDirPath}/index.ts`,
-          template: getAllFilesInDirectory(groupDirPath)
-            .filter((fileName) => !fileName.includes('index'))
-            .map((fileName) => `export * from './${fileName.split('.')[0]}';`),
-          skip: () => skipAction(isUserWantCreateNewGroup, `${groupDirPath}/index.ts`)
+          pattern: new RegExp('([\\S\\s]*' + BREAK_LINE + ')', 'g'),
+          template: "$1export * from './{{dashCase apiName}}';",
+          skip: () => skipAction({ when: isUserWantCreateNewGroup, path: `${groupDirPath}/index.ts`, actionType: PLOP_ACTION_TYPE.MODIFY })
+        },
+        {
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: `${serviceDirPath}/index.ts`,
+          pattern: new RegExp('([\\S\\s]*' + BREAK_LINE + ')', 'g'),
+          template: "$1export * from './{{dashCase groupName}}';",
+          skip: () => skipAction({ when: isUserWantCreateNewService, path: `${serviceDirPath}/index.ts`, actionType: PLOP_ACTION_TYPE.MODIFY })
         },
         { type: PLOP_ACTION_TYPE.PRETTIER }
       ];
