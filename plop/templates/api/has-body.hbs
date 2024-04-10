@@ -1,0 +1,19 @@
+import { TParameters } from '@/services';
+import { {{pascalCase serviceName}}Service, TResponseSuccess } from '@/services/{{dashCase serviceName}}';
+
+export type T{{pascalCase apiName}}Paths = {
+  {{pathsFormatted}}
+};
+
+export type T{{pascalCase apiName}}Queries = {};
+
+export type T{{pascalCase apiName}}Body = {};
+
+export type T{{pascalCase apiName}}Parameters = TParameters<T{{pascalCase apiName}}Paths, T{{pascalCase apiName}}Queries, T{{pascalCase apiName}}Body>;
+
+export type T{{pascalCase apiName}}Response = TResponseSuccess;
+
+export const {{camelCase apiName}} = async (params: T{{pascalCase apiName}}Parameters): Promise<T{{pascalCase apiName}}Response> => {
+  const response = await {{pascalCase serviceName}}Service.{{lowerCase method}}(`{{endpointFormatted}}`, params.body, { params: params.queries });
+  return response.data;
+};

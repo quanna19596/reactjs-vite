@@ -30,9 +30,7 @@
     "create-icon": "yarn plop create-icon",
     "remove-icon": "yarn plop remove-icon",
     "create-api": "yarn plop create-api",
-    "remove-api": "yarn plop remove-api",
-    "create-service": "yarn plop create-service",
-    "remove-service": "yarn plop remove-service"
+    "remove-api": "yarn plop remove-api"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.2",

@@ -1,5 +1,5 @@
 import { errorHandler, requestHandler } from '@/redux';
-import { TGetPetByIdParameters, TGetPetByIdResponse, TResponseError } from '@/services/petstore';
+import { TGetPetByIdParameters, TGetPetByIdResponse, TResponseError } from '@/services/pet-store';
 
 const stateReducers = {
   getPetByIdRequest: requestHandler<TGetPetByIdParameters, TGetPetByIdResponse, TResponseError>,

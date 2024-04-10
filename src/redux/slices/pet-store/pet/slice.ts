@@ -6,7 +6,7 @@ import initialState from './initial-state';
 import stateReducers from './state-reducers';
 
 export const petSlice = createSlice({
-  name: 'petstore/pet',
+  name: 'petStore/pet',
   initialState,
   reducers: {
     getPetByIdSuccess: (state, action) => successHandler(state, action, { data: action.payload }),

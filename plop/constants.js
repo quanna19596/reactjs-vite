@@ -64,6 +64,7 @@ export const PATH = {
     _self: './plop',
     TEMPLATES: {
       _self: './plop/templates',
+      API: './plop/templates/api',
       COMPONENT: './plop/templates/component',
       LAYOUT: {
         _self: './plop/templates/layout',

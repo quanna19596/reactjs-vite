@@ -5,7 +5,7 @@ export interface ICustomAxiosRequestConfig extends Omit<AxiosRequestConfig, 'hea
   headers: any;
 }
 
-export type TParameters<TPaths, TQueries, TBody> = {
+export type TParameters<TPaths = {}, TQueries = {}, TBody = {}> = {
   paths?: TPaths;
   queries?: TQueries;
   body?: TBody;

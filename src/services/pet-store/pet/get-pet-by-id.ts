@@ -1,5 +1,5 @@
 import { TParameters } from '@/services';
-import { PetStoreService, TPet, TResponseSuccess } from '@/services/petstore';
+import { PetStoreService, TPet, TResponseSuccess } from '@/services/pet-store';
 
 export type TGetPetByIdPaths = {
   id: string;
@@ -7,9 +7,7 @@ export type TGetPetByIdPaths = {
 
 export type TGetPetByIdQueries = {};
 
-export type TGetPetByIdBody = {};
-
-export type TGetPetByIdParameters = TParameters<TGetPetByIdPaths, TGetPetByIdQueries, TGetPetByIdBody>;
+export type TGetPetByIdParameters = TParameters<TGetPetByIdPaths, TGetPetByIdQueries>;
 
 export type TGetPetByIdResponse = TResponseSuccess<TPet>;
 

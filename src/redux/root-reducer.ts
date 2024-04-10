@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-import { petSlice } from './slices/petstore';
+import { petSlice } from './slices/pet-store';
 
 const rootReducer = {
   petStore: combineReducers({

@@ -1,4 +1,4 @@
-import { ETagStatus } from '@/services/petstore';
+import { ETagStatus } from '@/services/pet-store';
 
 export type TResponseError = {
   statusCode: number;
@@ -13,7 +13,7 @@ export type TResponsePaging = {
   };
 };
 
-export type TResponseSuccess<T> = T;
+export type TResponseSuccess<T = {}> = T;
 
 export type TPet = {
   id: number;

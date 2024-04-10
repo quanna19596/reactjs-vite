@@ -3,8 +3,8 @@ import { AxiosError } from 'axios';
 import { call, put } from 'redux-saga/effects';
 
 import { TRequestHandlerCallbacks } from '@/redux';
-import { petSlice } from '@/redux/slices/petstore';
-import { getPetById, TGetPetByIdParameters, TGetPetByIdResponse, TResponseError } from '@/services/petstore';
+import { petSlice } from '@/redux/slices/pet-store';
+import { getPetById, TGetPetByIdParameters, TGetPetByIdResponse, TResponseError } from '@/services/pet-store';
 
 export function* getPetByIdSaga(
   action: PayloadAction<TGetPetByIdParameters & TRequestHandlerCallbacks<TGetPetByIdResponse, TResponseError>>

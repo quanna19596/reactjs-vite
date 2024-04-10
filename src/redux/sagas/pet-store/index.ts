@@ -4,7 +4,7 @@
 
 import { all, takeEvery } from 'redux-saga/effects';
 
-import { petSlice } from '@/redux/slices/petstore';
+import { petSlice } from '@/redux/slices/pet-store';
 
 import { getPetByIdSaga } from './pet';
 
