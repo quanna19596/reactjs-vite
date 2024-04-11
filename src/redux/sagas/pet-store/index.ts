@@ -1,7 +1,3 @@
-// import petRootSaga from './pet';
-
-// export { petRootSaga };
-
 import { all, takeEvery } from 'redux-saga/effects';
 
 import { petSlice } from '@/redux/slices/pet-store';

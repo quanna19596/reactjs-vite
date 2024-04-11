@@ -1,0 +1,9 @@
+import { errorHandler, requestHandler } from '@/redux';
+import { T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response, TResponseError } from '@/services/{{dashCase serviceName}}';
+
+const stateReducers = {
+  {{camelCase apiName}}Request: requestHandler<T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response, TResponseError>,
+  {{camelCase apiName}}Failed: errorHandler<TResponseError>
+};
+
+export default stateReducers;

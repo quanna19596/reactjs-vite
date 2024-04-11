@@ -45,7 +45,11 @@ export const PATH = {
     COMPONENTS: './src/components',
     CONTAINERS: './src/containers',
     PAGES: './src/pages',
-    REDUX: './src/redux',
+    REDUX: {
+      _self: './src/redux',
+      SLICES: './src/redux/slices',
+      SAGAS: './src/redux/sagas',
+    },
     SERVICES: './src/services',
     TYPES: './src/types',
     UTILS: './src/types',
@@ -77,7 +81,8 @@ export const PATH = {
         PRIVATE: './plop/templates/page/private',
         PUBLIC: './plop/templates/page/public'
       },
-      SERVICE: './plop/templates/service'
+      SERVICE: './plop/templates/service',
+      SLICE_GROUP: './plop/templates/slice-group'
     },
     GENERATORS: './plop/generators'
   },

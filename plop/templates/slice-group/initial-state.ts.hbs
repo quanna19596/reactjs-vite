@@ -1,0 +1,10 @@
+import { TInitialState } from '@/redux';
+import { T{{pascalCase apiName}}Response } from '@/services/{{dashCase serviceName}}';
+
+const initialState: {
+  {{camelCase apiName}}: TInitialState<T{{pascalCase apiName}}Response>;
+} = {
+  {{camelCase apiName}}: { data: undefined, isLoading: undefined, error: undefined }
+};
+
+export default initialState;
