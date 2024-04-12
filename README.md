@@ -9,7 +9,7 @@ Please use VSCode as IDE and install some extensions following:
 
 PLOP Plan:
 - validation plop
-- write plop tools for remove-api
+- write plop tools for remove-api, remove-api-group, remove-service
 - generate full api from postman/swagger file
 
 

@@ -18,7 +18,7 @@ export const PLOP_COMMAND = {
   REMOVE_ICON: 'remove-icon',
   CREATE_API: 'create-api',
   REMOVE_API: 'remove-api',
-  CREATE_SERVICE: 'create-service',
+  REMOVE_API_GROUP: 'remove-api-group',
   REMOVE_SERVICE: 'remove-service'
 };
 

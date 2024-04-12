@@ -74,7 +74,7 @@ const envFilesActions = (data) => {
       type: PLOP_ACTION_TYPE.MODIFY,
       path: devEnvFilePath,
       pattern: new RegExp('(# END SERVICES)', 'g'),
-      template: 'VITE_{{constantCase serviceName}}_SERVICE={{lowerCase devBaseUrl}}' + BREAK_LINE + '$1',
+      template: 'VITE_{{constantCase serviceName}}_SERVICE={{lowerCase devBaseUrl}} # {{constantCase serviceName}}_SERVICE' + BREAK_LINE + '$1',
       skip: () =>
         skipAction({
           when: !isUserWantCreateNewService,
@@ -86,7 +86,7 @@ const envFilesActions = (data) => {
       type: PLOP_ACTION_TYPE.MODIFY,
       path: stagingEnvFilePath,
       pattern: new RegExp('(# END SERVICES)', 'g'),
-      template: 'VITE_{{constantCase serviceName}}_SERVICE={{lowerCase stagingBaseUrl}}' + BREAK_LINE + '$1',
+      template: 'VITE_{{constantCase serviceName}}_SERVICE={{lowerCase stagingBaseUrl}} # {{constantCase serviceName}}_SERVICE' + BREAK_LINE + '$1',
       skip: () =>
         skipAction({
           when: !isUserWantCreateNewService,
@@ -98,7 +98,7 @@ const envFilesActions = (data) => {
       type: PLOP_ACTION_TYPE.MODIFY,
       path: prodEnvFilePath,
       pattern: new RegExp('(# END SERVICES)', 'g'),
-      template: 'VITE_{{constantCase serviceName}}_SERVICE={{lowerCase prodBaseUrl}}' + BREAK_LINE + '$1',
+      template: 'VITE_{{constantCase serviceName}}_SERVICE={{lowerCase prodBaseUrl}} # {{constantCase serviceName}}_SERVICE' + BREAK_LINE + '$1',
       skip: () =>
         skipAction({
           when: !isUserWantCreateNewService,
