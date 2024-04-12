@@ -1,0 +1,7 @@
+import { all, fork } from 'redux-saga/effects';
+
+import {{camelCase serviceName}}RootSaga from './{{dashCase serviceName}}';
+
+export const rootSaga = function* root(): Generator {
+  yield all([fork({{camelCase serviceName}}RootSaga)]);
+};

@@ -82,7 +82,8 @@ export const PATH = {
         PUBLIC: './plop/templates/page/public'
       },
       SERVICE: './plop/templates/service',
-      SLICE_GROUP: './plop/templates/slice-group'
+      SLICE_GROUP: './plop/templates/slice-group',
+      SAGA: './plop/templates/saga',
     },
     GENERATORS: './plop/generators'
   },

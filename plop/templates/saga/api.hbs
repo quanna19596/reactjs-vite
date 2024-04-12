@@ -1,0 +1,22 @@
+import { PayloadAction } from '@reduxjs/toolkit';
+import { AxiosError } from 'axios';
+import { call, put } from 'redux-saga/effects';
+
+import { TRequestHandlerCallbacks } from '@/redux';
+import { {{camelCase groupName}}Slice } from '@/redux/slices/{{dashCase serviceName}}';
+import { {{camelCase apiName}}, T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response, TResponseError } from '@/services/{{dashCase serviceName}}';
+
+export function* {{camelCase apiName}}Saga(
+  action: PayloadAction<T{{pascalCase apiName}}Parameters & TRequestHandlerCallbacks<T{{pascalCase apiName}}Response, TResponseError>>
+): Generator {
+  const { successCb, failedCb, storeInGlobalState, ...params } = action.payload;
+  try {
+    const response = yield call({{camelCase apiName}}, params);
+    yield put({{camelCase groupName}}Slice.actions.{{camelCase apiName}}Success({ storeInGlobalState, response }));
+    successCb?.(response as T{{pascalCase apiName}}Response);
+  } catch (err) {
+    const error = (err as AxiosError).response?.data as TResponseError;
+    yield put({{camelCase groupName}}Slice.actions.{{camelCase apiName}}Failed(error));
+    failedCb?.(error);
+  }
+}

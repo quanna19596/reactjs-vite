@@ -173,74 +173,74 @@ const reduxActions = (data, plop) => {
   const apiFileSagaPath = generateApiFilePath(plop, { rootPath: PATH.SRC.REDUX.SAGAS, serviceName, groupName, apiName });
 
   return [
-    // {
-    //   type: PLOP_ACTION_TYPE.MODIFY,
-    //   path: rootReducerFilePath,
-    //   pattern: new RegExp("(import { combineReducers } from 'redux';" + BREAK_LINE + BREAK_LINE + ')', 'g'),
-    //   template: "$1import { {{camelCase groupName}}Slice } from './slices/{{dashCase serviceName}}';",
-    //   skip: () =>
-    //     skipAction({ when: !isUserWantCreateNewGroup, path: rootReducerFilePath, description: 'Add new import for new api group' })
-    // },
-    // {
-    //   type: PLOP_ACTION_TYPE.MODIFY,
-    //   path: rootReducerFilePath,
-    //   pattern: new RegExp(plop.renderString('({{camelCase serviceName}}: combineReducers\\({)', { serviceName }), 'g'),
-    //   template: '$1{{camelCase groupName}}: {{camelCase groupName}}Slice.reducer,',
-    //   skip: () =>
-    //     skipAction({
-    //       when: !isUserWantCreateNewGroup || isUserWantCreateNewService,
-    //       path: rootReducerFilePath,
-    //       description: 'Add new reducer for new api group in already exist service'
-    //     })
-    // },
-    // {
-    //   type: PLOP_ACTION_TYPE.MODIFY,
-    //   path: rootReducerFilePath,
-    //   pattern: new RegExp('(const rootReducer = {)', 'g'),
-    //   template: '$1{{camelCase serviceName}}: combineReducers({ {{camelCase groupName}}: {{camelCase groupName}}Slice.reducer }),',
-    //   skip: () =>
-    //     skipAction({
-    //       when: !isUserWantCreateNewService,
-    //       path: rootReducerFilePath,
-    //       description: 'Add new reducer for new service and new api group'
-    //     })
-    // },
-    // {
-    //   type: PLOP_ACTION_TYPE.MODIFY,
-    //   path: `${groupDirSlicePath}/initial-state.ts`,
-    //   pattern: new RegExp("(import { TInitialState } from '@/redux';)([\\S\\s]*)(const initialState: {)([\\S\\s]*)(} = {)([\S\s]*)", 'g'),
-    //   template: "$1import { T{{pascalCase apiName}}Response } from '@/services/{{dashCase serviceName}}';$2$3{{camelCase apiName}}: TInitialState<T{{pascalCase apiName}}Response>;$4$5{{camelCase apiName}}: { data: undefined, isLoading: undefined, error: undefined },$6",
-    //   skip: () =>
-    //     skipAction({
-    //       when: isUserWantCreateNewGroup,
-    //       path: `${groupDirSlicePath}/initial-state.ts`,
-    //       description: 'Add new api for already exist service (reducer) and already exist group (slice)'
-    //     })
-    // },
-    // {
-    //   type: PLOP_ACTION_TYPE.MODIFY,
-    //   path: `${groupDirSlicePath}/slice.ts`,
-    //   pattern: new RegExp('(reducers: {)', 'g'),
-    //   template: "$1{{camelCase apiName}}Success: (state, action) => successHandler(state, action, { data: action.payload }),",
-    //   skip: () =>
-    //     skipAction({
-    //       when: isUserWantCreateNewGroup,
-    //       path: `${groupDirSlicePath}/slice.ts`,
-    //       description: 'Add new api for already exist service (reducer) and already exist group (slice)'
-    //     })
-    // },
-    // {
-    //   type: PLOP_ACTION_TYPE.MODIFY,
-    //   path: `${groupDirSlicePath}/state-reducers.ts`,
-    //   pattern: new RegExp("(import { errorHandler, requestHandler } from '@/redux';)([\\S\\s]*)(stateReducers = {)([\\S\\s]*)", 'g'),
-    //   template: "$1import { T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response } from '@/services/{{dashCase serviceName}}';$2$3{{camelCase apiName}}Request: requestHandler<T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response, TResponseError>,{{camelCase apiName}}Failed: errorHandler<TResponseError>,$4",
-    //   skip: () =>
-    //     skipAction({
-    //       when: isUserWantCreateNewGroup,
-    //       path: `${groupDirSlicePath}/state-reducers.ts`,
-    //       description: 'Add new api for already exist service (reducer) and already exist group (slice)'
-    //     })
-    // },
+    {
+      type: PLOP_ACTION_TYPE.MODIFY,
+      path: rootReducerFilePath,
+      pattern: new RegExp("(import { combineReducers } from 'redux';" + BREAK_LINE + BREAK_LINE + ')', 'g'),
+      template: "$1import { {{camelCase groupName}}Slice } from './slices/{{dashCase serviceName}}';",
+      skip: () =>
+        skipAction({ when: !isUserWantCreateNewGroup, path: rootReducerFilePath, description: 'Add new import for new api group' })
+    },
+    {
+      type: PLOP_ACTION_TYPE.MODIFY,
+      path: rootReducerFilePath,
+      pattern: new RegExp(plop.renderString('({{camelCase serviceName}}: combineReducers\\({)', { serviceName }), 'g'),
+      template: '$1{{camelCase groupName}}: {{camelCase groupName}}Slice.reducer,',
+      skip: () =>
+        skipAction({
+          when: !isUserWantCreateNewGroup || isUserWantCreateNewService,
+          path: rootReducerFilePath,
+          description: 'Add new reducer for new api group in already exist service'
+        })
+    },
+    {
+      type: PLOP_ACTION_TYPE.MODIFY,
+      path: rootReducerFilePath,
+      pattern: new RegExp('(const rootReducer = {)', 'g'),
+      template: '$1{{camelCase serviceName}}: combineReducers({ {{camelCase groupName}}: {{camelCase groupName}}Slice.reducer }),',
+      skip: () =>
+        skipAction({
+          when: !isUserWantCreateNewService,
+          path: rootReducerFilePath,
+          description: 'Add new reducer for new service and new api group'
+        })
+    },
+    {
+      type: PLOP_ACTION_TYPE.MODIFY,
+      path: `${groupDirSlicePath}/initial-state.ts`,
+      pattern: new RegExp("(import { TInitialState } from '@/redux';)([\\S\\s]*)(const initialState: {)([\\S\\s]*)(} = {)([\S\s]*)", 'g'),
+      template: "$1import { T{{pascalCase apiName}}Response } from '@/services/{{dashCase serviceName}}';$2$3{{camelCase apiName}}: TInitialState<T{{pascalCase apiName}}Response>;$4$5{{camelCase apiName}}: { data: undefined, isLoading: undefined, error: undefined },$6",
+      skip: () =>
+        skipAction({
+          when: isUserWantCreateNewGroup,
+          path: `${groupDirSlicePath}/initial-state.ts`,
+          description: 'Add new api for already exist service (reducer) and already exist group (slice)'
+        })
+    },
+    {
+      type: PLOP_ACTION_TYPE.MODIFY,
+      path: `${groupDirSlicePath}/slice.ts`,
+      pattern: new RegExp('(reducers: {)', 'g'),
+      template: "$1{{camelCase apiName}}Success: (state, action) => successHandler(state, action, { data: action.payload }),",
+      skip: () =>
+        skipAction({
+          when: isUserWantCreateNewGroup,
+          path: `${groupDirSlicePath}/slice.ts`,
+          description: 'Add new api for already exist service (reducer) and already exist group (slice)'
+        })
+    },
+    {
+      type: PLOP_ACTION_TYPE.MODIFY,
+      path: `${groupDirSlicePath}/state-reducers.ts`,
+      pattern: new RegExp("(import { errorHandler, requestHandler } from '@/redux';)([\\S\\s]*)(stateReducers = {)([\\S\\s]*)", 'g'),
+      template: "$1import { T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response } from '@/services/{{dashCase serviceName}}';$2$3{{camelCase apiName}}Request: requestHandler<T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response, TResponseError>,{{camelCase apiName}}Failed: errorHandler<TResponseError>,$4",
+      skip: () =>
+        skipAction({
+          when: isUserWantCreateNewGroup,
+          path: `${groupDirSlicePath}/state-reducers.ts`,
+          description: 'Add new api for already exist service (reducer) and already exist group (slice)'
+        })
+    },
     {
       type: PLOP_ACTION_TYPE.ADD_MANY,
       destination: groupDirSlicePath,
@@ -260,6 +260,40 @@ const reduxActions = (data, plop) => {
       path: `${serviceDirSlicePath}/index.ts`,
       template: "export * from './{{dashCase groupName}}/slice';",
       skip: () => skipAction({ when: !isUserWantCreateNewService, path: `${serviceDirSlicePath}/index.ts`, description: 'Add new root file for new service' })
+    },
+    {
+      type: PLOP_ACTION_TYPE.ADD,
+      path: `${serviceDirSagaPath}/index.ts`,
+      templateFile: `${PATH.PLOP.TEMPLATES.SAGA}/index.hbs`,
+      skip: () => {
+        const hasAtLeastOneService = !!getAllDirsInDirectory(serviceDirSagaPath).length;
+        return skipAction({ when: hasAtLeastOneService, path: `${serviceDirSagaPath}/index.ts`, description: 'Add new root file for new service' })
+      }
+    },
+    {
+      type: PLOP_ACTION_TYPE.MODIFY,
+      path: `${serviceDirSagaPath}/index.ts`,
+      pattern: new RegExp("(import { all, fork } from 'redux-saga/effects';)([\\S\\s]*)(all([)", 'g'),
+      template: "$1import {{camelCase serviceName}}RootSaga from './{{dashCase serviceName}}';$2$3fork({{camelCase serviceName}}RootSaga),",
+      skip: () => skipAction({ when: !isUserWantCreateNewService, path: `${serviceDirSagaPath}/index.ts`, description: 'Add new fork for new service' })
+    },
+    {
+      type: PLOP_ACTION_TYPE.ADD,
+      path: apiFileSagaPath,
+      templateFile: `${PATH.PLOP.TEMPLATES.SAGA}/api.hbs`,
+    },
+    {
+      type: PLOP_ACTION_TYPE.ADD,
+      path: `${groupDirSagaPath}/index.ts`,
+      template: "export * from './{{dashCase apiName}}';",
+      skip: () => skipAction({ when: !isUserWantCreateNewGroup, path: `${groupDirSagaPath}/index.ts`, description: 'Add new file for new api group' })
+    },
+    {
+      type: PLOP_ACTION_TYPE.MODIFY,
+      path: `${groupDirSagaPath}/index.ts`,
+      pattern: new RegExp('([\\S\\s]*' + BREAK_LINE + ')', 'g'),
+      template: "$1export * from './{{dashCase apiName}}';",
+      skip: () => skipAction({ when: isUserWantCreateNewGroup, path: `${groupDirSagaPath}/index.ts`, description: 'Add new import for new api in already exist api group' })
     },
   ];
 };
@@ -348,8 +382,8 @@ export default (plop) => {
       const combinedData = { ...data, isUserWantCreateNewService, isUserWantCreateNewGroup };
 
       return [
-        // ...envFilesActions(combinedData),
-        // ...servicesActions(combinedData, plop),
+        ...envFilesActions(combinedData),
+        ...servicesActions(combinedData, plop),
         ...reduxActions(combinedData, plop),
         { type: PLOP_ACTION_TYPE.PRETTIER }
       ];
