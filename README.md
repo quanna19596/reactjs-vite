@@ -9,8 +9,8 @@ Please use VSCode as IDE and install some extensions following:
 
 PLOP Plan:
 - validation plop
-- write plop tools for create-service, remove-service
-- generate full service from postman/swagger file
+- write plop tools for remove-api
+- generate full api from postman/swagger file
 
 
 CODEBASE Plan:

@@ -18,9 +18,24 @@ const API_METHOD = {
 };
 
 const pathsFormatter = (endpoint) => {
-  const endpointSplitted = endpoint.split('/');
+  const endpointSplitted = endpoint.split('?')[0].split('/');
   const pathParams = endpointSplitted.filter((el) => el.includes('{'));
   return !!pathParams.length ? `${pathParams.map((el) => el.replace(/{/g, '').replace(/}/g, '')).join(';')};` : '';
+};
+
+const queriesFormatter = (endpoint) => {
+  const queries = endpoint.split('?')[1];
+
+  if (!queries) return '';
+
+  const queriesSplitted = queries.split('&');
+  return queriesSplitted.map((query) => `${query.replace('=', ':')};`)
+};
+
+const bodyFormatter = (payloadStr) => {
+  if (!payloadStr) return '';
+
+  return `${payloadStr.replace(/=/g, ':').replace(/@/g, ';')};`
 };
 
 const endpointFormatter = (endpoint) => {
@@ -107,7 +122,7 @@ const envFilesActions = (data) => {
 };
 
 const servicesActions = (data, plop) => {
-  const { isUserWantCreateNewService, isUserWantCreateNewGroup, apiName, endpoint, method, serviceName, groupName } = data;
+  const { isUserWantCreateNewService, isUserWantCreateNewGroup, apiName, endpoint, method, payload, serviceName, groupName } = data;
 
   const serviceDirPath = generateServiceDirPath(plop, { rootPath: PATH.SRC.SERVICES, serviceName });
   const apiFilePath = generateApiFilePath(plop, { rootPath: PATH.SRC.SERVICES, serviceName, groupName, apiName });
@@ -127,7 +142,9 @@ const servicesActions = (data, plop) => {
       templateFile: `${PATH.PLOP.TEMPLATES.API}/${[API_METHOD.GET, API_METHOD.DELETE].includes(method) ? 'no-body' : 'has-body'}.hbs`,
       data: {
         pathsFormatted: pathsFormatter(endpoint),
-        endpointFormatted: endpointFormatter(endpoint)
+        endpointFormatted: endpointFormatter(endpoint),
+        queriesFormatted: queriesFormatter(endpoint),
+        bodyFormatted: bodyFormatter(payload),
       }
     },
     {
@@ -262,25 +279,29 @@ const reduxActions = (data, plop) => {
       skip: () => skipAction({ when: !isUserWantCreateNewService, path: `${serviceDirSlicePath}/index.ts`, description: 'Add new root file for new service' })
     },
     {
-      type: PLOP_ACTION_TYPE.ADD,
-      path: `${serviceDirSagaPath}/index.ts`,
-      templateFile: `${PATH.PLOP.TEMPLATES.SAGA}/index.hbs`,
-      skip: () => {
-        const hasAtLeastOneService = !!getAllDirsInDirectory(serviceDirSagaPath).length;
-        return skipAction({ when: hasAtLeastOneService, path: `${serviceDirSagaPath}/index.ts`, description: 'Add new root file for new service' })
-      }
-    },
-    {
       type: PLOP_ACTION_TYPE.MODIFY,
-      path: `${serviceDirSagaPath}/index.ts`,
-      pattern: new RegExp("(import { all, fork } from 'redux-saga/effects';)([\\S\\s]*)(all([)", 'g'),
+      path: `${PATH.SRC.REDUX.SAGAS}/index.ts`,
+      pattern: new RegExp("(import { all, fork } from 'redux-saga\\/effects';)([\\S\\s]*)(all\\(\\[)", 'g'),
       template: "$1import {{camelCase serviceName}}RootSaga from './{{dashCase serviceName}}';$2$3fork({{camelCase serviceName}}RootSaga),",
-      skip: () => skipAction({ when: !isUserWantCreateNewService, path: `${serviceDirSagaPath}/index.ts`, description: 'Add new fork for new service' })
+      skip: () => skipAction({ when: !isUserWantCreateNewService, path: `${PATH.SRC.REDUX.SAGAS}/index.ts`, description: 'Add new fork for new service' })
     },
     {
       type: PLOP_ACTION_TYPE.ADD,
       path: apiFileSagaPath,
       templateFile: `${PATH.PLOP.TEMPLATES.SAGA}/api.hbs`,
+    },
+    {
+      type: PLOP_ACTION_TYPE.ADD,
+      path: `${serviceDirSagaPath}/index.ts`,
+      templateFile: `${PATH.PLOP.TEMPLATES.SAGA}/service-index.hbs`,
+      skip: () => skipAction({ when: !isUserWantCreateNewService, path: `${serviceDirSagaPath}/index.ts`, description: 'Add new root file for new service' })
+    },
+    {
+      type: PLOP_ACTION_TYPE.MODIFY,
+      path: `${serviceDirSagaPath}/index.ts`,
+      pattern: new RegExp("(import { all, takeEvery } from 'redux-saga\\/effects';)([\\S\\s]*)(all\\(\\[)", 'g'),
+      template: `$1${isUserWantCreateNewGroup ? "import { {{camelCase groupName}}Slice } from '@/redux/slices/{{dashCase serviceName}}';"  : ""}import { {{camelCase apiName}}Saga } from './{{camelCase groupName}}';$2$3takeEvery({{camelCase groupName}}Slice.actions.{{camelCase apiName}}Request.type, {{camelCase apiName}}Saga),`,
+      skip: () => skipAction({ when: isUserWantCreateNewService, path: `${groupDirSagaPath}/index.ts`, description: 'Add new import for new api in already exist api group' })
     },
     {
       type: PLOP_ACTION_TYPE.ADD,
@@ -371,7 +392,13 @@ export default (plop) => {
         name: 'method',
         choices: () => Object.values(API_METHOD),
         message: 'Method?'
-      }
+      },
+      {
+        type: PLOP_PROMPT_TYPE.INPUT,
+        name: 'payload',
+        message: 'Payload?',
+        when: ({ method }) => ![API_METHOD.GET, API_METHOD.DELETE].includes(method)
+      },
     ],
     actions: (data) => {
       const isUserWantCreateNewService = data.rawServiceName === PROMPT_OPTION.ADD_NEW_SERVICE;

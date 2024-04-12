@@ -5,7 +5,9 @@ export type T{{pascalCase apiName}}Paths = {
   {{pathsFormatted}}
 };
 
-export type T{{pascalCase apiName}}Queries = {};
+export type T{{pascalCase apiName}}Queries = {
+  {{queriesFormatted}}
+};
 
 export type T{{pascalCase apiName}}Parameters = TParameters<T{{pascalCase apiName}}Paths, T{{pascalCase apiName}}Queries>;
 
