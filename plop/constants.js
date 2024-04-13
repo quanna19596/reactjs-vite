@@ -4,7 +4,8 @@ export const PLOP_ACTION_TYPE = {
   MODIFY: 'modify',
   REMOVE: 'remove',
   REMOVE_MANY: 'removeMany',
-  PRETTIER: 'prettier'
+  PRETTIER: 'prettier',
+  CONSOLE: 'console',
 };
 
 export const PLOP_COMMAND = {
@@ -19,7 +20,8 @@ export const PLOP_COMMAND = {
   CREATE_API: 'create-api',
   REMOVE_API: 'remove-api',
   REMOVE_API_GROUP: 'remove-api-group',
-  REMOVE_SERVICE: 'remove-service'
+  REMOVE_SERVICE: 'remove-service',
+  GET_COLOR_NAME: 'get-color-name'
 };
 
 export const PLOP_HELPER_TYPE = {

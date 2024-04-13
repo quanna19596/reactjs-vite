@@ -1,4 +1,4 @@
-import { actionType, generator, helper, PLOP_ACTION_TYPE, PLOP_COMMAND, PLOP_HELPER_TYPE } from './plop/index.js';
+import { actionType, generator, tools, helper, PLOP_ACTION_TYPE, PLOP_COMMAND, PLOP_HELPER_TYPE } from './plop/index.js';
 
 export default (plop) => {
   plop.setHelper(PLOP_HELPER_TYPE.SUFFIX_CURLY, helper.suffixCurly);
@@ -6,6 +6,8 @@ export default (plop) => {
   plop.setActionType(PLOP_ACTION_TYPE.PRETTIER, actionType.prettier);
   plop.setActionType(PLOP_ACTION_TYPE.REMOVE, actionType.remove);
   plop.setActionType(PLOP_ACTION_TYPE.REMOVE_MANY, actionType.removeMany);
+
+  plop.setActionType(PLOP_ACTION_TYPE.CONSOLE, actionType.console);
 
   plop.setGenerator(PLOP_COMMAND.CREATE_COMPONENT, generator.createComponent(plop));
   plop.setGenerator(PLOP_COMMAND.REMOVE_COMPONENT, generator.removeComponent(plop));
@@ -20,4 +22,6 @@ export default (plop) => {
   plop.setGenerator(PLOP_COMMAND.REMOVE_API, generator.removeApi(plop));
   plop.setGenerator(PLOP_COMMAND.REMOVE_API_GROUP, generator.removeApiGroup(plop));
   plop.setGenerator(PLOP_COMMAND.REMOVE_SERVICE, generator.removeService(plop));
+
+  plop.setGenerator(PLOP_COMMAND.GET_COLOR_NAME, tools.getColorName(plop));
 };
