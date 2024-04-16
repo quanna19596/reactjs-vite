@@ -88,3 +88,21 @@ const createStrictEffectHook = (): ((effect: EffectCallback, deps?: DependencyLi
 };
 
 export const useStrictEffect = createStrictEffectHook();
+
+export const useResize = (): { windowWidth: number; isMobileView: boolean } => {
+  const [resize, setResize] = useState<{ windowWidth: number; isMobileView: boolean }>({
+    windowWidth: window.innerWidth,
+    isMobileView: window.innerWidth < 992
+  });
+
+  useEffect(() => {
+    const updateSize = (): void => {
+      const windowWidth = window.innerWidth;
+      setResize({ windowWidth, isMobileView: windowWidth < 992 });
+    };
+    window.addEventListener('resize', updateSize);
+    return (): void => window.removeEventListener('resize', updateSize);
+  }, []);
+
+  return resize;
+};
