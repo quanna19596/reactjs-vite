@@ -1,4 +1,4 @@
-import { PLOP_PROMPT_TYPE, PATH, PLOP_ACTION_TYPE, BREAK_LINE } from "../constants.js";
+import { PLOP_ACTION_TYPE, PLOP_PROMPT_TYPE } from "../constants.js";
 import { getColorName } from "../utils.js";
 
 export default (plop) => ({
@@ -17,7 +17,7 @@ export default (plop) => ({
     return [
       {
         type: PLOP_ACTION_TYPE.CONSOLE,
-        message: name
+        message: plop.renderString('${{dashCase name}}', { name })
       },
     ];
   }

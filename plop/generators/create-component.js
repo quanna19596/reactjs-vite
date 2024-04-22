@@ -18,7 +18,7 @@ export default (plop) => ({
   ],
   actions: ({ componentType }) => {
     const componentDirPath = `${PATH.SRC._self}/${componentType}/{{pascalCase componentName}}`;
-    const storyFilePath = `${PATH.STORYBOOK}/${componentType}/{{pascalCase componentName}}.stories.tsx`;
+    // const storyFilePath = `${PATH.STORYBOOK}/${componentType}/{{pascalCase componentName}}.stories.tsx`;
 
     return [
       {
@@ -33,11 +33,11 @@ export default (plop) => ({
         pattern: new RegExp('(// \\[END\\] ' + capitalize(componentType) + ')' ,'g'), 
         template: "${{pascalCase componentName}}: '.{{pascalCase componentName}}';" + BREAK_LINE + '$1'
       },
-      {
-        type: PLOP_ACTION_TYPE.ADD,
-        path: storyFilePath,
-        templateFile: `${PATH.PLOP.TEMPLATES._self}/storybook.hbs`
-      },
+      // {
+      //   type: PLOP_ACTION_TYPE.ADD,
+      //   path: storyFilePath,
+      //   templateFile: `${PATH.PLOP.TEMPLATES._self}/storybook.hbs`
+      // },
       { type: PLOP_ACTION_TYPE.PRETTIER }
     ];
   }
