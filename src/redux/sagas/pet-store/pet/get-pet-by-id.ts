@@ -2,11 +2,12 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { call, put } from 'redux-saga/effects';
 
-import { TRequestHandlerCallbacks } from '@/redux';
-import { petSlice } from '@/redux/slices/pet-store';
-import { getPetById, TGetPetByIdParameters, TGetPetByIdResponse, TResponseError } from '@/services/pet-store';
+import petSlice from '@/redux/slices/pet-store/pet/slice';
+import { TRequestHandlerCallbacks } from '@/redux/types';
+import getPetById, { TGetPetByIdParameters, TGetPetByIdResponse } from '@/services/pet-store/pet/get-pet-by-id';
+import { TResponseError } from '@/services/pet-store/types';
 
-export function* getPetByIdSaga(
+export default function* getPetByIdSaga(
   action: PayloadAction<TGetPetByIdParameters & TRequestHandlerCallbacks<TGetPetByIdResponse, TResponseError>>
 ): Generator {
   const { successCb, failedCb, storeInGlobalState, ...params } = action.payload;

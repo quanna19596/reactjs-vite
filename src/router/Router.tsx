@@ -1,7 +1,14 @@
 import { ErrorBoundary } from 'react-error-boundary';
 import { Route, Routes } from 'react-router-dom';
 
-import { history, HistoryRouter, PATHS, PrivateRoute, PublicRoute, routerConfig, TRoute, TRouteElement } from '@/router';
+import { TRoute, TRouteElement } from '@/router/types';
+
+import HistoryRouter from './wrappers/HistoryRouter';
+import PrivateRoute from './wrappers/PrivateRoute';
+import PublicRoute from './wrappers/PublicRoute';
+import routerConfig from './config';
+import history from './history';
+import PATHS from './paths';
 
 const Router: React.FC = () => {
   const elementWrapper = (element: TRouteElement): JSX.Element => {

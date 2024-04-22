@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router-dom';
 
-import { useAppDispatch, useAppSelector } from '@/redux';
-import { petSlice } from '@/redux/slices/pet-store';
-import { useStrictEffect } from '@/utils';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import petSlice from '@/redux/slices/pet-store/pet/slice';
+import { useStrictEffect } from '@/utils/hooks';
 
 import { TLandingLayoutProps } from './LandingLayout.types';
 

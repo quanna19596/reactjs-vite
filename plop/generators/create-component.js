@@ -18,7 +18,6 @@ export default (plop) => ({
   ],
   actions: ({ componentType }) => {
     const componentDirPath = `${PATH.SRC._self}/${componentType}/{{pascalCase componentName}}`;
-    const indexFileInComponentTypeDirPath = `${PATH.SRC._self}/${componentType}/index.ts`;
     const storyFilePath = `${PATH.STORYBOOK}/${componentType}/{{pascalCase componentName}}.stories.tsx`;
 
     return [
@@ -33,24 +32,6 @@ export default (plop) => ({
         path: PATH.SRC.STYLES.MAIN_CLASSES,
         pattern: new RegExp('(// \\[END\\] ' + capitalize(componentType) + ')' ,'g'), 
         template: "${{pascalCase componentName}}: '.{{pascalCase componentName}}';" + BREAK_LINE + '$1'
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFileInComponentTypeDirPath,
-        pattern: new RegExp('(' + BREAK_LINE + BREAK_LINE + ')', 'g'),
-        template: "import {{pascalCase componentName}}, { T{{pascalCase componentName}}Props } from './{{pascalCase componentName}}';$1"
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFileInComponentTypeDirPath,
-        pattern: new RegExp('(export[\\S\\s]*)(};' + BREAK_LINE + 'export type)', 'g'),
-        template: '$1,{{pascalCase componentName}}$2'
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFileInComponentTypeDirPath,
-        pattern: /(export type[\S\s]*)(};)/g,
-        template: '$1,T{{pascalCase componentName}}Props$2'
       },
       {
         type: PLOP_ACTION_TYPE.ADD,

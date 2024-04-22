@@ -1,14 +1,12 @@
-import LandingLayoutDefault, { TLandingLayoutDefaultProps } from './default';
-import LandingLayoutError, { TLandingLayoutErrorProps } from './error';
-import LandingLayout, { TLandingLayoutProps } from './main';
-import LandingLayoutNotFound, { TLandingLayoutNotFoundProps } from './not-found';
-import LandingLayoutPermissionDenied, { TLandingLayoutPermissionDeniedProps } from './permission-denied';
+import LandingLayoutDefault from './default/LandingLayoutDefault';
+import LandingLayoutError from './error/LandingLayoutError';
+import LandingLayout from './main/LandingLayout';
+import LandingLayoutNotFound from './not-found/LandingLayoutNotFound';
+import LandingLayoutPermissionDenied from './permission-denied/LandingLayoutPermissionDenied';
 
 export { LandingLayout, LandingLayoutDefault, LandingLayoutError, LandingLayoutNotFound, LandingLayoutPermissionDenied };
-export type {
-  TLandingLayoutDefaultProps,
-  TLandingLayoutErrorProps,
-  TLandingLayoutNotFoundProps,
-  TLandingLayoutPermissionDeniedProps,
-  TLandingLayoutProps
-};
+export * from './default/LandingLayoutDefault.types';
+export * from './error/LandingLayoutError.types';
+export * from './main/LandingLayout.types';
+export * from './not-found/LandingLayoutNotFound.types';
+export * from './permission-denied/LandingLayoutPermissionDenied.types';

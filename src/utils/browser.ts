@@ -1,7 +1,8 @@
 import cookie from 'react-cookies';
 
 import env from '@/env';
-import { routerConfig, TRoute } from '@/router';
+import routerConfig from '@/router/config';
+import { TRoute } from '@/router/types';
 
 export const urlSafe = (url: string): string => {
   return url

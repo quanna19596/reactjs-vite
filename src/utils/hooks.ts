@@ -1,6 +1,6 @@
 import { DependencyList, EffectCallback, RefObject, useEffect, useState } from 'react';
 
-import { EEnvironmentMode } from '@/enums';
+import { EEnvironmentMode } from '@/enums/other';
 import env from '@/env';
 
 type TScroll = {

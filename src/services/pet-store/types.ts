@@ -1,4 +1,4 @@
-import { ETagStatus } from '@/services/pet-store';
+import { ETagStatus } from '@/services/pet-store/enums';
 
 export type TResponseError = {
   statusCode: number;
@@ -29,3 +29,4 @@ export type TPet = {
   }[];
   status: ETagStatus;
 };
+export { ETagStatus };

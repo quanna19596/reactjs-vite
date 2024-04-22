@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { Fallback } from '@/components';
+import Fallback from '@/components/Fallback';
 
 const PublicRoute: React.FC<{ component: React.FC; errorComponent?: React.FC }> = ({ component: Component, errorComponent }) => {
   return (

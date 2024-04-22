@@ -1,4 +1,4 @@
-import { EColor } from '@/enums';
+import { EColor } from '@/enums/style';
 
 export const convertHexToRgb = (hex: EColor): { r: number; g: number; b: number } | undefined => {
   const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;

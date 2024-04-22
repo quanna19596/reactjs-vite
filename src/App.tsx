@@ -1,4 +1,4 @@
-import Router from '@/router';
+import Router from '@/router/Router';
 
 const App: React.FC = () => {
   return <Router />;

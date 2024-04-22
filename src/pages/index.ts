@@ -23,10 +23,8 @@ export const AppPermissionDenied = lazy(() => retryLoadComponent(() => import('@
 
 // [BEGIN] Public
 export const SignIn = lazy(() => retryLoadComponent(() => import('@/pages/public/SignIn')));
-export const SignUp = lazy(() => retryLoadComponent(() => import('@/pages/public/SignUp')));
 // [END] Public
 
 // [BEGIN] Private
 export const Products = lazy(() => retryLoadComponent(() => import('@/pages/private/Products')));
-export const Users = lazy(() => retryLoadComponent(() => import('@/pages/private/Users')));
 // [END] Private

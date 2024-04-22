@@ -1,14 +1,14 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
-import { EHttpStatusCode } from '@/enums';
+import { EHttpStatusCode } from '@/enums/other';
 import env from '@/env';
-import { ICustomAxiosRequestConfig, TTokenSubscribers } from '@/services';
-import { clearTokens, getAccessToken, getRefreshToken, storeAccessToken, storeRefreshToken } from '@/utils';
+import { ICustomAxiosRequestConfig, TTokenSubscribers } from '@/services/types';
+import { clearTokens, getAccessToken, getRefreshToken, storeAccessToken, storeRefreshToken } from '@/utils/auth';
 
 let isRefreshingAccessToken = false;
 let tokenSubscribers: TTokenSubscribers[] = [];
 
-export const AuthorizedInstance = (baseURL: string): AxiosInstance => {
+const AuthorizedInstance = (baseURL: string): AxiosInstance => {
   const instance = axios.create({
     baseURL
   });
@@ -110,3 +110,5 @@ export const AuthorizedInstance = (baseURL: string): AxiosInstance => {
 
   return instance;
 };
+
+export default AuthorizedInstance;

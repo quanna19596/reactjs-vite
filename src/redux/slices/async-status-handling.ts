@@ -1,9 +1,7 @@
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 
-import { EActionType } from '@/enums';
-import { TStatusState } from '@/redux';
-
-import { TAction } from './types';
+import { EActionType } from '@/enums/other';
+import { TAction, TStatusState } from '@/redux/types';
 
 const updateStatusState = (state: any, action: TAction, statusState: TStatusState, actionType: EActionType): void => {
   const actionName = action.type.split('/').at(-1)?.replace(actionType, '');
@@ -32,8 +30,10 @@ const failedAction = {
     updateStatusState(state, action, { isLoading: false, error: action.payload }, EActionType.FAILED)
 };
 
-export const asyncStatusReducers = (builder: ActionReducerMapBuilder<{}>): void => {
+const asyncStatusReducers = (builder: ActionReducerMapBuilder<{}>): void => {
   builder.addMatcher(requestAction.isDispatching, requestAction.handler);
   builder.addMatcher(failedAction.isDispatching, failedAction.handler);
   builder.addMatcher(successAction.isDispatching, successAction.handler);
 };
+
+export default asyncStatusReducers;

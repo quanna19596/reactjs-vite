@@ -3,17 +3,19 @@ import {
   DashboardLayoutDefault,
   DashboardLayoutError,
   DashboardLayoutNotFound,
-  DashboardLayoutPermissionDenied,
+  DashboardLayoutPermissionDenied
+} from '@/layouts/private/DashboardLayout';
+import {
   LandingLayout,
   LandingLayoutDefault,
   LandingLayoutError,
   LandingLayoutNotFound,
   LandingLayoutPermissionDenied
-} from '@/layouts';
-import { AppError, AppNotFound, AppPermissionDenied, Products, SignIn, SignUp, Users } from '@/pages';
-import { TRouteConfig } from '@/router';
+} from '@/layouts/public/LandingLayout';
+import { AppError, AppNotFound, AppPermissionDenied, Products, SignIn } from '@/pages';
 
 import PATHS from './paths';
+import { TRouteConfig } from './types';
 
 const routerConfig: TRouteConfig = {
   common: {
@@ -45,13 +47,6 @@ const routerConfig: TRouteConfig = {
           }
         },
         {
-          path: PATHS.PAGE.SIGN_UP(),
-          element: {
-            component: SignUp,
-            errorComponent: LandingLayoutError
-          }
-        },
-        {
           path: PATHS.SPECIAL.REST(),
           element: {
             component: LandingLayoutNotFound,
@@ -79,15 +74,6 @@ const routerConfig: TRouteConfig = {
           path: PATHS.PAGE.PRODUCTS(),
           element: {
             component: Products,
-            isPrivate: true,
-            fallbackPermissionDenied: DashboardLayoutPermissionDenied,
-            errorComponent: DashboardLayoutError
-          }
-        },
-        {
-          path: PATHS.PAGE.USERS(),
-          element: {
-            component: Users,
             isPrivate: true,
             fallbackPermissionDenied: DashboardLayoutPermissionDenied,
             errorComponent: DashboardLayoutError

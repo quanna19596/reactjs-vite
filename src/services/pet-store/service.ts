@@ -1,4 +1,6 @@
 import env from '@/env';
-import { AuthorizedInstance } from '@/services';
+import AuthorizedInstance from '@/services/authorized';
 
-export const PetStoreService = AuthorizedInstance(env.service.petStore.baseUrl);
+const PetStoreService = AuthorizedInstance(env.service.petStore.baseUrl);
+
+export default PetStoreService;
