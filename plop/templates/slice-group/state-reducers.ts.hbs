@@ -1,5 +1,6 @@
 import { errorHandler, requestHandler } from '@/redux';
-import { T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response, TResponseError } from '@/services/{{dashCase serviceName}}';
+import { T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response } from '@/services/{{dashCase serviceName}}/{{dashCase groupName}}/{{dashCase apiName}}';
+import { TResponseError } from '@/services/{{dashCase serviceName}}/types';
 
 const stateReducers = {
   {{camelCase apiName}}Request: requestHandler<T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response, TResponseError>,

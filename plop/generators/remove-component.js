@@ -1,4 +1,4 @@
-import { PLOP_PROMPT_TYPE, PATH, PLOP_ACTION_TYPE, BREAK_LINE } from '../constants.js';
+import { PLOP_PROMPT_TYPE, PATH, PLOP_ACTION_TYPE, BREAK_LINE, COMPONENT_TYPE } from '../constants.js';
 import { getAllDirsInDirectory } from '../utils.js';
 
 export default (plop) => ({
@@ -6,25 +6,24 @@ export default (plop) => ({
   prompts: [
     {
       type: PLOP_PROMPT_TYPE.LIST,
-      name: 'rawComponentName',
-      choices: () => {
-        const unitComponents = getAllDirsInDirectory(PATH.SRC.COMPONENTS).map((comp) => `${comp} (components)`);
-        const containerComponents = getAllDirsInDirectory(PATH.SRC.CONTAINERS).map((comp) => `${comp} (containers)`);
-        const components = [...unitComponents, ...containerComponents].filter((comp) => !comp.includes('.'));
+      name: 'componentType',
+      choices: Object.values(COMPONENT_TYPE),
+      message: 'Component type?'
+    },
+    {
+      type: PLOP_PROMPT_TYPE.LIST,
+      name: 'componentName',
+      choices: ({ componentType }) => {
+        const components = getAllDirsInDirectory(`${PATH.SRC._self}/${componentType}`);
         return components;
       },
       message: 'Component name?'
     }
   ],
-  actions: ({ rawComponentName }) => {
-    const componentName = rawComponentName.split(' (')[0];
-    const componentType = rawComponentName.split('(')[1].replace(')', '');
+  actions: ({ componentType, componentName }) => {
     const componentDirPath = `${PATH.SRC._self}/${componentType}/${componentName}`;
-    const storyFilePath = `${PATH.STORYBOOK}/${componentType}/${componentName}.stories.tsx`;
-    const indexFileInComponentTypeDirPath = `${PATH.SRC._self}/${componentType}/index.ts`;
-
+    const storyFilePath = `${PATH.STORYBOOK}/${componentType}/${componentName}.stories.ts`;
     const templateRenderedStyle = `$${componentName}: '.${componentName}';`;
-    const indexFileImportLineTemplate = `import ${componentName}, { T${componentName}Props } from './${componentName}';`;
 
     return [
       {
@@ -35,36 +34,6 @@ export default (plop) => ({
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.STYLES.MAIN_CLASSES,
         pattern: new RegExp(BREAK_LINE + `\\${templateRenderedStyle}`, 'g'),
-        template: ''
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFileInComponentTypeDirPath,
-        pattern: new RegExp(indexFileImportLineTemplate, 'g'),
-        template: ''
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFileInComponentTypeDirPath,
-        pattern: new RegExp(`${componentName},`, 'g'),
-        template: ''
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFileInComponentTypeDirPath,
-        pattern: new RegExp(componentName, 'g'),
-        template: ''
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFileInComponentTypeDirPath,
-        pattern: /TProps,/g,
-        template: ''
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFileInComponentTypeDirPath,
-        pattern: /TProps/g,
         template: ''
       },
       { type: PLOP_ACTION_TYPE.PRETTIER }

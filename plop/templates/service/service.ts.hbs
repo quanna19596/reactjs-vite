@@ -1,4 +1,6 @@
 import env from '@/env';
-import { AuthorizedInstance } from '@/services';
+import AuthorizedInstance from '@/services/authorized';
 
-export const {{pascalCase serviceName}}Service = AuthorizedInstance(env.service.{{camelCase serviceName}}.baseUrl);
+const {{pascalCase serviceName}}Service = AuthorizedInstance(env.service.{{camelCase serviceName}}.baseUrl);
+
+export default {{pascalCase serviceName}}Service;

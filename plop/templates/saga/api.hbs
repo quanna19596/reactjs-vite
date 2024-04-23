@@ -2,11 +2,12 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { call, put } from 'redux-saga/effects';
 
-import { TRequestHandlerCallbacks } from '@/redux';
-import { {{camelCase groupName}}Slice } from '@/redux/slices/{{dashCase serviceName}}';
-import { {{camelCase apiName}}, T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response, TResponseError } from '@/services/{{dashCase serviceName}}';
+import {{camelCase groupName}}Slice from '@/redux/slices/{{dashCase serviceName}}/{{dashCase groupName}}/slice';
+import { TRequestHandlerCallbacks } from '@/redux/types';
+import {{camelCase apiName}}, { T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response } from '@/services/{{dashCase serviceName}}/{{dashCase groupName}}/{{dashCase apiName}}';
+import { TResponseError } from '@/services/{{dashCase serviceName}}/types';
 
-export function* {{camelCase apiName}}Saga(
+export default function* {{camelCase apiName}}Saga(
   action: PayloadAction<T{{pascalCase apiName}}Parameters & TRequestHandlerCallbacks<T{{pascalCase apiName}}Response, TResponseError>>
 ): Generator {
   const { successCb, failedCb, storeInGlobalState, ...params } = action.payload;

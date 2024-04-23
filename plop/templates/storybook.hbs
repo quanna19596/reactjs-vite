@@ -1,16 +1,17 @@
-import { Story, Meta } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 
-import { {{pascalCase componentName}}, T{{pascalCase componentName}}Props } from '@/{{componentType}}';
+import {{pascalCase componentName}}, { T{{pascalCase componentName}}Props } from '@/{{componentType}}/{{pascalCase componentName}}';
 
-type T{{pascalCase componentName}}StoryProps = T{{pascalCase componentName}}Props;
-
-export default {
-  title: '{{pascalCase componentType}}/{{pascalCase componentName}}',
+const meta = {
   component: {{pascalCase componentName}},
-  args: {},
-  argTypes: {}
-} as Meta;
+  tags: ['autodocs'],
+  argTypes: {},
+  args: {}
+} satisfies Meta<typeof {{pascalCase componentName}}>;
 
-const Template: Story<T{{pascalCase componentName}}StoryProps> = ({ ...rest }) => <{{pascalCase componentName}} {...rest} />;
+type TStory = StoryObj<typeof meta>;
 
-export const Primary = Template.bind({});
+export const Demo: TStory = {};
+
+export default meta;

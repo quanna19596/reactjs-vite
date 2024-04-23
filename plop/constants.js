@@ -35,6 +35,7 @@ export const PLOP_PROMPT_TYPE = {
 
 export const COMPONENT_TYPE = { COMPONENTS: 'components', CONTAINERS: 'containers' };
 export const PROTECTION_TYPE = { PUBLIC: 'public', PRIVATE: 'private' };
+export const CONFIRM_CHOICE = { YES: 'Yes', NO: 'No' }
 
 export const PATH = {
   SRC: {

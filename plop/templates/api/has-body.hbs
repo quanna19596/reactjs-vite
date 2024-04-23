@@ -1,5 +1,6 @@
-import { TParameters } from '@/services';
-import { {{pascalCase serviceName}}Service, TResponseSuccess } from '@/services/{{dashCase serviceName}}';
+import {{pascalCase serviceName}}Service from '@/services/{{dashCase serviceName}}/service';
+import { TResponseSuccess } from '@/services/{{dashCase serviceName}}/types';
+import { TParameters } from '@/services/types';
 
 export type T{{pascalCase apiName}}Paths = {
   {{pathsFormatted}}

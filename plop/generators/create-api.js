@@ -122,11 +122,10 @@ const envFilesActions = (data) => {
 };
 
 const servicesActions = (data, plop) => {
-  const { isUserWantCreateNewService, isUserWantCreateNewGroup, apiName, endpoint, method, payload, serviceName, groupName } = data;
+  const { isUserWantCreateNewService, apiName, endpoint, method, payload, serviceName, groupName } = data;
 
   const serviceDirPath = generateServiceDirPath(plop, { rootPath: PATH.SRC.SERVICES, serviceName });
   const apiFilePath = generateApiFilePath(plop, { rootPath: PATH.SRC.SERVICES, serviceName, groupName, apiName });
-  const groupDirPath = generateApiGroupDirPath(plop, { rootPath: PATH.SRC.SERVICES, serviceName, groupName });
 
   return [
     {
@@ -146,33 +145,6 @@ const servicesActions = (data, plop) => {
         queriesFormatted: queriesFormatter(endpoint),
         bodyFormatted: bodyFormatter(payload),
       }
-    },
-    {
-      type: PLOP_ACTION_TYPE.ADD,
-      path: `${groupDirPath}/index.ts`,
-      template: `export * from './{{dashCase apiName}}';`,
-      skip: () =>
-        skipAction({ when: !isUserWantCreateNewGroup, path: `${groupDirPath}/index.ts`, description: 'Create root file for new api group' })
-    },
-    {
-      type: PLOP_ACTION_TYPE.MODIFY,
-      path: `${groupDirPath}/index.ts`,
-      pattern: new RegExp('([\\S\\s]*' + BREAK_LINE + ')', 'g'),
-      template: "$1export * from './{{dashCase apiName}}';",
-      skip: () =>
-        skipAction({ when: isUserWantCreateNewGroup, path: `${groupDirPath}/index.ts`, description: 'Add new export from new api' })
-    },
-    {
-      type: PLOP_ACTION_TYPE.MODIFY,
-      path: `${serviceDirPath}/index.ts`,
-      pattern: new RegExp('([\\S\\s]*' + BREAK_LINE + ')', 'g'),
-      template: "$1export * from './{{dashCase groupName}}';",
-      skip: () =>
-        skipAction({
-          when: isUserWantCreateNewService || !isUserWantCreateNewGroup,
-          path: `${serviceDirPath}/index.ts`,
-          description: 'Add new export for new api group'
-        })
     }
   ];
 };
@@ -194,7 +166,7 @@ const reduxActions = (data, plop) => {
       type: PLOP_ACTION_TYPE.MODIFY,
       path: rootReducerFilePath,
       pattern: new RegExp("(import { combineReducers } from 'redux';" + BREAK_LINE + BREAK_LINE + ')', 'g'),
-      template: "$1import { {{camelCase groupName}}Slice } from './slices/{{dashCase serviceName}}';",
+      template: "$1import {{camelCase groupName}}Slice from './slices/{{dashCase serviceName}}/{{dashCase groupName}}/slice';",
       skip: () =>
         skipAction({ when: !isUserWantCreateNewGroup, path: rootReducerFilePath, description: 'Add new import for new api group' })
     },
@@ -226,7 +198,7 @@ const reduxActions = (data, plop) => {
       type: PLOP_ACTION_TYPE.MODIFY,
       path: `${groupDirSlicePath}/initial-state.ts`,
       pattern: new RegExp("(import { TInitialState } from '@/redux';)([\\S\\s]*)(const initialState: {)([\\S\\s]*)(} = {)([\S\s]*)", 'g'),
-      template: "$1import { T{{pascalCase apiName}}Response } from '@/services/{{dashCase serviceName}}';$2$3{{camelCase apiName}}: TInitialState<T{{pascalCase apiName}}Response>;$4$5{{camelCase apiName}}: { data: undefined, isLoading: undefined, error: undefined },$6",
+      template: "$1import { T{{pascalCase apiName}}Response } from '@/services/{{dashCase serviceName}}/{{dashCase groupName}}/{{dashCase apiName}}';$2$3{{camelCase apiName}}: TInitialState<T{{pascalCase apiName}}Response>;$4$5{{camelCase apiName}}: { data: undefined, isLoading: undefined, error: undefined },$6",
       skip: () =>
         skipAction({
           when: isUserWantCreateNewGroup,
@@ -250,7 +222,7 @@ const reduxActions = (data, plop) => {
       type: PLOP_ACTION_TYPE.MODIFY,
       path: `${groupDirSlicePath}/state-reducers.ts`,
       pattern: new RegExp("(import { errorHandler, requestHandler } from '@/redux';)([\\S\\s]*)(stateReducers = {)([\\S\\s]*)", 'g'),
-      template: "$1import { T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response } from '@/services/{{dashCase serviceName}}';$2$3{{camelCase apiName}}Request: requestHandler<T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response, TResponseError>,{{camelCase apiName}}Failed: errorHandler<TResponseError>,$4",
+      template: "$1import { T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response } from '@/services/{{dashCase serviceName}}/{{dashCase groupName}}/{{dashCase apiName}}';$2$3{{camelCase apiName}}Request: requestHandler<T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response, TResponseError>,{{camelCase apiName}}Failed: errorHandler<TResponseError>,$4",
       skip: () =>
         skipAction({
           when: isUserWantCreateNewGroup,
@@ -264,19 +236,6 @@ const reduxActions = (data, plop) => {
       base: PATH.PLOP.TEMPLATES.SLICE_GROUP,
       templateFiles: `${PATH.PLOP.TEMPLATES.SLICE_GROUP}/*`,
       skip: () => skipAction({ when: !isUserWantCreateNewGroup, path: groupDirSlicePath, description: 'Create root files for new group' })
-    },
-    {
-      type: PLOP_ACTION_TYPE.MODIFY,
-      path: `${serviceDirSlicePath}/index.ts`,
-      pattern: new RegExp('([\\S\\s]*' + BREAK_LINE + ')', 'g'),
-      template: "$1export * from './{{dashCase groupName}}/slice';",
-      skip: () => skipAction({ when: !isUserWantCreateNewGroup || isUserWantCreateNewService, path: `${serviceDirSlicePath}/index.ts`, description: 'Add new export for new api group' })
-    },
-    {
-      type: PLOP_ACTION_TYPE.ADD,
-      path: `${serviceDirSlicePath}/index.ts`,
-      template: "export * from './{{dashCase groupName}}/slice';",
-      skip: () => skipAction({ when: !isUserWantCreateNewService, path: `${serviceDirSlicePath}/index.ts`, description: 'Add new root file for new service' })
     },
     {
       type: PLOP_ACTION_TYPE.MODIFY,
@@ -300,22 +259,9 @@ const reduxActions = (data, plop) => {
       type: PLOP_ACTION_TYPE.MODIFY,
       path: `${serviceDirSagaPath}/index.ts`,
       pattern: new RegExp("(import { all, takeEvery } from 'redux-saga\\/effects';)([\\S\\s]*)(all\\(\\[)", 'g'),
-      template: `$1${isUserWantCreateNewGroup ? "import { {{camelCase groupName}}Slice } from '@/redux/slices/{{dashCase serviceName}}';"  : ""}import { {{camelCase apiName}}Saga } from './{{camelCase groupName}}';$2$3takeEvery({{camelCase groupName}}Slice.actions.{{camelCase apiName}}Request.type, {{camelCase apiName}}Saga),`,
+      template: `$1${isUserWantCreateNewGroup ? "import {{camelCase groupName}}Slice from '@/redux/slices/{{dashCase serviceName}}/{{dashCase groupName}}/{{dashCase apiName}}';"  : ""}import {{camelCase apiName}}Saga from './{{camelCase groupName}}/{{dashCase apiName}}';$2$3takeEvery({{camelCase groupName}}Slice.actions.{{camelCase apiName}}Request.type, {{camelCase apiName}}Saga),`,
       skip: () => skipAction({ when: isUserWantCreateNewService, path: `${groupDirSagaPath}/index.ts`, description: 'Add new import for new api in already exist api group' })
-    },
-    {
-      type: PLOP_ACTION_TYPE.ADD,
-      path: `${groupDirSagaPath}/index.ts`,
-      template: "export * from './{{dashCase apiName}}';",
-      skip: () => skipAction({ when: !isUserWantCreateNewGroup, path: `${groupDirSagaPath}/index.ts`, description: 'Add new file for new api group' })
-    },
-    {
-      type: PLOP_ACTION_TYPE.MODIFY,
-      path: `${groupDirSagaPath}/index.ts`,
-      pattern: new RegExp('([\\S\\s]*' + BREAK_LINE + ')', 'g'),
-      template: "$1export * from './{{dashCase apiName}}';",
-      skip: () => skipAction({ when: isUserWantCreateNewGroup, path: `${groupDirSagaPath}/index.ts`, description: 'Add new import for new api in already exist api group' })
-    },
+    }
   ];
 };
 

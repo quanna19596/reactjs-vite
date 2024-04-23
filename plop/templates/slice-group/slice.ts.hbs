@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { asyncStatusReducers, successHandler } from '@/redux';
+import asyncStatusReducers from '@/redux/slices/async-status-handling';
+import { successHandler } from '@/redux/slices/utils';
 
 import initialState from './initial-state';
 import stateReducers from './state-reducers';
 
-export const {{camelCase groupName}}Slice = createSlice({
+const {{camelCase groupName}}Slice = createSlice({
   name: '{{camelCase serviceName}}/{{camelCase groupName}}',
   initialState,
   reducers: {
@@ -14,3 +15,5 @@ export const {{camelCase groupName}}Slice = createSlice({
   },
   extraReducers: asyncStatusReducers
 });
+
+export default {{camelCase groupName}}Slice;

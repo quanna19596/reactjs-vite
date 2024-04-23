@@ -1,8 +1,8 @@
 import { all, takeEvery } from 'redux-saga/effects';
 
-import { {{camelCase groupName}}Slice } from '@/redux/slices/{{dashCase serviceName}}';
+import {{camelCase groupName}}Slice from '@/redux/slices/{{dashCase serviceName}}/{{dashCase groupname}}/{{dashCase apiName}}';
 
-import { {{camelCase apiName}}Saga } from './{{dashCase groupName}}';
+import {{camelCase apiName}}Saga from './{{dashCase groupName}}/{{dashCase apiName}}';
 
 export default function* {{camelCase serviceName}}RootSaga(): Generator {
   yield all([takeEvery({{camelCase groupName}}Slice.actions.{{camelCase apiName}}Request.type, {{camelCase apiName}}Saga)]);
