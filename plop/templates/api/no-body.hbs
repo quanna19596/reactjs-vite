@@ -14,7 +14,9 @@ export type T{{pascalCase apiName}}Parameters = TParameters<T{{pascalCase apiNam
 
 export type T{{pascalCase apiName}}Response = TResponseSuccess;
 
-export const {{camelCase apiName}} = async (params: T{{pascalCase apiName}}Parameters): Promise<T{{pascalCase apiName}}Response> => {
+const {{camelCase apiName}} = async (params: T{{pascalCase apiName}}Parameters): Promise<T{{pascalCase apiName}}Response> => {
   const response = await {{pascalCase serviceName}}Service.{{camelCase method}}(`{{endpointFormatted}}`, { params: params.queries });
   return response.data;
 };
+
+export default {{camelCase apiName}};

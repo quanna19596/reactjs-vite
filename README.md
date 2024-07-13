@@ -8,6 +8,7 @@ Please use VSCode as IDE and install some extensions following:
 
 
 PLOP Plan:
+- generate form
 - validation plop
 - write plop tools for remove-api, remove-api-group, remove-service
 - generate full api from postman/swagger file
@@ -18,4 +19,5 @@ CODEBASE Plan:
 - no catch error vite console
 - localize
 - dark mode
+- refactor src/types/events.ts
 

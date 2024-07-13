@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { BREAK_LINE } from './constants';
+import { BREAK_LINE } from './constants.js';
 
 export const readFile = (path) => fs.readFileSync(path, 'utf8').toString();
 

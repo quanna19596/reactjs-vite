@@ -1,4 +1,4 @@
-import { EColor } from '@/enums';
+import { EColor } from '@/enums/style';
 
 import { TSvgProps } from './Icon.types';
 

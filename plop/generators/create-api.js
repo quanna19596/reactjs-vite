@@ -39,7 +39,7 @@ const bodyFormatter = (payloadStr) => {
 };
 
 const endpointFormatter = (endpoint) => {
-  const endpointSplitted = endpoint.split('/');
+  const endpointSplitted = endpoint.split('?')[0].split('/');
   return endpointSplitted.map((el) => (!el.includes('{') ? el : `${el.split(':')[0].replace(/{/g, '${params.paths?.')}}`)).join('/');
 };
 
@@ -197,7 +197,7 @@ const reduxActions = (data, plop) => {
     {
       type: PLOP_ACTION_TYPE.MODIFY,
       path: `${groupDirSlicePath}/initial-state.ts`,
-      pattern: new RegExp("(import { TInitialState } from '@/redux';)([\\S\\s]*)(const initialState: {)([\\S\\s]*)(} = {)([\S\s]*)", 'g'),
+      pattern: new RegExp("(import { TInitialState } from '@/redux/types';)([\\S\\s]*)(const initialState: {)([\\S\\s]*)(} = {)([\S\s]*)", 'g'),
       template: "$1import { T{{pascalCase apiName}}Response } from '@/services/{{dashCase serviceName}}/{{dashCase groupName}}/{{dashCase apiName}}';$2$3{{camelCase apiName}}: TInitialState<T{{pascalCase apiName}}Response>;$4$5{{camelCase apiName}}: { data: undefined, isLoading: undefined, error: undefined },$6",
       skip: () =>
         skipAction({
@@ -221,7 +221,7 @@ const reduxActions = (data, plop) => {
     {
       type: PLOP_ACTION_TYPE.MODIFY,
       path: `${groupDirSlicePath}/state-reducers.ts`,
-      pattern: new RegExp("(import { errorHandler, requestHandler } from '@/redux';)([\\S\\s]*)(stateReducers = {)([\\S\\s]*)", 'g'),
+      pattern: new RegExp("(import { errorHandler, requestHandler } from '@/redux/slices/utils';)([\\S\\s]*)(stateReducers = {)([\\S\\s]*)", 'g'),
       template: "$1import { T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response } from '@/services/{{dashCase serviceName}}/{{dashCase groupName}}/{{dashCase apiName}}';$2$3{{camelCase apiName}}Request: requestHandler<T{{pascalCase apiName}}Parameters, T{{pascalCase apiName}}Response, TResponseError>,{{camelCase apiName}}Failed: errorHandler<TResponseError>,$4",
       skip: () =>
         skipAction({
@@ -259,7 +259,7 @@ const reduxActions = (data, plop) => {
       type: PLOP_ACTION_TYPE.MODIFY,
       path: `${serviceDirSagaPath}/index.ts`,
       pattern: new RegExp("(import { all, takeEvery } from 'redux-saga\\/effects';)([\\S\\s]*)(all\\(\\[)", 'g'),
-      template: `$1${isUserWantCreateNewGroup ? "import {{camelCase groupName}}Slice from '@/redux/slices/{{dashCase serviceName}}/{{dashCase groupName}}/{{dashCase apiName}}';"  : ""}import {{camelCase apiName}}Saga from './{{camelCase groupName}}/{{dashCase apiName}}';$2$3takeEvery({{camelCase groupName}}Slice.actions.{{camelCase apiName}}Request.type, {{camelCase apiName}}Saga),`,
+      template: `$1${isUserWantCreateNewGroup ? "import {{camelCase groupName}}Slice from '@/redux/slices/{{dashCase serviceName}}/{{dashCase groupName}}/slice';"  : ""}import {{camelCase apiName}}Saga from './{{dashCase groupName}}/{{dashCase apiName}}';$2$3takeEvery({{camelCase groupName}}Slice.actions.{{camelCase apiName}}Request.type, {{camelCase apiName}}Saga),`,
       skip: () => skipAction({ when: isUserWantCreateNewService, path: `${groupDirSagaPath}/index.ts`, description: 'Add new import for new api in already exist api group' })
     }
   ];
@@ -331,7 +331,7 @@ export default (plop) => {
       {
         type: PLOP_PROMPT_TYPE.INPUT,
         name: 'endpoint',
-        message: 'Endpoint?'
+        message: 'Endpoint? (ex: /api/get-user-by-id/{id:string})'
       },
       {
         type: PLOP_PROMPT_TYPE.LIST,
@@ -342,7 +342,7 @@ export default (plop) => {
       {
         type: PLOP_PROMPT_TYPE.INPUT,
         name: 'payload',
-        message: 'Payload?',
+        message: 'Payload? (ex: name=string@age=number@city=string@male=true)',
         when: ({ method }) => ![API_METHOD.GET, API_METHOD.DELETE].includes(method)
       },
     ],
