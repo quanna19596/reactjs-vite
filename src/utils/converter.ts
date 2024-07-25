@@ -16,9 +16,10 @@ export const convertHexToRgb = (hex: EColor): { r: number; g: number; b: number 
     : undefined;
 };
 
-export const convertNumberToVietnameseCurrency = (n: number, hideUnit?: boolean): string => {
+export const convertNumberToVietnameseCurrency = (n: number, separator?: string, hideUnit?: boolean): string => {
   return n
     .toLocaleString('it-IT', { style: 'currency', currency: 'VND' })
     .replace('VND', hideUnit ? '' : 'đ')
+    .replaceAll('.', `${separator || '.'}`)
     .trim();
 };
