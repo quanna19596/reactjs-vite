@@ -72,15 +72,15 @@ export default (plop) => ({
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.ROUTER.CONFIG,
-        pattern: /(const routerConfig: TRouteConfig)/g,
-        template: 'import {{pascalCase pageName}} from @/pages/{{pageType}}/{{pascalCase pageName}};$1'
+        pattern: /( } from '@\/pages';)/g,
+        template: ", {{pascalCase pageName}} } from '@/pages';"
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.ROUTER.CONFIG,
-        pattern: new RegExp('({' + BREAK_LINE +  `          path: PATHS.SPECIAL.REST())([\\S\\s]*)(${layoutName}NotFound)`, 'g'),
+        pattern: new RegExp('({' + BREAK_LINE + '          path: PATHS.SPECIAL.REST\\(\\),' + BREAK_LINE + '          element: {' + BREAK_LINE + `            component: ${data.layoutNameWithoutSuffix}LayoutNotFound,` + BREAK_LINE + `            errorComponent: ${data.layoutNameWithoutSuffix}LayoutError` + BREAK_LINE + '          }' + BREAK_LINE + '        })', 'g'),
         templateFile: `${PATH.PLOP.TEMPLATES._self}/page/${pageType}/router-config.hbs`,
-        data: { layoutNameWithoutType: `${data.layoutNameWithoutSuffix}Layout` },
+        data: { layoutNameWithoutType: `${data.layoutNameWithoutSuffix}Layout`, isPrivate: pageType === PROTECTION_TYPE.PRIVATE },
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,

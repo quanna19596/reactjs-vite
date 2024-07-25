@@ -22,6 +22,4 @@ export default (plop) => {
   plop.setGenerator(PLOP_COMMAND.REMOVE_API, generator.removeApi(plop));
   plop.setGenerator(PLOP_COMMAND.REMOVE_API_GROUP, generator.removeApiGroup(plop));
   plop.setGenerator(PLOP_COMMAND.REMOVE_SERVICE, generator.removeService(plop));
-
-  plop.setGenerator(PLOP_COMMAND.GET_COLOR_NAME, tools.getColorName(plop));
 };

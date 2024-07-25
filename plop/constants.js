@@ -20,8 +20,7 @@ export const PLOP_COMMAND = {
   CREATE_API: 'create-api',
   REMOVE_API: 'remove-api',
   REMOVE_API_GROUP: 'remove-api-group',
-  REMOVE_SERVICE: 'remove-service',
-  GET_COLOR_NAME: 'get-color-name'
+  REMOVE_SERVICE: 'remove-service'
 };
 
 export const PLOP_HELPER_TYPE = {

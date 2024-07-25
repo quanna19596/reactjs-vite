@@ -2,7 +2,7 @@
   path: PATHS.PAGE.{{constantCase pageName}}(),
   element: {
     component: {{pascalCase pageName}},
-    isPrivate: true,
+    isPrivate: {{isPrivate}},
     fallbackPermissionDenied: {{layoutNameWithoutType}}PermissionDenied,
     errorComponent: {{layoutNameWithoutType}}Error
   }
