@@ -1,4 +1,4 @@
-import { actionType, generator, tools, helper, PLOP_ACTION_TYPE, PLOP_COMMAND, PLOP_HELPER_TYPE } from './plop/index.js';
+import { actionType, generator, helper, PLOP_ACTION_TYPE, PLOP_COMMAND, PLOP_HELPER_TYPE } from './plop/index.js';
 
 export default (plop) => {
   plop.setHelper(PLOP_HELPER_TYPE.SUFFIX_CURLY, helper.suffixCurly);

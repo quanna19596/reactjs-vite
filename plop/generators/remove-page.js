@@ -17,20 +17,8 @@ export default (plop) => ({
     }
   ],
   actions: ({ rawPageName }) => {
-    const routerConfig = readFile(PATH.SRC.ROUTER.CONFIG);
     const pageName = rawPageName.split(' (')[0];
     const pageProtectionType = rawPageName.split('(')[1].replace(')', '');
-    const regexMark = plop.renderString('path: PATHS.PAGE.{{constantCase pageName}}()', { pageName });
-    const numberLineAfterRegexMark = pageProtectionType === PROTECTION_TYPE.PUBLIC ? 5 : 7;
-    const pageConfigRegex = new RegExp(
-      `{([${BREAK_LINE}].*?)(.*?(?:${regexMark}).*)(([${BREAK_LINE}]+([^${BREAK_LINE}]+)){${numberLineAfterRegexMark}})`,
-      'g'
-    );
-    const pageObj = routerConfig.match(pageConfigRegex)[0];
-
-    const privateLayouts = getAllDirsInDirectory(PATH.SRC.LAYOUTS.PRIVATE);
-    const publicLayouts = getAllDirsInDirectory(PATH.SRC.LAYOUTS.PUBLIC);
-    const layouts = [...privateLayouts, ...publicLayouts].filter((dir) => !dir.includes('.'));
   
     const pageDirPath = `${PATH.SRC.PAGES}/${pageProtectionType}/${pageName}`;
   
@@ -58,36 +46,6 @@ export default (plop) => ({
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFilePathIn.pageTypeDir,
-        pattern: new RegExp(templateRenderedIn.indexFileInPageTypeDir, 'g'),
-        template: ''
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFilePathIn.pageTypeDir,
-        pattern: new RegExp(`${pageName},`, 'g'),
-        template: ''
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFilePathIn.pageTypeDir,
-        pattern: new RegExp(pageName, 'g'),
-        template: ''
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFilePathIn.pageTypeDir,
-        pattern: /TProps,/g,
-        template: ''
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFilePathIn.pageTypeDir,
-        pattern: /TProps/g,
-        template: ''
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
         path: indexFilePathIn.pagesDir,
         pattern: new RegExp(BREAK_LINE + templateRenderedIn.indexFileInPagesDir, 'g'),
         template: ''
@@ -95,25 +53,19 @@ export default (plop) => ({
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.ROUTER.PATHS,
-        pattern: new RegExp(BREAK_LINE + plop.renderString('    {{constantCase pageName}}.*', { pageName }), 'g'),
+        pattern: new RegExp(plop.renderString('{{constantCase pageName}}.*', { pageName }), 'g'),
         template: ''
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.ROUTER.CONFIG,
-        pattern: new RegExp(BREAK_LINE + '        ' + pageObj.replace('()', '\\(\\)'), 'g'),
+        pattern: new RegExp(plop.renderString(',' + BREAK_LINE + '        {' + BREAK_LINE + `          path: PATHS.PAGE.{{constantCase pageName}}\\(\\),` + BREAK_LINE + '          element: {' + BREAK_LINE + '            component: {{pascalCase pageName}},' + BREAK_LINE + `            isPrivate: ${pageProtectionType === PROTECTION_TYPE.PRIVATE},` + BREAK_LINE + '            fallbackPermissionDenied: DashboardLayoutPermissionDenied,' + BREAK_LINE + '            errorComponent: DashboardLayoutError' + BREAK_LINE + '          }' + BREAK_LINE + '        }'), 'g'),
         template: ''
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.ROUTER.CONFIG,
-        pattern: new RegExp(`${pageName},`, 'g'),
-        template: ''
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: PATH.SRC.ROUTER.CONFIG,
-        pattern: new RegExp(pageName, 'g'),
+        pattern: new RegExp(`, ${pageName}`, 'g'),
         template: ''
       },
       { type: PLOP_ACTION_TYPE.PRETTIER }

@@ -26,5 +26,4 @@ export const SignIn = lazy(() => retryLoadComponent(() => import('@/pages/public
 // [END] Public
 
 // [BEGIN] Private
-export const Products = lazy(() => retryLoadComponent(() => import('@/pages/private/Products')));
-// [END] Private
+export const Products = lazy(() => retryLoadComponent(() => import('@/pages/private/Products'))); // [END] Private
