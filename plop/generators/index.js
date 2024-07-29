@@ -8,7 +8,6 @@ import createIcon from './create-icon.js';
 import removeIcon from './remove-icon.js';
 import createApi from './create-api.js';
 import removeApi from './remove-api.js';
-import removeApiGroup from './remove-api-group.js';
 import removeService from './remove-service.js';
 
 export default {
@@ -22,6 +21,5 @@ export default {
   removeIcon,
   createApi,
   removeApi,
-  removeApiGroup,
   removeService
 };

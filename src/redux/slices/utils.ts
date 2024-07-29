@@ -3,10 +3,10 @@ import { TAction, TErrorHandlerPayload, TRequestHandlerCallbacks } from '@/redux
 
 export const requestHandler = <T, U, V>(_state: any, _action: { payload: T & TRequestHandlerCallbacks<U, V>; type: string }): void => {};
 
-export const successHandler = (state: any, action: TAction, newState: any): void => {
+export const successHandler = (state: any, action: TAction): void => {
   const stateName = action.type.split('/').at(-1)?.replace(EActionType.SUCCESS, '');
   const noStoring = !action.payload.storeInGlobalState;
-  return noStoring || !stateName ? state : { ...state, [stateName]: { ...state[stateName], data: newState.data.response } };
+  return noStoring || !stateName ? state : { ...state, [stateName]: { ...state[stateName], data: action.payload.response } };
 };
 
 export const errorHandler = <T>(_state: any, _action: { payload: TErrorHandlerPayload<T>; type: string }): void => {};

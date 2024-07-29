@@ -10,7 +10,7 @@ const petSlice = createSlice({
   name: 'petStore/pet',
   initialState,
   reducers: {
-    getPetByIdSuccess: (state, action) => successHandler(state, action, { data: action.payload }),
+    getPetByIdSuccess: successHandler,
     ...stateReducers
   },
   extraReducers: asyncStatusReducers

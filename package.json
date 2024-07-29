@@ -32,7 +32,6 @@
     "remove-icon": "yarn plop remove-icon",
     "create-api": "yarn plop create-api",
     "remove-api": "yarn plop remove-api",
-    "remove-api-group": "yarn plop remove-api-group",
     "remove-service": "yarn plop remove-service"
   },
   "dependencies": {
