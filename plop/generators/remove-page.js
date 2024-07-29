@@ -19,17 +19,16 @@ export default (plop) => ({
   actions: ({ rawPageName }) => {
     const pageName = rawPageName.split(' (')[0];
     const pageProtectionType = rawPageName.split('(')[1].replace(')', '');
+
+    const privateLayouts = getAllDirsInDirectory(PATH.SRC.LAYOUTS.PRIVATE);
+    const publicLayouts = getAllDirsInDirectory(PATH.SRC.LAYOUTS.PUBLIC);
+    const layouts = [...privateLayouts, ...publicLayouts];
   
     const pageDirPath = `${PATH.SRC.PAGES}/${pageProtectionType}/${pageName}`;
-  
-    const indexFilePathIn = {
-      pageTypeDir: `${PATH.SRC.PAGES}/${pageProtectionType}/index.ts`,
-      pagesDir: `${PATH.SRC.PAGES}/index.ts`
-    }
+    const indexFilePathPage = `${PATH.SRC.PAGES}/index.ts`;
   
     const templateRenderedIn = {
       styleFile: `$${pageName}: '.${pageName}';`,
-      indexFileInPageTypeDir: `import ${pageName}, { T${pageName}Props } from './${pageName}';`,
       indexFileInPagesDir: `export const ${pageName} = lazy\\(\\(\\) => retryLoadComponent\\(\\(\\) => import\\('@/pages/${pageProtectionType}/${pageName}'\\)\\)\\);`
     }
 
@@ -46,7 +45,7 @@ export default (plop) => ({
       },
       {
         type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFilePathIn.pagesDir,
+        path: indexFilePathPage,
         pattern: new RegExp(BREAK_LINE + templateRenderedIn.indexFileInPagesDir, 'g'),
         template: ''
       },
@@ -56,12 +55,19 @@ export default (plop) => ({
         pattern: new RegExp(plop.renderString('{{constantCase pageName}}.*', { pageName }), 'g'),
         template: ''
       },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: PATH.SRC.ROUTER.CONFIG,
-        pattern: new RegExp(plop.renderString(',' + BREAK_LINE + '        {' + BREAK_LINE + `          path: PATHS.PAGE.{{constantCase pageName}}\\(\\),` + BREAK_LINE + '          element: {' + BREAK_LINE + '            component: {{pascalCase pageName}},' + BREAK_LINE + `            isPrivate: ${pageProtectionType === PROTECTION_TYPE.PRIVATE},` + BREAK_LINE + '            fallbackPermissionDenied: DashboardLayoutPermissionDenied,' + BREAK_LINE + '            errorComponent: DashboardLayoutError' + BREAK_LINE + '          }' + BREAK_LINE + '        }'), 'g'),
-        template: ''
-      },
+      ...layouts.map((layout) => {
+        const isPrivate = pageProtectionType === PROTECTION_TYPE.PRIVATE;
+        const constantPageName = plop.renderString('{{constantCase pageName}}', { pageName });
+        const pascalPageName = plop.renderString('{{pascalCase pageName}}', { pageName });
+        const privatePattern = BREAK_LINE + '        {' + BREAK_LINE + `          path: PATHS.PAGE.${constantPageName}[\\S\\s]*${pascalPageName},` + BREAK_LINE + '            isPrivate: true,' + BREAK_LINE + `            fallbackPermissionDenied: ${layout}PermissionDenied,` + BREAK_LINE + `            errorComponent: ${layout}Error` + BREAK_LINE + '          }' + BREAK_LINE + '        },';
+        const publicPattern = BREAK_LINE + '        {' + BREAK_LINE + `          path: PATHS.PAGE.${constantPageName}[\\S\\s]*${pascalPageName},` + BREAK_LINE + `            errorComponent: ${layout}Error` + BREAK_LINE + '          }' + BREAK_LINE + '        },';
+        return ({
+          type: PLOP_ACTION_TYPE.MODIFY,
+          path: PATH.SRC.ROUTER.CONFIG,
+          pattern: new RegExp(isPrivate ? privatePattern : publicPattern, 'g'),
+          template: ''
+        })
+      }),
       {
         type: PLOP_ACTION_TYPE.MODIFY,
         path: PATH.SRC.ROUTER.CONFIG,

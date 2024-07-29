@@ -15,13 +15,3 @@ export const regex = {
   getLinesEqualAndAfterMatching: (marker, numberOfLines) => new RegExp(`(${marker})(.*` + BREAK_LINE + `){${numberOfLines}}` ,'g'),
   getLastLines: (numberOfLines) => new RegExp('(.*([' + BREAK_LINE + `|$)){${numberOfLines}}$` ,'g'),
 };
-
-const routerConfigStr = readFile('src/router/config.ts');
-const rg = /const routerConfig[\s\S]+\n}/g;
-const found = routerConfigStr.match(rg);
-
-const beautified = found[0].replace('const routerConfig: TRouteConfig = ', '');
-
-// console.log();
-console.log(typeof JSON.parse(JSON.stringify(beautified)));
-// Expected output: Array ["T", "I"]
