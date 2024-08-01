@@ -1,6 +1,6 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useOutletContext } from 'react-router-dom';
 
-import { TDashboardLayoutProps } from './DashboardLayout.types';
+import { TDashboardLayoutContextType, TDashboardLayoutProps } from './DashboardLayout.types';
 
 import './DashboardLayout.scss';
 
@@ -8,9 +8,13 @@ const DashboardLayout: React.FC<TDashboardLayoutProps> = () => {
   return (
     <div className='DashboardLayout'>
       DashboardLayout
-      <Outlet />
+      <Outlet context={{} satisfies TDashboardLayoutContextType} />
     </div>
   );
+};
+
+export const useDashboardLayoutContext = (): TDashboardLayoutContextType => {
+  return useOutletContext<TDashboardLayoutContextType>();
 };
 
 export default DashboardLayout;

@@ -1,7 +1,9 @@
 import { DependencyList, EffectCallback, RefObject, useEffect, useState } from 'react';
+import { Action, Location } from 'history';
 
 import { EEnvironmentMode } from '@/enums/other';
 import env from '@/env';
+import history from '@/router/history';
 
 type TScroll = {
   x: number;
@@ -87,7 +89,7 @@ const createStrictEffectHook = (): ((effect: EffectCallback, deps?: DependencyLi
   };
 };
 
-export const useStrictEffect = createStrictEffectHook();
+export const useStrictEffect = createStrictEffectHook(); // custom useEffect to execute once time only on development mode
 
 export const useResize = (): { windowWidth: number; isMobileView: boolean } => {
   const [resize, setResize] = useState<{ windowWidth: number; isMobileView: boolean }>({
@@ -105,4 +107,16 @@ export const useResize = (): { windowWidth: number; isMobileView: boolean } => {
   }, []);
 
   return resize;
+};
+
+export const useHistoryStack = (): Location[] => {
+  const [stack, setStack] = useState<Location[]>([]);
+
+  history.listen(({ location, action }): void => {
+    if (action === Action.Pop) setStack(stack.slice(0, stack.length - 1));
+    if (action === Action.Push) setStack([...stack, location]);
+    if (action === Action.Replace) setStack([...stack.slice(0, stack.length - 1), location]);
+  });
+
+  return stack;
 };
