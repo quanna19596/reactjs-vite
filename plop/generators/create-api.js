@@ -210,7 +210,7 @@ const reduxActions = (data, plop) => {
       type: PLOP_ACTION_TYPE.MODIFY,
       path: `${groupDirSlicePath}/slice.ts`,
       pattern: new RegExp('(reducers: {)', 'g'),
-      template: "$1{{camelCase apiName}}Success: (state, action) => successHandler(state, action, { data: action.payload }),",
+      template: "$1{{camelCase apiName}}Success: successHandler,",
       skip: () =>
         skipAction({
           when: isUserWantCreateNewGroup,
