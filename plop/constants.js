@@ -5,7 +5,7 @@ export const PLOP_ACTION_TYPE = {
   REMOVE: 'remove',
   REMOVE_MANY: 'removeMany',
   PRETTIER: 'prettier',
-  CONSOLE: 'console',
+  CONSOLE: 'console'
 };
 
 export const PLOP_COMMAND = {
@@ -19,7 +19,8 @@ export const PLOP_COMMAND = {
   REMOVE_ICON: 'remove-icon',
   CREATE_API: 'create-api',
   REMOVE_API: 'remove-api',
-  REMOVE_SERVICE: 'remove-service'
+  CREATE_SLICE: 'create-slice',
+  REMOVE_SLICE: 'remove-slice'
 };
 
 export const PLOP_HELPER_TYPE = {
@@ -33,7 +34,7 @@ export const PLOP_PROMPT_TYPE = {
 
 export const COMPONENT_TYPE = { COMPONENTS: 'components', CONTAINERS: 'containers' };
 export const PROTECTION_TYPE = { PUBLIC: 'public', PRIVATE: 'private' };
-export const CONFIRM_CHOICE = { YES: 'Yes', NO: 'No' }
+export const CONFIRM_CHOICE = { YES: 'Yes', NO: 'No' };
 
 export const PATH = {
   SRC: {
@@ -41,7 +42,7 @@ export const PATH = {
     LAYOUTS: {
       _self: './src/layouts',
       PRIVATE: './src/layouts/private',
-      PUBLIC: './src/layouts/public',
+      PUBLIC: './src/layouts/public'
     },
     COMPONENTS: './src/components',
     CONTAINERS: './src/containers',
@@ -49,7 +50,7 @@ export const PATH = {
     REDUX: {
       _self: './src/redux',
       SLICES: './src/redux/slices',
-      SAGAS: './src/redux/sagas',
+      SAGAS: './src/redux/sagas'
     },
     SERVICES: './src/services',
     TYPES: './src/types',
@@ -57,7 +58,7 @@ export const PATH = {
     ROUTER: {
       _self: './src/router',
       PATHS: './src/router/paths.ts',
-      CONFIG: './src/router/config.ts',
+      CONFIG: './src/router/config.ts'
     },
     STYLES: {
       _self: './src/styles',
@@ -84,11 +85,12 @@ export const PATH = {
       },
       SERVICE: './plop/templates/service',
       SLICE_GROUP: './plop/templates/slice-group',
-      SAGA: './plop/templates/saga',
+      SAGA: './plop/templates/saga'
     },
     GENERATORS: './plop/generators'
   },
   STORYBOOK: './stories',
+  LOCAL_ENV: '.env.lc',
   DEVELOPMENT_ENV: '.env.development',
   STAGING_ENV: '.env.staging',
   PRODUCTION_ENV: '.env.production'

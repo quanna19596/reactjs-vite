@@ -64,12 +64,25 @@ const generateApiFilePath = (plop, { rootPath, serviceName, groupName, apiName }
 const envFilesActions = (data) => {
   const { isUserWantCreateNewService } = data;
 
+  const localEnvFilePath = PATH.LOCAL_ENV;
   const devEnvFilePath = PATH.DEVELOPMENT_ENV;
   const stagingEnvFilePath = PATH.STAGING_ENV;
   const prodEnvFilePath = PATH.PRODUCTION_ENV;
   const objEnvFilePath = PATH.SRC.ENV;
 
   return [
+    {
+      type: PLOP_ACTION_TYPE.MODIFY,
+      path: localEnvFilePath,
+      pattern: new RegExp('(# END SERVICES)', 'g'),
+      template: 'VITE_{{constantCase serviceName}}_SERVICE={{lowerCase devBaseUrl}} # {{constantCase serviceName}}_SERVICE' + BREAK_LINE + '$1',
+      skip: () =>
+        skipAction({
+          when: !isUserWantCreateNewService,
+          path: localEnvFilePath,
+          description: 'Add new local environment variable for new service'
+        })
+    },
     {
       type: PLOP_ACTION_TYPE.MODIFY,
       path: devEnvFilePath,
@@ -281,31 +294,73 @@ export default (plop) => {
           const allServices = getAllDirsInDirectory(PATH.SRC.SERVICES);
           return [...allServices, PROMPT_OPTION.ADD_NEW_SERVICE];
         },
-        message: 'Service name?'
+        message: 'Service name?',
+        validate: (input) => {
+          if (!input || (input !== PROMPT_OPTION.ADD_NEW_SERVICE && !getAllDirsInDirectory(PATH.SRC.SERVICES).includes(input))) {
+            return 'Please select a valid service name or choose to add a new service.';
+          }
+          return true;
+        }
       },
       {
         type: PLOP_PROMPT_TYPE.INPUT,
         name: 'serviceName',
         message: 'New service name?',
-        when: userWantCreateNewService
+        when: userWantCreateNewService,
+        validate: (input) => {
+          if (!input || /[^a-zA-Z0-9_-]/.test(input)) {
+            return 'Service name must be alphanumeric and can include hyphens and underscores.';
+          }
+          return true;
+        }
+      },
+      {
+        type: PLOP_PROMPT_TYPE.INPUT,
+        name: 'localBaseUrl',
+        message: 'Base url for local environment?',
+        when: userWantCreateNewService,
+        validate: (input) => {
+          if (!input || !/^https?:\/\/[^\s/$.?#].[^\s]*$/.test(input)) {
+            return 'Please enter a valid URL for the local environment.';
+          }
+          return true;
+        }
       },
       {
         type: PLOP_PROMPT_TYPE.INPUT,
         name: 'devBaseUrl',
         message: 'Base url for development environment?',
-        when: userWantCreateNewService
+        when: userWantCreateNewService,
+        validate: (input) => {
+          if (!input || !/^https?:\/\/[^\s/$.?#].[^\s]*$/.test(input)) {
+            return 'Please enter a valid URL for the development environment.';
+          }
+          return true;
+        }
       },
       {
         type: PLOP_PROMPT_TYPE.INPUT,
         name: 'stagingBaseUrl',
         message: 'Base url for staging environment?',
-        when: userWantCreateNewService
+        when: userWantCreateNewService,
+        validate: (input) => {
+          if (!input || !/^https?:\/\/[^\s/$.?#].[^\s]*$/.test(input)) {
+            return 'Please enter a valid URL for the staging environment.';
+          }
+          return true;
+        }
       },
       {
         type: PLOP_PROMPT_TYPE.INPUT,
         name: 'prodBaseUrl',
         message: 'Base url for production environment?',
-        when: userWantCreateNewService
+        when: userWantCreateNewService,
+        validate: (input) => {
+          if (!input || !/^https?:\/\/[^\s/$.?#].[^\s]*$/.test(input)) {
+            return 'Please enter a valid URL for the production environment.';
+          }
+          return true;
+        }
       },
       {
         type: PLOP_PROMPT_TYPE.LIST,
@@ -315,35 +370,78 @@ export default (plop) => {
           return [...allGroups, PROMPT_OPTION.ADD_NEW_GROUP];
         },
         message: 'Group name?',
-        when: (data) => !userWantCreateNewService(data)
+        when: (data) => !userWantCreateNewService(data),
+        validate: (input) => {
+          if (!input || (input !== PROMPT_OPTION.ADD_NEW_GROUP && !getAllDirsInDirectory(`${PATH.SRC.SERVICES}/${data.rawServiceName}`).includes(input))) {
+            return 'Please select a valid group name or choose to add a new group.';
+          }
+          return true;
+        }
       },
       {
         type: PLOP_PROMPT_TYPE.INPUT,
         name: 'groupName',
         message: 'New group name?',
-        when: userWantCreateNewGroup
+        when: userWantCreateNewGroup,
+        validate: (input) => {
+          if (!input || /[^a-zA-Z0-9_-]/.test(input)) {
+            return 'Group name must be alphanumeric and can include hyphens and underscores.';
+          }
+          return true;
+        }
       },
       {
         type: PLOP_PROMPT_TYPE.INPUT,
         name: 'apiName',
-        message: 'API Name?'
+        message: 'API Name?',
+        validate: (input) => {
+          if (!input || /[^a-zA-Z0-9_-]/.test(input)) {
+            return 'API name must be alphanumeric and can include hyphens and underscores.';
+          }
+          return true;
+        }
       },
       {
         type: PLOP_PROMPT_TYPE.INPUT,
         name: 'endpoint',
-        message: 'Endpoint? (ex: /api/get-user-by-id/{id:string})'
+        message: 'Endpoint? (ex: /api/get-user-by-id/{id:string})',
+        validate: (input) => {
+          if (!input || !/^\/[a-zA-Z0-9\/{}:]*$/.test(input)) {
+            return 'Please enter a valid endpoint format.';
+          }
+          return true;
+        }
       },
       {
         type: PLOP_PROMPT_TYPE.LIST,
         name: 'method',
         choices: () => Object.values(API_METHOD),
-        message: 'Method?'
+        message: 'Method?',
+        validate: (input) => {
+          if (!Object.values(API_METHOD).includes(input)) {
+            return 'Please select a valid HTTP method.';
+          }
+          return true;
+        }
       },
       {
         type: PLOP_PROMPT_TYPE.INPUT,
         name: 'payload',
         message: 'Payload? (ex: name=string@age=number@city=string@male=true)',
-        when: ({ method }) => ![API_METHOD.GET, API_METHOD.DELETE].includes(method)
+        when: ({ method }) => ![API_METHOD.GET, API_METHOD.DELETE].includes(method),
+        validate: (input) => {
+          if (!input) return 'Payload cannot be empty.';
+          const pairs = input.split('@');
+        
+          for (const pair of pairs) {
+            const [key, value] = pair.split('=');
+            if (!key || !value) return 'Each key-value pair must contain exactly one "=" character.';
+            if (value.includes('@') || value.includes(' ')) return 'Value cannot contain "@" or spaces.';
+            if (key.includes('@') || key.includes(' ')) return 'Key cannot contain "@" or spaces.';
+          }
+        
+          return true;
+        }
       },
     ],
     actions: (data) => {

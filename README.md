@@ -8,7 +8,8 @@ Please use VSCode as IDE and install some extensions following:
 PLOP Plan:
 - generate form
 - validation plop
-- create/remove client slice action
+- create-slice.js / remove-slice.js
+- remove-api.js
 - generate full api from postman/swagger file
 
 

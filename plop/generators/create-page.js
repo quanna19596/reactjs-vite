@@ -1,18 +1,56 @@
 import { BREAK_LINE, PATH, PLOP_ACTION_TYPE, PLOP_PROMPT_TYPE, PROTECTION_TYPE } from "../constants.js";
 import { getAllDirsInDirectory, readFile, capitalize, regex } from "../utils.js";
 
+const validatePageName = (name) => {
+  if (!name || /[^a-zA-Z0-9_]/.test(name)) {
+    return 'Page name should only contain alphanumeric characters and underscores.';
+  }
+  return true;
+};
+
+const validatePagePath = (path) => {
+  if (!path || /[^a-zA-Z0-9_/:\-]/.test(path)) {
+    return 'Page path should only contain alphanumeric characters, slashes, colons, and hyphens.';
+  }
+  return true;
+};
+
+const validateLayoutName = (name) => {
+  if (!name || /[^a-zA-Z0-9_()]/.test(name)) {
+    return 'Invalid layout name. It should only contain alphanumeric characters, underscores, and parentheses.';
+  }
+  return true;
+};
+
+const validatePageType = (type) => {
+  if (!Object.values(PROTECTION_TYPE).includes(type)) {
+    return `Invalid page type. Choose from: ${Object.values(PROTECTION_TYPE).join(', ')}.`;
+  }
+  return true;
+};
+
 export default (plop) => ({
   description: 'Create Page',
   prompts: [
     {
       type: PLOP_PROMPT_TYPE.INPUT,
       name: 'pageName',
-      message: 'Page name?'
+      message: 'Page name?',
+      validate: (input) => {
+        const result = validatePageName(input);
+        if (result !== true) return result;
+        return true;
+      }
     },
     {
       type: PLOP_PROMPT_TYPE.INPUT,
       name: 'rawPagePath',
       message: 'Page path? (Ex: /user/:userId)',
+      validate: (input) => {
+        const result = validatePagePath(input);
+        if (result !== true) return result;
+        return true;
+      }
     },
     {
       type: PLOP_PROMPT_TYPE.LIST,
@@ -24,12 +62,22 @@ export default (plop) => ({
         return layouts;
       },
       message: 'Belong to?',
+      validate: (input) => {
+        const result = validateLayoutName(input);
+        if (result !== true) return result;
+        return true;
+      }
     },
     {
       type: PLOP_PROMPT_TYPE.LIST,
       name: 'pageType',
       choices: Object.values(PROTECTION_TYPE),
       message: 'Page type?',
+      validate: (input) => {
+        const result = validatePageType(input);
+        if (result !== true) return result;
+        return true;
+      }
     },
   ],
   actions: (data) => {

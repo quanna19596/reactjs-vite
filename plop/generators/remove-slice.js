@@ -6,17 +6,7 @@ export default (plop) => ({
     {
       type: PLOP_PROMPT_TYPE.INPUT,
       name: 'iconName',
-      message: 'Icon name?',
-      validate: (input) => {
-        const validNamePattern = /^[a-zA-Z0-9_]+$/;
-        if (!input) {
-          return 'Icon name is required.';
-        }
-        if (!validNamePattern.test(input)) {
-          return 'Icon name can only contain letters, numbers, and underscores.';
-        }
-        return true;
-      }
+      message: 'Icon name?'
     }
   ],
   actions: ({ iconName }) => {

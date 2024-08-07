@@ -8,18 +8,40 @@ export default (plop) => ({
       type: PLOP_PROMPT_TYPE.LIST,
       name: 'componentType',
       choices: Object.values(COMPONENT_TYPE),
-      message: 'Component type?'
+      message: 'Component type?',
+      validate: (input) => {
+        if (!Object.values(COMPONENT_TYPE).includes(input)) {
+          return 'Invalid component type. Please select a valid type.';
+        }
+        return true;
+      }
     },
     {
       type: PLOP_PROMPT_TYPE.INPUT,
       name: 'componentName',
-      message: 'Component name?'
+      message: 'Component name?',
+      validate: (input) => {
+        const validNamePattern = /^[a-zA-Z0-9_]+$/;
+        if (!input) {
+          return 'Component name is required.';
+        }
+        if (!validNamePattern.test(input)) {
+          return 'Component name can only contain letters, numbers, and underscores.';
+        }
+        return true;
+      }
     },
     {
       type: PLOP_PROMPT_TYPE.LIST,
       name: 'isCreateStorybook',
       choices: Object.values(CONFIRM_CHOICE),
-      message: 'Create storybook?'
+      message: 'Create storybook?',
+      validate: (input) => {
+        if (!Object.values(CONFIRM_CHOICE).includes(input)) {
+          return 'Please select a valid choice for creating storybook.';
+        }
+        return true;
+      }
     }
   ],
   actions: ({ componentType, isCreateStorybook }) => {

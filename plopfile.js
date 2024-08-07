@@ -6,7 +6,6 @@ export default (plop) => {
   plop.setActionType(PLOP_ACTION_TYPE.PRETTIER, actionType.prettier);
   plop.setActionType(PLOP_ACTION_TYPE.REMOVE, actionType.remove);
   plop.setActionType(PLOP_ACTION_TYPE.REMOVE_MANY, actionType.removeMany);
-
   plop.setActionType(PLOP_ACTION_TYPE.CONSOLE, actionType.console);
 
   plop.setGenerator(PLOP_COMMAND.CREATE_COMPONENT, generator.createComponent(plop));
@@ -17,8 +16,8 @@ export default (plop) => {
   plop.setGenerator(PLOP_COMMAND.REMOVE_PAGE, generator.removePage(plop));
   plop.setGenerator(PLOP_COMMAND.CREATE_ICON, generator.createIcon(plop));
   plop.setGenerator(PLOP_COMMAND.REMOVE_ICON, generator.removeIcon(plop));
-
   plop.setGenerator(PLOP_COMMAND.CREATE_API, generator.createApi(plop));
   plop.setGenerator(PLOP_COMMAND.REMOVE_API, generator.removeApi(plop));
-  plop.setGenerator(PLOP_COMMAND.REMOVE_SERVICE, generator.removeService(plop));
+  plop.setGenerator(PLOP_COMMAND.CREATE_SLICE, generator.createSlice(plop));
+  plop.setGenerator(PLOP_COMMAND.REMOVE_SLICE, generator.removeSlice(plop));
 };

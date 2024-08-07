@@ -1,24 +1,60 @@
 import { BREAK_LINE, PATH, PLOP_ACTION_TYPE, PLOP_PROMPT_TYPE, PROTECTION_TYPE } from '../constants.js';
 import { readFile } from '../utils.js';
 
+const validateLayoutName = (name) => {
+  if (!name || /[^a-zA-Z0-9_]/.test(name)) {
+    return 'Layout name should only contain alphanumeric characters and underscores.';
+  }
+  return true;
+};
+
+const validateLayoutBasePath = (path) => {
+  if (!path || /[^a-zA-Z0-9_/]/.test(path)) {
+    return 'Layout base path should only contain alphanumeric characters, slashes, and underscores.';
+  }
+  return true;
+};
+
+const validateLayoutType = (type) => {
+  if (!Object.values(PROTECTION_TYPE).includes(type)) {
+    return `Invalid layout type. Choose from: ${Object.values(PROTECTION_TYPE).join(', ')}.`;
+  }
+  return true;
+};
+
 export default (plop) => ({
   description: 'Create Layout',
   prompts: [
     {
       type: PLOP_PROMPT_TYPE.INPUT,
       name: 'rawLayoutName',
-      message: 'Layout name?'
+      message: 'Layout name?',
+      validate: (input) => {
+        const result = validateLayoutName(input);
+        if (result !== true) return result;
+        return true;
+      }
     },
     {
       type: PLOP_PROMPT_TYPE.INPUT,
       name: 'rawLayoutBasePath',
       message: 'Layout base path?',
+      validate: (input) => {
+        const result = validateLayoutBasePath(input);
+        if (result !== true) return result;
+        return true;
+      }
     },
     {
       type: PLOP_PROMPT_TYPE.LIST,
       name: 'layoutType',
       choices: Object.values(PROTECTION_TYPE),
-      message: 'Layout type?'
+      message: 'Layout type?',
+      validate: (input) => {
+        const result = validateLayoutType(input);
+        if (result !== true) return result;
+        return true;
+      }
     },
   ],
   actions: (data) => {
