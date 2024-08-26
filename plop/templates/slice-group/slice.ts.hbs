@@ -10,7 +10,7 @@ const {{camelCase groupName}}Slice = createSlice({
   name: '{{camelCase serviceName}}/{{camelCase groupName}}',
   initialState,
   reducers: {
-    {{camelCase apiName}}Success: (state, action) => successHandler(state, action, { data: action.payload }),
+    {{camelCase apiName}}Success: successHandler,
     ...stateReducers
   },
   extraReducers: asyncStatusReducers
