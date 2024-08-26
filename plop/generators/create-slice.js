@@ -20,24 +20,6 @@ export default (plop) => ({
         path: newIconFilePath,
         templateFile: `${PATH.PLOP.TEMPLATES._self}/icon.hbs`
       },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: enumFileInIconDirPath,
-        pattern: new RegExp('(export[\\S\\s]*)(' + BREAK_LINE + '})', 'g'),
-        template: "$1,{{constantCase iconName}} = '{{dashCase iconName}}'$2"
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFileInIconDirPath,
-        pattern: new RegExp("(import[\\S\\s]*)(import './Icon.scss';)", 'g'),
-        template: "$1import {{pascalCase iconName}} from './{{pascalCase iconName}}';$2"
-      },
-      {
-        type: PLOP_ACTION_TYPE.MODIFY,
-        path: indexFileInIconDirPath,
-        pattern: new RegExp('(import[\\S\\s]*)(default:)', 'g'),
-        template: "$1case EIconName.{{constantCase iconName}}: return <{{pascalCase iconName}} {...colorProps} />;$2"
-      },
       { type: PLOP_ACTION_TYPE.PRETTIER }
     ];
   }
